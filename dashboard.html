@@ -1,4 +1,594 @@
-        await supabase.auth.signOut();
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Dashboard Pengelola - VISI Bangsa</title>
+
+  <meta
+    name="description"
+    content="Dashboard pengelola media elektronik VISI Bangsa"
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f5f8;
+      color: #17212b;
+    }
+
+    header {
+      background: #17212b;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .brand span {
+      color: #e11d2e;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .logout {
+      border: 0;
+      background: #e11d2e;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 25px auto;
+      padding: 0 18px;
+    }
+
+    .welcome {
+      background: white;
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: 27px;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: #667085;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .menu-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .menu-card h3 {
+      margin: 0 0 8px;
+    }
+
+    .menu-card p {
+      color: #667085;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 42px;
+    }
+
+    button,
+    .button-link {
+      border: 0;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .primary {
+      background: #17212b;
+      color: white;
+    }
+
+    .red {
+      background: #e11d2e;
+      color: white;
+    }
+
+    .gray {
+      background: #e8ebef;
+      color: #17212b;
+    }
+
+    .green {
+      background: #198754;
+      color: white;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 10px;
+      padding: 22px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 13px;
+    }
+
+    label {
+      display: block;
+      margin: 13px 0 6px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #d0d5dd;
+      border-radius: 6px;
+      padding: 11px;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #17212b;
+    }
+
+    .form-buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .news-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .news-item {
+      border: 1px solid #e1e5ea;
+      border-radius: 8px;
+      padding: 15px;
+      background: #fafbfc;
+    }
+
+    .news-item h3 {
+      margin: 0 0 7px;
+      font-size: 19px;
+    }
+
+    .news-meta {
+      color: #667085;
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+
+    .news-content {
+      color: #344054;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .news-actions {
+      margin-top: 13px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .empty {
+      text-align: center;
+      color: #667085;
+      padding: 25px;
+      border: 1px dashed #cfd5dc;
+      border-radius: 8px;
+    }
+
+    .message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status {
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 7px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      color: #667085;
+      font-size: 13px;
+      padding: 25px;
+    }
+
+    @media (max-width: 800px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .user-area {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .welcome h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    VISI <span>Bangsa</span>
+  </div>
+
+  <div class="user-area">
+    <span id="userEmail">Memeriksa akun...</span>
+    <button id="logoutButton" class="logout">
+      Keluar
+    </button>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="welcome">
+    <h1>Dashboard Pengelola</h1>
+    <p>
+      Selamat datang di pusat pengelolaan media elektronik VISI Bangsa.
+    </p>
+  </section>
+
+  <section class="menu-grid">
+
+    <div class="menu-card">
+      <h3>📰 Kelola Berita</h3>
+      <p>
+        Tambahkan, ubah, dan hapus berita yang akan ditampilkan.
+      </p>
+      <button
+        class="primary"
+        onclick="document.getElementById('kelolaBerita').scrollIntoView({behavior:'smooth'})"
+      >
+        Kelola Berita
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>🌐 Lihat Website</h3>
+      <p>
+        Buka halaman utama VISI Bangsa.
+      </p>
+      <a
+        class="button-link green"
+        href="./index.html"
+      >
+        Lihat Website
+      </a>
+    </div>
+
+    <div class="menu-card">
+      <h3>⚙️ Status Sistem</h3>
+      <p>
+        Status login dan dashboard pengelola.
+      </p>
+      <button
+        class="gray"
+        onclick="cekStatus()"
+      >
+        Cek Status
+      </button>
+    </div>
+
+  </section>
+
+  <section
+    id="kelolaBerita"
+    class="panel"
+  >
+
+    <h2>Kelola Berita</h2>
+
+    <div class="status">
+      Dashboard aktif. Data berita untuk sementara disimpan pada browser
+      perangkat ini sampai database berita Supabase disiapkan.
+    </div>
+
+    <form id="newsForm">
+
+      <input
+        type="hidden"
+        id="newsId"
+      >
+
+      <label for="title">
+        Judul Berita
+      </label>
+
+      <input
+        id="title"
+        type="text"
+        placeholder="Masukkan judul berita"
+        required
+      >
+
+      <label for="category">
+        Kategori
+      </label>
+
+      <select id="category">
+        <option value="Nasional">Nasional</option>
+        <option value="Daerah">Daerah</option>
+        <option value="Politik">Politik</option>
+        <option value="Ekonomi">Ekonomi</option>
+        <option value="Teknologi">Teknologi</option>
+        <option value="Olahraga">Olahraga</option>
+        <option value="Lifestyle">Lifestyle</option>
+        <option value="Pendidikan">Pendidikan</option>
+      </select>
+
+      <label for="content">
+        Isi Berita
+      </label>
+
+      <textarea
+        id="content"
+        placeholder="Tulis isi berita..."
+        required
+      ></textarea>
+
+      <div class="form-buttons">
+
+        <button
+          type="submit"
+          class="red"
+          id="saveButton"
+        >
+          Simpan Berita
+        </button>
+
+        <button
+          type="button"
+          class="gray"
+          id="cancelButton"
+          style="display:none"
+        >
+          Batal Edit
+        </button>
+
+      </div>
+
+      <div
+        id="formMessage"
+        class="message"
+      ></div>
+
+    </form>
+
+  </section>
+
+  <section class="panel">
+
+    <h2>Daftar Berita</h2>
+
+    <div
+      id="newsList"
+      class="news-list"
+    ></div>
+
+  </section>
+
+</main>
+
+<footer>
+  © 2026 VISI Bangsa — Media Elektronik Indonesia
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  /*
+    ==========================
+    SUPABASE
+    ==========================
+  */
+
+  const SUPABASE_URL =
+    "https://vupvgdfdnpqactlqufbu.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  /*
+    ==========================
+    ELEMENT
+    ==========================
+  */
+
+  const userEmail =
+    document.getElementById("userEmail");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const newsForm =
+    document.getElementById("newsForm");
+
+  const newsId =
+    document.getElementById("newsId");
+
+  const title =
+    document.getElementById("title");
+
+  const category =
+    document.getElementById("category");
+
+  const content =
+    document.getElementById("content");
+
+  const newsList =
+    document.getElementById("newsList");
+
+  const saveButton =
+    document.getElementById("saveButton");
+
+  const cancelButton =
+    document.getElementById("cancelButton");
+
+  const formMessage =
+    document.getElementById("formMessage");
+
+
+  /*
+    ==========================
+    LOGIN CHECK
+    ==========================
+  */
+
+  async function checkLogin() {
+
+    try {
+
+      const {
+        data,
+        error
+      } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        window.location.href = "./login.html";
+        return;
+      }
+
+      const session = data.session;
+
+      if (!session) {
+        window.location.href = "./login.html";
+        return;
+      }
+
+      userEmail.textContent =
+        session.user.email || "Pengelola";
+
+      loadNews();
+
+    } catch (error) {
+
+      console.error(error);
+
+      window.location.href =
+        "./login.html";
+    }
+  }
+
+
+  /*
+    ==========================
+    LOGOUT
+    ==========================
+  */
+
+  logoutButton.addEventListener(
+    "click",
+    async function () {
+
+      logoutButton.disabled = true;
+      logoutButton.textContent =
+        "Keluar...";
+
+      const {
+        error
+      } = await supabaseClient.auth.signOut();
 
       if (error) {
 
@@ -6,8 +596,9 @@
         logoutButton.textContent =
           "Keluar";
 
-        message.textContent =
-          "Gagal keluar. Silakan coba lagi.";
+        alert(
+          "Gagal keluar. Silakan coba lagi."
+        );
 
         return;
       }
@@ -17,6 +608,435 @@
     }
   );
 
+
+  /*
+    ==========================
+    LOCAL NEWS STORAGE
+    ==========================
+  */
+
+  function getNews() {
+
+    try {
+
+      const saved =
+        localStorage.getItem(
+          "visiBangsaNews"
+        );
+
+      if (!saved) {
+        return [];
+      }
+
+      const parsed =
+        JSON.parse(saved);
+
+      return Array.isArray(parsed)
+        ? parsed
+        : [];
+
+    } catch (error) {
+
+      return [];
+    }
+  }
+
+
+  function saveNews(news) {
+
+    localStorage.setItem(
+      "visiBangsaNews",
+      JSON.stringify(news)
+    );
+  }
+
+
+  /*
+    ==========================
+    LOAD NEWS
+    ==========================
+  */
+
+  function loadNews() {
+
+    const news =
+      getNews();
+
+    newsList.innerHTML = "";
+
+    if (news.length === 0) {
+
+      newsList.innerHTML = `
+        <div class="empty">
+          Belum ada berita.
+          Silakan gunakan formulir di atas
+          untuk menambahkan berita.
+        </div>
+      `;
+
+      return;
+    }
+
+    news.forEach(function(item) {
+
+      const article =
+        document.createElement("article");
+
+      article.className =
+        "news-item";
+
+      article.innerHTML = `
+
+        <h3>
+          ${escapeHTML(item.title)}
+        </h3>
+
+        <div class="news-meta">
+          ${escapeHTML(item.category)}
+          •
+          ${escapeHTML(item.date)}
+        </div>
+
+        <div class="news-content">
+          ${escapeHTML(item.content)}
+        </div>
+
+        <div class="news-actions">
+
+          <button
+            class="primary"
+            onclick="editNews('${item.id}')"
+          >
+            Edit
+          </button>
+
+          <button
+            class="red"
+            onclick="deleteNews('${item.id}')"
+          >
+            Hapus
+          </button>
+
+        </div>
+      `;
+
+      newsList.appendChild(article);
+
+    });
+  }
+
+
+  /*
+    ==========================
+    ADD / EDIT NEWS
+    ==========================
+  */
+
+  newsForm.addEventListener(
+    "submit",
+    function(event) {
+
+      event.preventDefault();
+
+      const news =
+        getNews();
+
+      const currentId =
+        newsId.value;
+
+      const newsTitle =
+        title.value.trim();
+
+      const newsCategory =
+        category.value;
+
+      const newsContent =
+        content.value.trim();
+
+      if (
+        !newsTitle ||
+        !newsContent
+      ) {
+
+        showMessage(
+          "Judul dan isi berita wajib diisi.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (currentId) {
+
+        const index =
+          news.findIndex(
+            item => item.id === currentId
+          );
+
+        if (index !== -1) {
+
+          news[index].title =
+            newsTitle;
+
+          news[index].category =
+            newsCategory;
+
+          news[index].content =
+            newsContent;
+
+          news[index].updated =
+            new Date().toLocaleString(
+              "id-ID"
+            );
+        }
+
+        showMessage(
+          "Berita berhasil diperbarui.",
+          "success"
+        );
+
+      } else {
+
+        const newArticle = {
+
+          id:
+            Date.now().toString(),
+
+          title:
+            newsTitle,
+
+          category:
+            newsCategory,
+
+          content:
+            newsContent,
+
+          date:
+            new Date().toLocaleString(
+              "id-ID"
+            )
+
+        };
+
+        news.unshift(
+          newArticle
+        );
+
+        showMessage(
+          "Berita berhasil ditambahkan.",
+          "success"
+        );
+      }
+
+
+      saveNews(news);
+
+      loadNews();
+
+      resetForm();
+
+    }
+  );
+
+
+  /*
+    ==========================
+    EDIT
+    ==========================
+  */
+
+  window.editNews =
+    function(id) {
+
+      const news =
+        getNews();
+
+      const item =
+        news.find(
+          article => article.id === id
+        );
+
+      if (!item) {
+        return;
+      }
+
+      newsId.value =
+        item.id;
+
+      title.value =
+        item.title;
+
+      category.value =
+        item.category;
+
+      content.value =
+        item.content;
+
+      saveButton.textContent =
+        "Perbarui Berita";
+
+      cancelButton.style.display =
+        "inline-block";
+
+      document
+        .getElementById("kelolaBerita")
+        .scrollIntoView({
+          behavior: "smooth"
+        });
+    };
+
+
+  /*
+    ==========================
+    DELETE
+    ==========================
+  */
+
+  window.deleteNews =
+    function(id) {
+
+      const confirmDelete =
+        confirm(
+          "Apakah Anda yakin ingin menghapus berita ini?"
+        );
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      let news =
+        getNews();
+
+      news =
+        news.filter(
+          item => item.id !== id
+        );
+
+      saveNews(news);
+
+      loadNews();
+
+      showMessage(
+        "Berita berhasil dihapus.",
+        "success"
+      );
+    };
+
+
+  /*
+    ==========================
+    CANCEL EDIT
+    ==========================
+  */
+
+  cancelButton.addEventListener(
+    "click",
+    function() {
+
+      resetForm();
+
+    }
+  );
+
+
+  function resetForm() {
+
+    newsForm.reset();
+
+    newsId.value = "";
+
+    saveButton.textContent =
+      "Simpan Berita";
+
+    cancelButton.style.display =
+      "none";
+
+  }
+
+
+  /*
+    ==========================
+    MESSAGE
+    ==========================
+  */
+
+  function showMessage(
+    text,
+    type
+  ) {
+
+    formMessage.textContent =
+      text;
+
+    formMessage.className =
+      "message show " + type;
+
+    setTimeout(
+      function() {
+
+        formMessage.className =
+          "message";
+
+      },
+      3000
+    );
+  }
+
+
+  /*
+    ==========================
+    SECURITY
+    ==========================
+  */
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+
+  /*
+    ==========================
+    STATUS
+    ==========================
+  */
+
+  window.cekStatus =
+    async function() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
+
+      if (data.session) {
+
+        alert(
+          "Status: LOGIN AKTIF\n\nAkun: " +
+          data.session.user.email
+        );
+
+      } else {
+
+        alert(
+          "Status: Anda belum login."
+        );
+
+      }
+    };
+
+
+  /*
+    ==========================
+    START
+    ==========================
+  */
 
   checkLogin();
 
