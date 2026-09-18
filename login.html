@@ -1,45 +1,271 @@
-  const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  const supabase = createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+  <title>Login Pengelola - VISI Bangsa</title>
 
-  const form = document.getElementById("loginForm");
-  const message = document.getElementById("message");
-
-  form.addEventListener("submit", async function (event) {
-
-    event.preventDefault();
-
-    message.textContent = "Sedang memeriksa akun...";
-
-    const email =
-      document.getElementById("email").value.trim();
-
-    const password =
-      document.getElementById("password").value;
-
-    const { error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-    if (error) {
-
-      message.textContent =
-        "Login gagal. Periksa email dan password Anda.";
-
-      return;
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    window.location.href = "./dashboard.html";
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #17212b;
+      padding: 20px;
+    }
 
-  });
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+    }
 
-</script>
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: #17212b;
+    }
+
+    .logo span {
+      color: #e11d2e;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #667085;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 7px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #17212b;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      border: 0;
+      border-radius: 7px;
+      background: #e11d2e;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #b42318;
+      min-height: 20px;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #667085;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="logo">
+      VISI <span>Bangsa</span>
+    </div>
+
+    <div class="subtitle">
+      Login Pengelola
+    </div>
+
+    <form id="loginForm">
+
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Masukkan email"
+        autocomplete="email"
+        required
+      >
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Masukkan password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button
+        id="loginButton"
+        type="submit"
+      >
+        Login
+      </button>
+
+      <div id="message"></div>
+
+    </form>
+
+    <a
+      class="back"
+      href="./index.html"
+    >
+      ← Kembali ke VISI Bangsa
+    </a>
+
+  </div>
+
+
+  <!-- Supabase harus dimuat SEBELUM kode login -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://vupvgdfdnpqactlqufbu.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    const form =
+      document.getElementById("loginForm");
+
+    const message =
+      document.getElementById("message");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+
+    form.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        message.textContent =
+          "Sedang memeriksa akun...";
+
+        loginButton.disabled = true;
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+
+        try {
+
+          const {
+            error
+          } =
+            await supabaseClient.auth
+              .signInWithPassword({
+                email: email,
+                password: password
+              });
+
+
+          if (error) {
+
+            console.error(error);
+
+            message.textContent =
+              "Login gagal. Periksa email dan password Anda.";
+
+            loginButton.disabled = false;
+
+            return;
+          }
+
+
+          message.textContent =
+            "Login berhasil. Membuka dashboard...";
+
+
+          window.location.href =
+            "./dashboard.html";
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          message.textContent =
+            "Terjadi kesalahan. Silakan coba lagi.";
+
+          loginButton.disabled = false;
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
