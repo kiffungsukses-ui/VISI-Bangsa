@@ -29,7 +29,6 @@
   </div>
 
   <nav class="nav">
-
     <div class="wrap navin">
 
       <a href="./index.html">Beranda</a>
@@ -41,7 +40,6 @@
       <a class="active" href="./login.html">Login</a>
 
     </div>
-
   </nav>
 
 </header>
@@ -51,35 +49,54 @@
 
   <section class="page">
 
-    <p class="eyebrow">
-      AREA PENGELOLA
-    </p>
+    <p class="eyebrow">AREA PENGELOLA</p>
 
-    <h1>
-      Login
-    </h1>
+    <h1>Login</h1>
 
     <div class="article">
 
-      <h2>
-        Masuk ke VISI Bangsa
-      </h2>
+      <h2>Masuk ke VISI Bangsa</h2>
 
       <p>
-        Halaman ini disiapkan untuk pengelola
-        website VISI Bangsa.
+        Gunakan email dan password akun pengelola
+        untuk masuk ke dashboard.
       </p>
 
-      <p>
-        Sistem autentikasi akan kita hubungkan
-        dengan layanan keamanan pada tahap berikutnya.
-      </p>
+      <form id="loginForm">
 
-      <p>
-        <strong>
-          Jangan masukkan password Anda di halaman ini dulu.
-        </strong>
-      </p>
+        <p>
+          <label for="email">Email</label><br>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            required
+            style="width:100%;max-width:500px;padding:13px;margin-top:7px;"
+          >
+        </p>
+
+        <p>
+          <label for="password">Password</label><br>
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            style="width:100%;max-width:500px;padding:13px;margin-top:7px;"
+          >
+        </p>
+
+        <button
+          type="submit"
+          class="btn"
+          style="border:0;cursor:pointer;"
+        >
+          Masuk →
+        </button>
+
+        <p id="message" aria-live="polite"></p>
+
+      </form>
 
     </div>
 
@@ -101,6 +118,58 @@
   </div>
 
 </footer>
+
+
+<script type="module">
+
+  import { createClient }
+    from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  const SUPABASE_URL =
+    "https://vupvgdfdnpqactlqufbu.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+
+  const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  const form = document.getElementById("loginForm");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+    message.textContent = "Sedang memeriksa akun...";
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    const { error } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    if (error) {
+
+      message.textContent =
+        "Login gagal. Periksa email dan password Anda.";
+
+      return;
+    }
+
+    window.location.href = "./dashboard.html";
+
+  });
+
+</script>
 
 </body>
 </html>
