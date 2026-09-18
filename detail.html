@@ -3,17 +3,13 @@
 <head>
   <meta charset="utf-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Berita - VISI Bangsa</title>
+  <title>VISI Bangsa</title>
 
   <meta
     name="description"
-    id="metaDescription"
-    content="Berita terbaru VISI Bangsa"
+    content="Berita terbaru dan informasi terkini dari VISI Bangsa."
   >
 
   <meta
@@ -21,9 +17,11 @@
     content="index, follow, max-image-preview:large"
   >
 
-  <meta
-    name="theme-color"
-    content="#b40000"
+  <meta name="theme-color" content="#b40000">
+
+  <link
+    rel="icon"
+    href="/favicon.ico"
   >
 
   <link
@@ -34,37 +32,37 @@
 
   <!-- Open Graph -->
   <meta
-    property="og:site_name"
-    content="VISI Bangsa"
-  >
-
-  <meta
     property="og:type"
     content="article"
   >
 
   <meta
-    property="og:title"
-    id="ogTitle"
+    property="og:site_name"
     content="VISI Bangsa"
   >
 
   <meta
-    property="og:description"
-    id="ogDescription"
-    content="Berita terbaru VISI Bangsa"
+    id="ogTitle"
+    property="og:title"
+    content="VISI Bangsa"
   >
 
   <meta
-    property="og:url"
+    id="ogDescription"
+    property="og:description"
+    content="Berita terbaru dan informasi terkini dari VISI Bangsa."
+  >
+
+  <meta
     id="ogUrl"
+    property="og:url"
     content="https://visi-bangsa.vercel.app/"
   >
 
   <meta
-    property="og:image"
     id="ogImage"
-    content=""
+    property="og:image"
+    content="https://visi-bangsa.vercel.app/"
   >
 
   <!-- Twitter -->
@@ -74,45 +72,36 @@
   >
 
   <meta
-    name="twitter:title"
     id="twitterTitle"
+    name="twitter:title"
     content="VISI Bangsa"
   >
 
   <meta
-    name="twitter:description"
     id="twitterDescription"
-    content="Berita terbaru VISI Bangsa"
+    name="twitter:description"
+    content="Berita terbaru dan informasi terkini dari VISI Bangsa."
   >
 
   <meta
-    name="twitter:image"
     id="twitterImage"
-    content=""
+    name="twitter:image"
+    content="https://visi-bangsa.vercel.app/"
   >
-
-  <!-- Structured Data akan diisi JavaScript -->
-  <script
-    type="application/ld+json"
-    id="articleSchema"
-  >
-  {}
-  </script>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
+      background: #f4f5f7;
+      color: #202124;
       font-family:
         Arial,
         Helvetica,
         sans-serif;
-      background: #f3f3f3;
-      color: #222;
     }
 
     a {
@@ -123,11 +112,11 @@
     .topbar {
       background: #b40000;
       color: white;
-      padding: 7px 20px;
       font-size: 13px;
+      padding: 7px 20px;
     }
 
-    header {
+    .header {
       background: white;
       border-bottom: 1px solid #ddd;
     }
@@ -135,66 +124,73 @@
     .header-inner {
       max-width: 1180px;
       margin: auto;
-      min-height: 78px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 20px;
+      gap: 20px;
     }
 
-    .logo {
-      font-size: 34px;
+    .brand {
+      font-size: 30px;
       font-weight: 900;
+      letter-spacing: -1px;
       color: #b40000;
     }
 
-    .logo span {
+    .brand span {
       color: #222;
     }
 
-    .login {
-      background: #b40000;
-      color: white;
-      padding: 10px 17px;
-      border-radius: 5px;
-      font-weight: bold;
+    .back {
+      border: 1px solid #ddd;
+      padding: 9px 15px;
+      border-radius: 6px;
       font-size: 14px;
+      font-weight: bold;
+      background: white;
     }
 
-    nav {
-      background: white;
+    .back:hover {
+      background: #f5f5f5;
+    }
+
+    .nav {
+      background: #fff;
       border-bottom: 1px solid #ddd;
-      overflow-x: auto;
     }
 
     .nav-inner {
       max-width: 1180px;
       margin: auto;
-      display: flex;
       padding: 0 20px;
-      white-space: nowrap;
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
     }
 
-    .nav-inner a {
-      padding: 14px 15px;
+    .nav a {
+      padding: 13px 0;
+      white-space: nowrap;
       font-size: 14px;
       font-weight: bold;
+      color: #333;
     }
 
-    .nav-inner a:hover {
+    .nav a:hover {
       color: #b40000;
     }
 
     main {
-      max-width: 920px;
-      margin: 25px auto 60px;
+      max-width: 900px;
+      margin: 30px auto 60px;
       padding: 0 20px;
     }
 
     .breadcrumb {
-      font-size: 13px;
       color: #777;
-      margin-bottom: 15px;
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
     .breadcrumb a {
@@ -204,60 +200,55 @@
 
     .article {
       background: white;
-      border-radius: 9px;
-      box-shadow:
-        0 2px 10px rgba(0,0,0,.08);
-      overflow: hidden;
-    }
-
-    .article-header {
-      padding: 30px 34px 20px;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
     }
 
     .category {
       display: inline-block;
-      background: #b40000;
       color: white;
+      background: #b40000;
       padding: 6px 11px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     h1 {
-      font-size: 40px;
-      line-height: 1.16;
       margin: 0 0 15px;
+      font-size: 38px;
+      line-height: 1.15;
       color: #171717;
     }
 
     .meta {
       color: #777;
       font-size: 14px;
+      margin-bottom: 22px;
       line-height: 1.6;
     }
 
     .hero {
       width: 100%;
-      max-height: 560px;
+      max-height: 520px;
       object-fit: cover;
+      border-radius: 8px;
       display: block;
-      background: #ddd;
+      margin-bottom: 25px;
+      background: #eee;
     }
 
-    .article-body {
-      padding: 30px 34px 35px;
-    }
-
-    .isi {
+    .content {
       font-size: 18px;
-      line-height: 1.85;
+      line-height: 1.8;
+      color: #292929;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
-    .share-area {
+    .share {
       border-top: 1px solid #eee;
       margin-top: 30px;
       padding-top: 20px;
@@ -266,121 +257,103 @@
       flex-wrap: wrap;
     }
 
-    .share-button {
+    .share button {
       border: 0;
-      background: #b40000;
-      color: white;
-      padding: 10px 15px;
       border-radius: 5px;
+      padding: 10px 14px;
       cursor: pointer;
       font-weight: bold;
+      background: #eee;
     }
 
-    .share-button.secondary {
-      background: #333;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 25px;
-      background: #b40000;
-      color: white;
-      padding: 11px 17px;
-      border-radius: 5px;
-      font-weight: bold;
+    .share button:hover {
+      background: #ddd;
     }
 
     .related {
-      margin-top: 25px;
+      margin-top: 30px;
     }
 
     .related h2 {
+      font-size: 22px;
       border-left: 5px solid #b40000;
       padding-left: 10px;
-      font-size: 23px;
     }
 
-    .related-grid {
+    .related-list {
       display: grid;
-      grid-template-columns:
-        repeat(3, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
     }
 
     .related-card {
       background: white;
-      border-radius: 7px;
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow:
-        0 1px 5px rgba(0,0,0,.08);
+      border: 1px solid #eee;
     }
 
     .related-card img {
       width: 100%;
-      height: 150px;
+      height: 140px;
       object-fit: cover;
       display: block;
+      background: #eee;
     }
 
-    .related-content {
-      padding: 13px;
+    .related-card div {
+      padding: 12px;
     }
 
-    .related-content h3 {
-      margin: 0;
+    .related-card h3 {
       font-size: 16px;
-      line-height: 1.4;
+      line-height: 1.35;
+      margin: 0;
     }
 
-    .loading,
     .error {
-      background: white;
-      padding: 40px;
       text-align: center;
-      border-radius: 8px;
-    }
-
-    .error h1 {
-      color: #b40000;
-      font-size: 28px;
+      background: white;
+      padding: 50px 20px;
+      border-radius: 10px;
     }
 
     footer {
-      background: #222;
+      background: #181818;
       color: #ddd;
-      padding: 30px 20px;
+      padding: 35px 20px;
       text-align: center;
       font-size: 13px;
     }
 
     @media (max-width: 700px) {
+      .brand {
+        font-size: 24px;
+      }
 
-      .logo {
-        font-size: 27px;
+      .header-inner {
+        padding: 14px;
       }
 
       main {
+        margin-top: 18px;
         padding: 0 12px;
       }
 
-      .article-header {
-        padding: 22px 20px 15px;
+      .article {
+        padding: 20px 16px;
       }
 
       h1 {
-        font-size: 29px;
+        font-size: 28px;
       }
 
-      .article-body {
-        padding: 22px 20px 28px;
-      }
-
-      .isi {
+      .content {
         font-size: 17px;
         line-height: 1.75;
       }
 
-      .related-grid {
+      .related-list {
         grid-template-columns: 1fr;
       }
 
@@ -388,112 +361,115 @@
         height: 190px;
       }
     }
-
   </style>
 </head>
 
 <body>
 
   <div class="topbar">
-    Media Elektronik VISI Bangsa
+    Media Elektronik Indonesia
   </div>
 
-  <header>
+  <header class="header">
     <div class="header-inner">
 
-      <a href="/" class="logo">
+      <a
+        class="brand"
+        href="/"
+      >
         VISI <span>Bangsa</span>
       </a>
 
       <a
-        href="/login.html"
-        class="login"
+        class="back"
+        href="/"
       >
-        Login Admin
+        ← Beranda
       </a>
 
     </div>
   </header>
 
-  <nav>
+  <nav class="nav">
     <div class="nav-inner">
-
       <a href="/">Beranda</a>
       <a href="/?kategori=Nasional">Nasional</a>
       <a href="/?kategori=Daerah">Daerah</a>
       <a href="/?kategori=Politik">Politik</a>
       <a href="/?kategori=Ekonomi">Ekonomi</a>
       <a href="/?kategori=Teknologi">Teknologi</a>
-      <a href="/?kategori=Pendidikan">Pendidikan</a>
-      <a href="/?kategori=Kesehatan">Kesehatan</a>
       <a href="/?kategori=Olahraga">Olahraga</a>
-      <a href="/?kategori=Hukum">Hukum</a>
-      <a href="/?kategori=Lifestyle">Lifestyle</a>
-
+      <a href="/?kategori=Gaya Hidup">Gaya Hidup</a>
     </div>
   </nav>
 
   <main>
 
     <div class="breadcrumb">
-      <a href="/">Beranda</a>
+      <a href="/">VISI Bangsa</a>
       &nbsp;›&nbsp;
       <span id="breadcrumbCategory">
         Berita
       </span>
-    </div>
-
-    <div id="loading" class="loading">
-      Memuat berita...
+      &nbsp;›&nbsp;
+      <span id="breadcrumbTitle">
+        Artikel
+      </span>
     </div>
 
     <article
-      id="article"
       class="article"
-      style="display:none;"
+      id="article"
     >
 
-      <div class="article-header">
-
-        <div
-          id="kategori"
-          class="category"
-        ></div>
-
-        <h1 id="judul"></h1>
-
-        <div
-          id="meta"
-          class="meta"
-        ></div>
-
+      <div
+        id="loading"
+        style="text-align:center;padding:40px;"
+      >
+        Memuat berita...
       </div>
 
-      <img
-        id="gambar"
-        class="hero"
-        style="display:none;"
-        alt=""
-      >
-
-      <div class="article-body">
+      <div id="articleContent" style="display:none;">
 
         <div
-          id="isi"
-          class="isi"
+          class="category"
+          id="category"
+        >
+          Berita
+        </div>
+
+        <h1 id="title">
+          Memuat...
+        </h1>
+
+        <div
+          class="meta"
+          id="meta"
         ></div>
 
-        <div class="share-area">
+        <img
+          id="hero"
+          class="hero"
+          alt=""
+          style="display:none;"
+        >
+
+        <div
+          class="content"
+          id="content"
+        ></div>
+
+        <div class="share">
 
           <button
-            class="share-button"
+            type="button"
             id="shareButton"
           >
-            Bagikan Berita
+            Bagikan
           </button>
 
           <button
-            class="share-button secondary"
+            type="button"
             id="copyButton"
           >
             Salin Link
@@ -501,90 +477,94 @@
 
         </div>
 
-        <a
-          href="/"
-          class="back"
-        >
-          ← Kembali ke Beranda
-        </a>
-
       </div>
 
     </article>
 
-    <div
-      id="error"
-      class="error"
-      style="display:none;"
-    >
+    <section class="related">
 
-      <h1>
-        Berita Tidak Ditemukan
-      </h1>
-
-      <p>
-        Berita yang Anda cari tidak tersedia
-        atau telah dihapus.
-      </p>
-
-      <a
-        href="/"
-        class="back"
-      >
-        Kembali ke Beranda
-      </a>
-
-    </div>
-
-    <section
-      id="related"
-      class="related"
-      style="display:none;"
-    >
-
-      <h2>
-        Berita Terkait
-      </h2>
+      <h2>Berita Terkait</h2>
 
       <div
-        id="relatedGrid"
-        class="related-grid"
-      ></div>
+        class="related-list"
+        id="relatedList"
+      >
+      </div>
 
     </section>
 
   </main>
 
   <footer>
-    © 2026 VISI Bangsa — Media Elektronik Indonesia
+    © <span id="year"></span> VISI Bangsa.
+    Semua hak dilindungi.
   </footer>
 
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-
     const SUPABASE_URL =
       "https://vupvgdfdnpqactlqufbu.supabase.co";
 
-    const SUPABASE_ANON_KEY =
+    const SUPABASE_KEY =
       "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
 
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_ANON_KEY
+        SUPABASE_KEY
       );
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const articleId =
+      params.get("id");
+
+    const titleElement =
+      document.getElementById("title");
+
+    const categoryElement =
+      document.getElementById("category");
+
+    const metaElement =
+      document.getElementById("meta");
+
+    const heroElement =
+      document.getElementById("hero");
+
+    const contentElement =
+      document.getElementById("content");
+
+    const loadingElement =
+      document.getElementById("loading");
+
+    const articleContent =
+      document.getElementById("articleContent");
+
+    const relatedList =
+      document.getElementById("relatedList");
+
+    const breadcrumbCategory =
+      document.getElementById(
+        "breadcrumbCategory"
+      );
+
+    const breadcrumbTitle =
+      document.getElementById(
+        "breadcrumbTitle"
+      );
+
+    document.getElementById("year")
+      .textContent =
+      new Date().getFullYear();
 
     function escapeHtml(value) {
 
-      if (
-        value === null ||
-        value === undefined
-      ) {
-        return "";
-      }
-
-      return String(value)
+      return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -592,130 +572,68 @@
         .replace(/'/g, "&#039;");
     }
 
-    function formatTanggal(value) {
+    function formatDate(value) {
 
       if (!value) {
         return "";
       }
 
-      return new Date(value).toLocaleDateString(
+      return new Intl.DateTimeFormat(
         "id-ID",
         {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
+          dateStyle: "long",
+          timeStyle: "short"
         }
+      ).format(
+        new Date(value)
       );
     }
 
-    function ringkas(text, max = 160) {
-
-      if (!text) {
-        return "";
-      }
+    function makeDescription(text) {
 
       const clean =
-        String(text)
+        String(text ?? "")
           .replace(/\s+/g, " ")
           .trim();
 
-      if (clean.length <= max) {
+      if (clean.length <= 160) {
         return clean;
       }
 
-      return clean.substring(0, max) + "...";
+      return clean.substring(0, 157) + "...";
     }
 
-    async function loadBerita() {
+    function updateSEO(article) {
 
-      const params =
-        new URLSearchParams(
-          window.location.search
+      const title =
+        article.judul ||
+        "VISI Bangsa";
+
+      const description =
+        makeDescription(
+          article.isi ||
+          "Berita terbaru dan informasi terkini dari VISI Bangsa."
         );
-
-      const id =
-        params.get("id");
-
-      if (!id) {
-        showError();
-        return;
-      }
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("berita")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-      if (error || !data) {
-
-        console.error(error);
-
-        showError();
-        return;
-      }
-
-      tampilkanBerita(data);
-
-      loadRelated(data);
-
-    }
-
-    function tampilkanBerita(data) {
-
-      const judul =
-        data.judul ||
-        "Berita VISI Bangsa";
-
-      const isi =
-        data.isi ||
-        "";
-
-      const kategori =
-        data.kategori ||
-        "Berita";
-
-      const penulis =
-        data.penulis ||
-        "Redaksi VISI Bangsa";
 
       const url =
-        window.location.origin +
-        "/detail.html?id=" +
-        encodeURIComponent(data.id);
+        window.location.href;
 
-      const deskripsi =
-        ringkas(isi, 160) ||
-        judul;
-
-      /*
-        TITLE
-      */
+      const image =
+        article.gambar ||
+        "https://visi-bangsa.vercel.app/";
 
       document.title =
-        judul +
+        title +
         " | VISI Bangsa";
 
-      /*
-        DESCRIPTION
-      */
-
       document
-        .getElementById("metaDescription")
+        .querySelector(
+          'meta[name="description"]'
+        )
         .setAttribute(
           "content",
-          deskripsi
+          description
         );
-
-      /*
-        CANONICAL
-      */
 
       document
         .getElementById("canonical")
@@ -724,22 +642,18 @@
           url
         );
 
-      /*
-        OPEN GRAPH
-      */
-
       document
         .getElementById("ogTitle")
         .setAttribute(
           "content",
-          judul
+          title
         );
 
       document
         .getElementById("ogDescription")
         .setAttribute(
           "content",
-          deskripsi
+          description
         );
 
       document
@@ -749,109 +663,33 @@
           url
         );
 
-      if (data.gambar) {
-
-        document
-          .getElementById("ogImage")
-          .setAttribute(
-            "content",
-            data.gambar
-          );
-
-        document
-          .getElementById("twitterImage")
-          .setAttribute(
-            "content",
-            data.gambar
-          );
-      }
+      document
+        .getElementById("ogImage")
+        .setAttribute(
+          "content",
+          image
+        );
 
       document
         .getElementById("twitterTitle")
         .setAttribute(
           "content",
-          judul
+          title
         );
 
       document
         .getElementById("twitterDescription")
         .setAttribute(
           "content",
-          deskripsi
+          description
         );
 
-      /*
-        BREADCRUMB
-      */
-
       document
-        .getElementById(
-          "breadcrumbCategory"
-        )
-        .textContent =
-          kategori;
-
-      /*
-        ARTICLE
-      */
-
-      document
-        .getElementById("kategori")
-        .textContent =
-          kategori;
-
-      document
-        .getElementById("judul")
-        .textContent =
-          judul;
-
-      document
-        .getElementById("meta")
-        .textContent =
-          "Oleh " +
-          penulis +
-          " • " +
-          formatTanggal(
-            data.tanggal
-          );
-
-      document
-        .getElementById("isi")
-        .textContent =
-          isi;
-
-      /*
-        IMAGE
-      */
-
-      if (data.gambar) {
-
-        const gambar =
-          document.getElementById(
-            "gambar"
-          );
-
-        gambar.src =
-          data.gambar;
-
-        gambar.alt =
-          judul;
-
-        gambar.style.display =
-          "block";
-
-        gambar.onerror =
-          function() {
-
-            gambar.style.display =
-              "none";
-
-          };
-      }
-
-      /*
-        NEWSARTICLE SCHEMA
-      */
+        .getElementById("twitterImage")
+        .setAttribute(
+          "content",
+          image
+        );
 
       const schema = {
 
@@ -862,38 +700,38 @@
           "NewsArticle",
 
         "mainEntityOfPage": {
-
-          "@type":
-            "WebPage",
-
-          "@id":
-            url
+          "@type": "WebPage",
+          "@id": url
         },
 
         "headline":
-          judul,
+          title,
 
         "description":
-          deskripsi,
+          description,
+
+        "image":
+          image
+            ? [image]
+            : [],
 
         "datePublished":
-          data.tanggal,
+          article.tanggal,
 
         "dateModified":
-          data.updated_at ||
-          data.tanggal,
+          article.updated_at ||
+          article.tanggal,
 
         "author": {
-
           "@type":
             "Person",
 
           "name":
-            penulis
+            article.penulis ||
+            "Redaksi VISI Bangsa"
         },
 
         "publisher": {
-
           "@type":
             "Organization",
 
@@ -902,49 +740,169 @@
 
           "url":
             "https://visi-bangsa.vercel.app/"
-        }
+        },
 
+        "articleSection":
+          article.kategori ||
+          "Berita",
+
+        "isAccessibleForFree":
+          true
       };
 
-      if (data.gambar) {
+      const oldSchema =
+        document.getElementById(
+          "newsArticleSchema"
+        );
 
-        schema.image =
-          [data.gambar];
-
+      if (oldSchema) {
+        oldSchema.remove();
       }
 
-      document
-        .getElementById(
-          "articleSchema"
-        )
-        .textContent =
-          JSON.stringify(schema);
+      const script =
+        document.createElement(
+          "script"
+        );
 
-      /*
-        TAMPILKAN
-      */
+      script.id =
+        "newsArticleSchema";
 
-      document
-        .getElementById("loading")
-        .style.display =
-          "none";
+      script.type =
+        "application/ld+json";
 
-      document
-        .getElementById("article")
-        .style.display =
-          "block";
+      script.textContent =
+        JSON.stringify(schema);
 
+      document.head.appendChild(
+        script
+      );
     }
 
-    async function loadRelated(current) {
+    async function loadArticle() {
+
+      if (!articleId) {
+
+        showError(
+          "Berita tidak ditemukan."
+        );
+
+        return;
+      }
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("berita")
+          .select(
+            "id,judul,isi,gambar,kategori,penulis,tanggal,updated_at"
+          )
+          .eq("id", articleId)
+          .single();
+
+      if (error || !data) {
+
+        console.error(error);
+
+        showError(
+          "Berita tidak ditemukan."
+        );
+
+        return;
+      }
+
+      renderArticle(data);
+
+      await loadRelated(
+        data.kategori,
+        data.id
+      );
+    }
+
+    function renderArticle(article) {
+
+      const category =
+        article.kategori ||
+        "Berita";
+
+      categoryElement
+        .textContent =
+        category;
+
+      titleElement
+        .textContent =
+        article.judul ||
+        "Tanpa Judul";
+
+      breadcrumbCategory
+        .textContent =
+        category;
+
+      breadcrumbTitle
+        .textContent =
+        article.judul ||
+        "Berita";
+
+      const author =
+        article.penulis ||
+        "Redaksi VISI Bangsa";
+
+      metaElement
+        .textContent =
+        "Oleh " +
+        author +
+        " • " +
+        formatDate(
+          article.tanggal
+        );
+
+      contentElement
+        .textContent =
+        article.isi ||
+        "";
+
+      if (article.gambar) {
+
+        heroElement.src =
+          article.gambar;
+
+        heroElement.alt =
+          article.judul ||
+          "Foto berita VISI Bangsa";
+
+        heroElement.style.display =
+          "block";
+
+      } else {
+
+        heroElement.style.display =
+          "none";
+      }
+
+      updateSEO(article);
+
+      loadingElement.style.display =
+        "none";
+
+      articleContent.style.display =
+        "block";
+    }
+
+    async function loadRelated(
+      category,
+      currentId
+    ) {
 
       let query =
         supabaseClient
           .from("berita")
-          .select("*")
+          .select(
+            "id,judul,gambar,kategori,tanggal"
+          )
           .neq(
             "id",
-            current.id
+            currentId
           )
           .order(
             "tanggal",
@@ -952,29 +910,15 @@
               ascending: false
             }
           )
-          .limit(3);
+          .limit(6);
 
-      if (current.kategori) {
+      if (category) {
 
         query =
-          supabaseClient
-            .from("berita")
-            .select("*")
-            .eq(
-              "kategori",
-              current.kategori
-            )
-            .neq(
-              "id",
-              current.id
-            )
-            .order(
-              "tanggal",
-              {
-                ascending: false
-              }
-            )
-            .limit(3);
+          query.eq(
+            "kategori",
+            category
+          );
       }
 
       const {
@@ -983,154 +927,141 @@
       } =
         await query;
 
-      if (
-        error ||
-        !data ||
-        !data.length
-      ) {
+      if (error) {
+
+        console.error(error);
+
         return;
       }
 
-      const grid =
-        document.getElementById(
-          "relatedGrid"
-        );
+      if (!data ||
+          data.length === 0) {
 
-      grid.innerHTML = "";
+        relatedList.innerHTML =
+          "<p>Belum ada berita terkait.</p>";
 
-      data.forEach(
-        function(item) {
+        return;
+      }
 
-          const card =
-            document.createElement(
-              "a"
-            );
+      relatedList.innerHTML =
+        data.map(
+          item => {
 
-          card.className =
-            "related-card";
+            const image =
+              item.gambar ||
+              "";
 
-          card.href =
-            "/detail.html?id=" +
-            encodeURIComponent(
-              item.id
-            );
+            return `
+              <a
+                class="related-card"
+                href="/detail.html?id=${encodeURIComponent(item.id)}"
+              >
 
-          let image = "";
+                ${
+                  image
+                    ? `
+                      <img
+                        src="${escapeHtml(image)}"
+                        alt="${escapeHtml(item.judul)}"
+                        loading="lazy"
+                      >
+                    `
+                    : ""
+                }
 
-          if (item.gambar) {
+                <div>
 
-            image =
-              `<img
-                 src="${escapeHtml(
-                   item.gambar
-                 )}"
-                 alt="${escapeHtml(
-                   item.judul
-                 )}"
-               >`;
+                  <h3>
+                    ${escapeHtml(item.judul)}
+                  </h3>
+
+                </div>
+
+              </a>
+            `;
           }
-
-          card.innerHTML =
-
-            image +
-
-            `<div class="related-content">
-               <h3>
-                 ${escapeHtml(
-                   item.judul
-                 )}
-               </h3>
-             </div>`;
-
-          grid.appendChild(
-            card
-          );
-
-        }
-      );
-
-      document
-        .getElementById("related")
-        .style.display =
-          "block";
-
+        ).join("");
     }
 
-    function showError() {
+    function showError(message) {
 
-      document
-        .getElementById("loading")
-        .style.display =
-          "none";
+      loadingElement.style.display =
+        "none";
 
-      document
-        .getElementById("error")
-        .style.display =
-          "block";
+      articleContent.style.display =
+        "block";
 
+      articleContent.innerHTML = `
+        <div class="error">
+          <h2>
+            ${escapeHtml(message)}
+          </h2>
+
+          <p>
+            Silakan kembali ke halaman utama.
+          </p>
+
+          <a
+            class="back"
+            href="/"
+          >
+            Kembali ke Beranda
+          </a>
+        </div>
+      `;
     }
-
-    /*
-      SHARE
-    */
 
     document
       .getElementById("shareButton")
       .addEventListener(
         "click",
-        async function() {
+        async () => {
 
           const shareData = {
 
             title:
               document.title,
 
+            text:
+              titleElement.textContent,
+
             url:
               window.location.href
           };
 
-          if (
-            navigator.share
-          ) {
+          try {
 
-            try {
+            if (
+              navigator.share
+            ) {
 
               await navigator.share(
                 shareData
               );
 
-            } catch (e) {
+            } else {
 
-              console.log(
-                "Share dibatalkan"
+              await navigator.clipboard.writeText(
+                window.location.href
               );
 
+              alert(
+                "Link berita berhasil disalin."
+              );
             }
 
-          } else {
+          } catch (error) {
 
-            await navigator.clipboard.writeText(
-              window.location.href
-            );
-
-            alert(
-              "Link berita berhasil disalin."
-            );
-
+            console.log(error);
           }
-
         }
       );
-
-    /*
-      COPY LINK
-    */
 
     document
       .getElementById("copyButton")
       .addEventListener(
         "click",
-        async function() {
+        async () => {
 
           try {
 
@@ -1142,20 +1073,16 @@
               "Link berita berhasil disalin."
             );
 
-          } catch (e) {
+          } catch (error) {
 
-            prompt(
-              "Salin link berikut:",
-              window.location.href
+            alert(
+              "Gagal menyalin link."
             );
-
           }
-
         }
       );
 
-    loadBerita();
-
+    loadArticle();
   </script>
 
 </body>
