@@ -1,202 +1,430 @@
+```html
 <!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="VISI Bangsa — Media Elektronik Indonesia. Berita nasional, ekonomi, daerah, teknologi, dan budaya.">
-  <meta name="keywords" content="VISI Bangsa, berita Indonesia, media elektronik, berita nasional">
+  <title>VISI Bangsa — Media Elektronik</title>
+  <meta name="description" content="VISI Bangsa — Media Elektronik Indonesia">
 
-  <meta name="theme-color" content="#17212b">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <title>VISI Bangsa — Media Elektronik Indonesia</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  <link rel="stylesheet" href="./style.css">
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f5f7;
+      color: #202124;
+    }
+
+    header {
+      background: #b40000;
+      color: white;
+      padding: 14px 20px;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    .tagline {
+      font-size: 12px;
+      opacity: .9;
+      margin-top: 3px;
+    }
+
+    .login {
+      color: white;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.7);
+      padding: 8px 14px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    nav {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      gap: 22px;
+      padding: 12px 20px;
+      overflow-x: auto;
+    }
+
+    nav a {
+      color: #222;
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
+
+    .headline {
+      background: white;
+      padding: 18px 20px;
+      border-left: 5px solid #b40000;
+      margin-bottom: 20px;
+    }
+
+    .headline h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .headline p {
+      margin: 7px 0 0;
+      color: #666;
+    }
+
+    #status {
+      text-align: center;
+      padding: 25px;
+      color: #666;
+    }
+
+    .berita-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .berita {
+      background: white;
+      border-radius: 7px;
+      overflow: hidden;
+      box-shadow: 0 2px 7px rgba(0,0,0,.09);
+      transition: transform .15s ease;
+    }
+
+    .berita:hover {
+      transform: translateY(-2px);
+    }
+
+    .gambar {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      background: #ddd;
+      display: block;
+    }
+
+    .tanpa-gambar {
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eee;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .isi {
+      padding: 16px;
+    }
+
+    .kategori {
+      display: inline-block;
+      color: #b40000;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .judul {
+      margin: 0 0 9px;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .judul a {
+      color: #171717;
+      text-decoration: none;
+    }
+
+    .ringkasan {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .meta {
+      margin-top: 13px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .kosong {
+      background: white;
+      padding: 35px 20px;
+      text-align: center;
+      border-radius: 7px;
+      color: #666;
+    }
+
+    footer {
+      margin-top: 45px;
+      background: #222;
+      color: #ddd;
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+      .berita-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header-inner {
+        align-items: flex-start;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .berita-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .headline h1 {
+        font-size: 21px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="top">
-
-  <div class="wrap mast">
-
-    <a class="brand" href="./index.html">
-      VISI <span>BANGSA</span>
-    </a>
-
-    <div class="tag">
-      MEDIA ELEKTRONIK INDONESIA
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">VISI Bangsa</div>
+      <div class="tagline">Media Elektronik Indonesia</div>
     </div>
 
+    <a class="login" href="login.html">Login</a>
   </div>
-
-  <nav class="nav">
-
-    <div class="wrap navin">
-
-      <a class="active" href="./index.html">Beranda</a>
-      <a href="./berita.html">Berita</a>
-      <a href="./nasional.html">Nasional</a>
-      <a href="./ekonomi.html">Ekonomi</a>
-      <a href="./daerah.html">Daerah</a>
-      <a href="./tentang.html">Tentang</a>
-      <a href="./login.html">Login</a>
-
-    </div>
-
-  </nav>
-
 </header>
 
+<nav>
+  <div class="nav-inner">
+    <a href="index.html">HOME</a>
+    <a href="#berita">BERITA TERKINI</a>
+    <a href="#nasional">NASIONAL</a>
+    <a href="#daerah">DAERAH</a>
+    <a href="#ekonomi">EKONOMI</a>
+    <a href="#politik">POLITIK</a>
+    <a href="#olahraga">OLAHRAGA</a>
+    <a href="#teknologi">TEKNOLOGI</a>
+  </div>
+</nav>
 
-<main class="wrap">
+<main>
 
-  <section class="hero">
-
-    <div>
-
-      <p class="eyebrow">
-        EDISI DIGITAL • INDONESIA
-      </p>
-
-      <h1>
-        Menatap Indonesia
-        <br>
-        <em>dengan visi.</em>
-      </h1>
-
-      <p class="lead">
-        Ruang informasi yang menyajikan kabar,
-        gagasan, dan cerita dari berbagai penjuru Indonesia.
-      </p>
-
-      <a class="btn" href="./berita.html">
-        Jelajahi Berita →
-      </a>
-
-    </div>
-
-    <div class="hero-mark" aria-hidden="true">
-      <div>V</div>
-    </div>
-
+  <section class="headline">
+    <h1>Berita Terkini</h1>
+    <p>Informasi terbaru dari VISI Bangsa</p>
   </section>
 
-
-  <section class="section-head">
-
-    <h2>Berita Pilihan</h2>
-
-    <span>TERKINI</span>
-
-  </section>
-
-
-  <section class="grid">
-
-    <article class="card">
-
-      <div class="label">NASIONAL</div>
-
-      <h3>
-        Membangun Indonesia dari gagasan,
-        karya, dan kepedulian
-      </h3>
-
-      <p>
-        Perspektif dan informasi nasional
-        untuk pembaca Indonesia.
-      </p>
-
-      <a href="./nasional.html">
-        Baca selengkapnya →
-      </a>
-
-    </article>
-
-
-    <article class="card">
-
-      <div class="label">EKONOMI</div>
-
-      <h3>
-        Ekonomi daerah dan peluang baru
-        bagi masyarakat
-      </h3>
-
-      <p>
-        Perkembangan ekonomi, usaha,
-        dan peluang di berbagai daerah.
-      </p>
-
-      <a href="./ekonomi.html">
-        Baca selengkapnya →
-      </a>
-
-    </article>
-
-
-    <article class="card">
-
-      <div class="label">DAERAH</div>
-
-      <h3>
-        Cerita Indonesia dari berbagai
-        penjuru Nusantara
-      </h3>
-
-      <p>
-        Menyoroti masyarakat, budaya,
-        dan perkembangan daerah.
-      </p>
-
-      <a href="./daerah.html">
-        Baca selengkapnya →
-      </a>
-
-    </article>
-
-  </section>
-
-
-  <section class="quote">
-
-    <div class="qmark">“</div>
-
-    <div>
-
-      <h2>
-        Informasi yang jernih.
-        <br>
-        Indonesia yang terhubung.
-      </h2>
-
-      <p>
-        VISI Bangsa dibangun sebagai media elektronik
-        yang mengutamakan informasi, keberagaman perspektif,
-        dan cerita dari Indonesia.
-      </p>
-
-    </div>
-
+  <section id="berita">
+    <div id="status">Memuat berita...</div>
+    <div id="daftar-berita" class="berita-grid"></div>
   </section>
 
 </main>
 
-
 <footer>
-
-  <div class="wrap foot">
-
-    <strong>VISI BANGSA</strong>
-
-    <span>
-      © 2026 VISI Bangsa. Media Elektronik Indonesia.
-    </span>
-
-  </div>
-
+  © <span id="tahun"></span> VISI Bangsa — Media Elektronik
 </footer>
+
+<script>
+  const SUPABASE_URL = "https://vupvgdfdnpqactlqufbu.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  const statusEl = document.getElementById("status");
+  const daftarEl = document.getElementById("daftar-berita");
+
+  document.getElementById("tahun").textContent =
+    new Date().getFullYear();
+
+  function formatTanggal(tanggal) {
+    if (!tanggal) return "";
+
+    const date = new Date(tanggal);
+
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function potongTeks(text, jumlah = 150) {
+    if (!text) return "";
+
+    const bersih = text.replace(/<[^>]*>/g, "").trim();
+
+    if (bersih.length <= jumlah) {
+      return bersih;
+    }
+
+    return bersih.substring(0, jumlah) + "...";
+  }
+
+  function buatBerita(item) {
+    const article = document.createElement("article");
+    article.className = "berita";
+
+    let gambarHTML = "";
+
+    if (item.gambar && item.gambar.trim() !== "") {
+      gambarHTML = `
+        <img
+          class="gambar"
+          src="${item.gambar}"
+          alt="${item.judul || "Berita VISI Bangsa"}"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        >
+        <div class="tanpa-gambar" style="display:none;">
+          VISI Bangsa
+        </div>
+      `;
+    } else {
+      gambarHTML = `
+        <div class="tanpa-gambar">
+          VISI Bangsa
+        </div>
+      `;
+    }
+
+    article.innerHTML = `
+      ${gambarHTML}
+
+      <div class="isi">
+
+        ${
+          item.kategori
+            ? `<div class="kategori">${item.kategori}</div>`
+            : ""
+        }
+
+        <h2 class="judul">
+          <a href="#">
+            ${item.judul || "Tanpa Judul"}
+          </a>
+        </h2>
+
+        <div class="ringkasan">
+          ${potongTeks(item.isi)}
+        </div>
+
+        <div class="meta">
+          ${item.penulis ? `Oleh ${item.penulis} · ` : ""}
+          ${formatTanggal(item.tanggal || item.created_at)}
+        </div>
+
+      </div>
+    `;
+
+    return article;
+  }
+
+  async function tampilkanBerita() {
+    statusEl.textContent = "Memuat berita...";
+    daftarEl.innerHTML = "";
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("berita")
+        .select("*")
+        .order("tanggal", { ascending: false });
+
+      if (error) {
+        console.error("Supabase error:", error);
+
+        statusEl.innerHTML = `
+          <div class="kosong">
+            <strong>Berita belum dapat dimuat.</strong>
+            <br><br>
+            Silakan periksa koneksi database Supabase.
+          </div>
+        `;
+
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        statusEl.innerHTML = `
+          <div class="kosong">
+            Belum ada berita yang dipublikasikan.
+          </div>
+        `;
+
+        return;
+      }
+
+      statusEl.style.display = "none";
+
+      data.forEach(item => {
+        daftarEl.appendChild(buatBerita(item));
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      statusEl.innerHTML = `
+        <div class="kosong">
+          Terjadi kesalahan saat mengambil berita.
+        </div>
+      `;
+    }
+  }
+
+  tampilkanBerita();
+</script>
 
 </body>
 </html>
+```
