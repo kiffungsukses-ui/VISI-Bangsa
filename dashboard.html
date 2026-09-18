@@ -2,337 +2,541 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Dashboard — VISI Bangsa</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
 
   <meta
     name="description"
-    content="Dashboard pengelolaan berita VISI Bangsa"
+    content="Dashboard pengelola berita VISI Bangsa"
   >
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="theme-color" content="#b40000">
+
+  <title>Dashboard Pengelola — VISI Bangsa</title>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f3f5f7;
-      color: #17212b;
+    html {
+      scroll-behavior: smooth;
     }
 
-    header {
-      background: #17212b;
-      color: white;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
+    body {
+      margin: 0;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+      background: #f4f5f7;
+      color: #171717;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
+      background: #b40000;
+      color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: auto;
+      min-height: 70px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .brand span {
-      color: #e21d2f;
-    }
-
-    .header-right {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .admin-label {
-      font-size: 13px;
-      opacity: .85;
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 9px;
+      background: white;
+      color: #b40000;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 20px;
     }
 
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 16px;
-      font-weight: 700;
-      cursor: pointer;
+    .brand-text strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.1;
     }
 
-    .logout {
-      background: #e21d2f;
+    .brand-text span {
+      display: block;
+      font-size: 12px;
+      opacity: .9;
+      margin-top: 3px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-top {
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.1);
       color: white;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-weight: 700;
     }
 
-    main {
+    .btn-top:hover {
+      background: rgba(255,255,255,.2);
+    }
+
+    .container {
       max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 15px;
+      margin: auto;
+      padding: 24px 16px 50px;
     }
 
     .welcome {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.06);
     }
 
     .welcome h1 {
-      margin: 0 0 7px;
-      font-size: 25px;
+      margin: 0 0 5px;
+      font-size: 28px;
     }
 
     .welcome p {
       margin: 0;
-      color: #66717d;
+      color: #666;
     }
 
-    .grid {
+    .stats {
       display: grid;
-      grid-template-columns: 390px 1fr;
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
     }
 
-    .card {
+    .stat {
       background: white;
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px;
       box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      border: 1px solid #e9e9e9;
     }
 
-    .card h2 {
-      margin-top: 0;
+    .stat-label {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 18px;
-      font-size: 20px;
+      flex-wrap: wrap;
     }
 
-    label {
-      display: block;
-      margin: 14px 0 7px;
-      font-size: 14px;
+    .panel-title {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .panel-subtitle {
+      color: #777;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .primary {
+      border: 0;
+      background: #b40000;
+      color: white;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-weight: 800;
+    }
+
+    .primary:hover {
+      background: #8e0000;
+    }
+
+    .secondary {
+      border: 1px solid #ccc;
+      background: white;
+      color: #222;
+      border-radius: 8px;
+      padding: 10px 14px;
       font-weight: 700;
     }
 
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d5dbe1;
-      border-radius: 8px;
+    .danger {
+      border: 0;
+      background: #b40000;
+      color: white;
+      border-radius: 7px;
+      padding: 8px 11px;
+      font-weight: 700;
+    }
+
+    .edit-btn {
+      border: 0;
+      background: #eee;
+      color: #222;
+      border-radius: 7px;
+      padding: 8px 11px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 220px auto;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 750;
       font-size: 14px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select,
+    .search-input {
+      width: 100%;
+      border: 1px solid #d2d2d2;
+      border-radius: 8px;
+      padding: 11px 12px;
       background: white;
-    }
-
-    textarea {
-      min-height: 180px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
+      color: #171717;
       outline: none;
-      border-color: #e21d2f;
-      box-shadow: 0 0 0 2px rgba(226,29,47,.1);
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus,
+    .search-input:focus {
+      border-color: #b40000;
+      box-shadow: 0 0 0 3px rgba(180,0,0,.08);
+    }
+
+    .field textarea {
+      min-height: 260px;
+      resize: vertical;
+      line-height: 1.65;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
 
     .image-box {
-      border: 2px dashed #cfd6dd;
+      border: 1px dashed #bbb;
       border-radius: 10px;
       padding: 15px;
-      text-align: center;
-      background: #fafbfc;
+      background: #fafafa;
     }
 
-    .image-box input {
-      border: 0;
-      padding: 5px;
-      background: transparent;
+    .image-box input[type="file"] {
+      width: 100%;
     }
 
     .preview {
+      display: none;
+      margin-top: 12px;
+      max-width: 100%;
       width: 100%;
-      max-height: 220px;
+      max-height: 360px;
       object-fit: cover;
       border-radius: 9px;
-      margin-top: 12px;
-      display: none;
+      border: 1px solid #ddd;
     }
 
-    .current-image {
-      margin-top: 10px;
+    .image-note {
       font-size: 12px;
-      color: #68737e;
-      word-break: break-all;
+      color: #777;
+      margin-top: 8px;
+      line-height: 1.5;
     }
 
     .form-actions {
       display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .primary {
-      background: #e21d2f;
-      color: white;
-      flex: 1;
-    }
-
-    .secondary {
-      background: #e9edf1;
-      color: #17212b;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 18px;
     }
 
     .message {
-      margin-top: 14px;
-      padding: 11px;
-      border-radius: 8px;
       display: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 15px;
       font-size: 14px;
+      font-weight: 650;
     }
 
-    .success {
+    .message.success {
       display: block;
-      background: #e8f7ed;
-      color: #176b37;
+      background: #e9f8ee;
+      color: #146c2e;
+      border: 1px solid #b9e6c5;
     }
 
-    .error {
+    .message.error {
       display: block;
-      background: #fdebed;
-      color: #a51e2d;
+      background: #fff0f0;
+      color: #9a0000;
+      border: 1px solid #efb7b7;
     }
 
     .loading {
-      display: block;
-      background: #eef3f8;
-      color: #43515e;
-    }
-
-    .berita-item {
-      border-bottom: 1px solid #e4e8ec;
-      padding: 16px 0;
-    }
-
-    .berita-item:first-child {
-      padding-top: 0;
-    }
-
-    .berita-item:last-child {
-      border-bottom: 0;
-    }
-
-    .berita-flex {
-      display: flex;
-      gap: 15px;
-    }
-
-    .thumb {
-      width: 130px;
-      height: 90px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: #e7ebef;
-      flex-shrink: 0;
-    }
-
-    .berita-content {
-      flex: 1;
-    }
-
-    .berita-title {
-      font-weight: 800;
-      font-size: 17px;
-      margin-bottom: 6px;
-    }
-
-    .meta {
-      color: #707b86;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .edit {
-      background: #17212b;
-      color: white;
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-
-    .delete {
-      background: #f3dadd;
-      color: #a51e2d;
-      padding: 8px 12px;
-      font-size: 12px;
+      text-align: center;
+      padding: 35px 15px;
+      color: #777;
     }
 
     .empty {
       text-align: center;
-      padding: 35px 10px;
-      color: #727d87;
+      padding: 40px 15px;
+      color: #777;
+      border: 1px dashed #ccc;
+      border-radius: 10px;
     }
 
-    .site-link {
+    .news-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .news-item {
+      display: grid;
+      grid-template-columns: 145px 1fr auto;
+      gap: 15px;
+      align-items: center;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .news-thumb {
+      width: 145px;
+      height: 95px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #eee;
+    }
+
+    .news-content {
+      min-width: 0;
+    }
+
+    .news-category {
       display: inline-block;
-      margin-top: 12px;
-      color: #e21d2f;
-      font-weight: 700;
-      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      color: #b40000;
+      background: #fff0f0;
+      padding: 4px 7px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .news-title {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .news-meta {
+      font-size: 12px;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    .news-actions {
+      display: flex;
+      gap: 7px;
+      flex-direction: column;
+    }
+
+    .login-check {
+      text-align: center;
+      padding: 70px 20px;
+      color: #666;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .user-email {
+      font-size: 12px;
+      opacity: .9;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     @media (max-width: 850px) {
-      .grid {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .toolbar {
         grid-template-columns: 1fr;
+      }
+
+      .news-item {
+        grid-template-columns: 95px 1fr;
+      }
+
+      .news-thumb {
+        width: 95px;
+        height: 80px;
+      }
+
+      .news-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
       }
     }
 
     @media (max-width: 600px) {
-      header {
-        padding: 13px 15px;
+      .topbar-inner {
+        min-height: 62px;
+        padding: 10px 12px;
       }
 
-      .brand {
-        font-size: 19px;
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
       }
 
-      .admin-label {
+      .brand-text strong {
+        font-size: 17px;
+      }
+
+      .brand-text span {
         display: none;
       }
 
-      .card {
-        padding: 16px;
+      .user-email {
+        display: none;
       }
 
-      .berita-flex {
-        align-items: flex-start;
+      .btn-top {
+        padding: 8px 9px;
+        font-size: 12px;
       }
 
-      .thumb {
-        width: 95px;
-        height: 75px;
+      .container {
+        padding: 18px 10px 35px;
       }
 
-      .berita-title {
+      .welcome h1 {
+        font-size: 23px;
+      }
+
+      .stats {
+        gap: 8px;
+      }
+
+      .stat {
+        padding: 14px;
+      }
+
+      .stat-value {
+        font-size: 23px;
+      }
+
+      .panel {
+        padding: 14px;
+        border-radius: 10px;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .news-item {
+        grid-template-columns: 80px 1fr;
+        gap: 10px;
+      }
+
+      .news-thumb {
+        width: 80px;
+        height: 70px;
+      }
+
+      .news-title {
         font-size: 15px;
-      }
-
-      .form-actions {
-        flex-direction: column;
       }
     }
   </style>
@@ -340,1054 +544,1447 @@
 
 <body>
 
-<header>
-  <div class="brand">
-    VISI <span>Bangsa</span>
+  <div id="loginCheck" class="login-check">
+    Memeriksa sesi login...
   </div>
 
-  <div class="header-right">
-    <div class="admin-label" id="adminEmail">
-      Memeriksa akun...
-    </div>
+  <div id="app" class="hidden">
 
-    <button class="logout" id="logoutButton">
-      Keluar
-    </button>
-  </div>
-</header>
+    <header class="topbar">
+      <div class="topbar-inner">
 
-<main>
+        <div class="brand">
+          <div class="brand-mark">V</div>
 
-  <section class="welcome">
-    <h1>Dashboard Pengelola Berita</h1>
-
-    <p>
-      Tambahkan, edit, hapus, dan kelola berita VISI Bangsa.
-    </p>
-
-    <a
-      class="site-link"
-      href="https://visi-bangsa.vercel.app/"
-      target="_blank"
-    >
-      Buka Website VISI Bangsa →
-    </a>
-  </section>
-
-  <section class="grid">
-
-    <!-- FORM -->
-    <div class="card">
-
-      <h2 id="formTitle">
-        Tambah Berita
-      </h2>
-
-      <form id="beritaForm">
-
-        <input
-          type="hidden"
-          id="beritaId"
-        >
-
-        <label for="judul">
-          Judul Berita
-        </label>
-
-        <input
-          id="judul"
-          type="text"
-          placeholder="Masukkan judul berita"
-          required
-        >
-
-        <label for="kategori">
-          Kategori
-        </label>
-
-        <select id="kategori">
-          <option value="Nasional">Nasional</option>
-          <option value="Daerah">Daerah</option>
-          <option value="Politik">Politik</option>
-          <option value="Ekonomi">Ekonomi</option>
-          <option value="Teknologi">Teknologi</option>
-          <option value="Pendidikan">Pendidikan</option>
-          <option value="Kesehatan">Kesehatan</option>
-          <option value="Olahraga">Olahraga</option>
-          <option value="Hukum">Hukum</option>
-          <option value="Lifestyle">Lifestyle</option>
-        </select>
-
-        <label for="penulis">
-          Penulis
-        </label>
-
-        <input
-          id="penulis"
-          type="text"
-          value="Redaksi VISI Bangsa"
-          required
-        >
-
-        <label for="tanggal">
-          Tanggal
-        </label>
-
-        <input
-          id="tanggal"
-          type="datetime-local"
-          required
-        >
-
-        <label>
-          Gambar Berita
-        </label>
-
-        <div class="image-box">
-
-          <div>
-            Pilih gambar dari HP
+          <div class="brand-text">
+            <strong>VISI Bangsa</strong>
+            <span>Dashboard Pengelola Berita</span>
           </div>
+        </div>
+
+        <div class="top-actions">
+          <span id="userEmail" class="user-email"></span>
+
+          <a
+            class="btn-top"
+            href="https://visi-bangsa.vercel.app/"
+            target="_blank"
+            rel="noopener"
+          >
+            Website
+          </a>
+
+          <button id="logoutButton" class="btn-top">
+            Keluar
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section class="welcome">
+        <h1>Dashboard Pengelola Berita</h1>
+        <p>
+          Kelola berita VISI Bangsa langsung dari dashboard.
+        </p>
+      </section>
+
+      <section class="stats">
+
+        <div class="stat">
+          <div class="stat-label">Total Berita</div>
+          <div id="statTotal" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Berita Hari Ini</div>
+          <div id="statToday" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Dengan Gambar</div>
+          <div id="statImages" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Kategori</div>
+          <div id="statCategories" class="stat-value">0</div>
+        </div>
+
+      </section>
+
+      <section class="panel">
+
+        <div id="message" class="message"></div>
+
+        <div class="panel-header">
+          <div>
+            <h2 id="formTitle" class="panel-title">
+              Tambah Berita
+            </h2>
+
+            <div class="panel-subtitle">
+              Terbitkan berita baru ke website VISI Bangsa.
+            </div>
+          </div>
+
+          <button
+            id="newButton"
+            type="button"
+            class="secondary"
+          >
+            + Berita Baru
+          </button>
+        </div>
+
+        <form id="newsForm">
 
           <input
-            id="gambarFile"
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            type="hidden"
+            id="editingId"
+            value=""
           >
 
-          <img
-            id="preview"
-            class="preview"
-            alt="Preview gambar"
-          >
+          <div class="field">
+            <label for="judul">
+              Judul Berita *
+            </label>
 
-          <div
-            id="currentImage"
-            class="current-image"
-          ></div>
+            <input
+              id="judul"
+              type="text"
+              maxlength="180"
+              required
+              placeholder="Masukkan judul berita"
+            >
+          </div>
 
-        </div>
+          <div class="grid-2">
 
-        <label for="isi">
-          Isi Berita
-        </label>
+            <div class="field">
+              <label for="kategori">
+                Kategori *
+              </label>
 
-        <textarea
-          id="isi"
-          placeholder="Tulis isi berita..."
-          required
-        ></textarea>
+              <select id="kategori" required>
+                <option value="">Pilih kategori</option>
+                <option value="Nasional">Nasional</option>
+                <option value="Daerah">Daerah</option>
+                <option value="Politik">Politik</option>
+                <option value="Ekonomi">Ekonomi</option>
+                <option value="Teknologi">Teknologi</option>
+                <option value="Pendidikan">Pendidikan</option>
+                <option value="Kesehatan">Kesehatan</option>
+                <option value="Olahraga">Olahraga</option>
+                <option value="Hukum">Hukum</option>
+                <option value="Lifestyle">Lifestyle</option>
+              </select>
+            </div>
 
-        <div class="form-actions">
+            <div class="field">
+              <label for="penulis">
+                Penulis *
+              </label>
+
+              <input
+                id="penulis"
+                type="text"
+                maxlength="100"
+                required
+                placeholder="Nama penulis"
+              >
+            </div>
+
+          </div>
+
+          <div class="field">
+            <label for="tanggal">
+              Tanggal *
+            </label>
+
+            <input
+              id="tanggal"
+              type="datetime-local"
+              required
+            >
+          </div>
+
+          <div class="field">
+
+            <label>
+              Gambar Berita
+            </label>
+
+            <div class="image-box">
+
+              <input
+                id="gambarFile"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+              >
+
+              <div class="image-note">
+                Format JPG, PNG, WEBP atau GIF.
+                Maksimal 5 MB.
+              </div>
+
+              <img
+                id="preview"
+                class="preview"
+                alt="Preview gambar berita"
+              >
+
+              <div
+                id="currentImageNote"
+                class="image-note"
+              ></div>
+
+            </div>
+
+          </div>
+
+          <div class="field">
+
+            <label for="isi">
+              Isi Berita *
+            </label>
+
+            <textarea
+              id="isi"
+              required
+              placeholder="Tulis isi berita di sini..."
+            ></textarea>
+
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              id="saveButton"
+              type="submit"
+              class="primary"
+            >
+              Simpan Berita
+            </button>
+
+            <button
+              id="cancelButton"
+              type="button"
+              class="secondary hidden"
+            >
+              Batal Edit
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+      <section class="panel">
+
+        <div class="panel-header">
+
+          <div>
+            <h2 class="panel-title">
+              Daftar Berita
+            </h2>
+
+            <div class="panel-subtitle">
+              Berita yang sudah tersimpan di database.
+            </div>
+          </div>
 
           <button
-            class="primary"
-            id="submitButton"
-            type="submit"
-          >
-            Publikasikan Berita
-          </button>
-
-          <button
-            class="secondary"
-            id="cancelButton"
+            id="refreshButton"
             type="button"
-            style="display:none"
+            class="secondary"
           >
-            Batal Edit
+            ↻ Muat Ulang
           </button>
 
         </div>
 
-        <div
-          id="message"
-          class="message"
-        ></div>
-
-      </form>
-
-    </div>
-
-
-    <!-- DAFTAR BERITA -->
-    <div class="card">
-
-      <h2>
-        Daftar Berita
-      </h2>
-
-      <div id="beritaList">
-        Memuat berita...
-      </div>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-<script>
-
-const SUPABASE_URL =
-  "https://vupvgdfdnpqactlqufbu.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-const beritaForm =
-  document.getElementById("beritaForm");
-
-const beritaId =
-  document.getElementById("beritaId");
-
-const judul =
-  document.getElementById("judul");
-
-const kategori =
-  document.getElementById("kategori");
-
-const penulis =
-  document.getElementById("penulis");
-
-const tanggal =
-  document.getElementById("tanggal");
-
-const isi =
-  document.getElementById("isi");
-
-const gambarFile =
-  document.getElementById("gambarFile");
-
-const preview =
-  document.getElementById("preview");
-
-const currentImage =
-  document.getElementById("currentImage");
-
-const beritaList =
-  document.getElementById("beritaList");
-
-const message =
-  document.getElementById("message");
-
-const submitButton =
-  document.getElementById("submitButton");
-
-const cancelButton =
-  document.getElementById("cancelButton");
-
-const formTitle =
-  document.getElementById("formTitle");
-
-const logoutButton =
-  document.getElementById("logoutButton");
-
-const adminEmail =
-  document.getElementById("adminEmail");
-
-
-let currentSession = null;
-let currentImageUrl = "";
-
-
-/* =========================
-   PESAN
-========================= */
-
-function showMessage(text, type) {
-
-  message.textContent = text;
-
-  message.className =
-    "message " + type;
-
-}
-
-
-/* =========================
-   TANGGAL
-========================= */
-
-function setDefaultDate() {
-
-  const now = new Date();
-
-  now.setMinutes(
-    now.getMinutes() -
-    now.getTimezoneOffset()
-  );
-
-  tanggal.value =
-    now.toISOString().slice(0,16);
-
-}
-
-
-/* =========================
-   CEK LOGIN
-========================= */
-
-async function cekLogin() {
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.getSession();
-
-  if (error || !data.session) {
-
-    window.location.href =
-      "/login.html";
-
-    return false;
-
-  }
-
-  currentSession =
-    data.session;
-
-  adminEmail.textContent =
-    data.session.user.email || "Admin";
-
-  return true;
-}
-
-
-/* =========================
-   LOAD BERITA
-========================= */
-
-async function loadBerita() {
-
-  beritaList.innerHTML =
-    "Memuat berita...";
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("berita")
-      .select("*")
-      .order("tanggal", {
-        ascending: false
-      });
-
-  if (error) {
-
-    beritaList.innerHTML =
-      `<div class="empty">
-        Gagal memuat berita:<br>
-        ${escapeHtml(error.message)}
-      </div>`;
-
-    return;
-  }
-
-  if (!data || data.length === 0) {
-
-    beritaList.innerHTML =
-      `<div class="empty">
-        Belum ada berita.
-      </div>`;
-
-    return;
-  }
-
-  beritaList.innerHTML =
-    data.map(renderBerita).join("");
-
-}
-
-
-/* =========================
-   RENDER BERITA
-========================= */
-
-function renderBerita(item) {
-
-  const gambar =
-    item.gambar ||
-    "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80";
-
-  const date =
-    item.tanggal
-      ? new Date(item.tanggal).toLocaleString(
-          "id-ID",
-          {
-            dateStyle: "medium",
-            timeStyle: "short"
-          }
-        )
-      : "-";
-
-  return `
-    <div class="berita-item">
-
-      <div class="berita-flex">
-
-        <img
-          class="thumb"
-          src="${escapeAttribute(gambar)}"
-          alt=""
-          onerror="this.style.display='none'"
-        >
-
-        <div class="berita-content">
-
-          <div class="berita-title">
-            ${escapeHtml(item.judul)}
-          </div>
-
-          <div class="meta">
-            ${escapeHtml(item.kategori || "-")}
-            •
-            ${escapeHtml(item.penulis || "-")}
-            •
-            ${escapeHtml(date)}
-          </div>
-
-          <div class="actions">
-
-            <button
-              class="edit"
-              onclick="editBerita(${item.id})"
-            >
-              Edit
-            </button>
-
-            <button
-              class="delete"
-              onclick="hapusBerita(${item.id})"
-            >
-              Hapus
-            </button>
-
-          </div>
+        <div class="toolbar">
+
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="Cari judul, isi, atau penulis..."
+          >
+
+          <select
+            id="filterCategory"
+            class="search-input"
+          >
+            <option value="">Semua kategori</option>
+            <option value="Nasional">Nasional</option>
+            <option value="Daerah">Daerah</option>
+            <option value="Politik">Politik</option>
+            <option value="Ekonomi">Ekonomi</option>
+            <option value="Teknologi">Teknologi</option>
+            <option value="Pendidikan">Pendidikan</option>
+            <option value="Kesehatan">Kesehatan</option>
+            <option value="Olahraga">Olahraga</option>
+            <option value="Hukum">Hukum</option>
+            <option value="Lifestyle">Lifestyle</option>
+          </select>
+
+          <button
+            id="clearFilterButton"
+            type="button"
+            class="secondary"
+          >
+            Reset
+          </button>
 
         </div>
 
-      </div>
+        <div id="newsList" class="news-list">
+          <div class="loading">
+            Memuat berita...
+          </div>
+        </div>
 
-    </div>
-  `;
+      </section>
 
-}
+    </main>
 
+  </div>
 
-/* =========================
-   ESCAPE
-========================= */
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-function escapeHtml(value) {
+  <script>
+    const SUPABASE_URL =
+      "https://vupvgdfdnpqactlqufbu.supabase.co";
 
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    const SUPABASE_KEY =
+      "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
 
-}
-
-
-function escapeAttribute(value) {
-
-  return escapeHtml(value);
-
-}
-
-
-/* =========================
-   PREVIEW GAMBAR
-========================= */
-
-gambarFile.addEventListener(
-  "change",
-  function () {
-
-    const file =
-      this.files[0];
-
-    if (!file) {
-
-      preview.style.display =
-        "none";
-
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-
-      showMessage(
-        "File harus berupa gambar.",
-        "error"
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
       );
 
-      this.value = "";
+    const app =
+      document.getElementById("app");
 
-      return;
+    const loginCheck =
+      document.getElementById("loginCheck");
+
+    const userEmail =
+      document.getElementById("userEmail");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const newsForm =
+      document.getElementById("newsForm");
+
+    const editingId =
+      document.getElementById("editingId");
+
+    const judul =
+      document.getElementById("judul");
+
+    const kategori =
+      document.getElementById("kategori");
+
+    const penulis =
+      document.getElementById("penulis");
+
+    const tanggal =
+      document.getElementById("tanggal");
+
+    const isi =
+      document.getElementById("isi");
+
+    const gambarFile =
+      document.getElementById("gambarFile");
+
+    const preview =
+      document.getElementById("preview");
+
+    const currentImageNote =
+      document.getElementById("currentImageNote");
+
+    const saveButton =
+      document.getElementById("saveButton");
+
+    const cancelButton =
+      document.getElementById("cancelButton");
+
+    const newButton =
+      document.getElementById("newButton");
+
+    const formTitle =
+      document.getElementById("formTitle");
+
+    const message =
+      document.getElementById("message");
+
+    const newsList =
+      document.getElementById("newsList");
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+    const filterCategory =
+      document.getElementById("filterCategory");
+
+    const clearFilterButton =
+      document.getElementById("clearFilterButton");
+
+    const refreshButton =
+      document.getElementById("refreshButton");
+
+    const statTotal =
+      document.getElementById("statTotal");
+
+    const statToday =
+      document.getElementById("statToday");
+
+    const statImages =
+      document.getElementById("statImages");
+
+    const statCategories =
+      document.getElementById("statCategories");
+
+    let beritaData = [];
+    let currentUser = null;
+    let currentImageUrl = null;
+
+    function showMessage(text, type = "success") {
+      message.textContent = text;
+      message.className =
+        "message " + type;
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    function hideMessage() {
+      message.textContent = "";
+      message.className = "message";
+    }
 
-      showMessage(
-        "Ukuran gambar maksimal 5 MB.",
-        "error"
+    function escapeHtml(value) {
+      if (value === null || value === undefined) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+
+      const date = new Date(value);
+
+      return date.toLocaleString(
+        "id-ID",
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      );
+    }
+
+    function setDefaultDate() {
+      const now = new Date();
+
+      const offset =
+        now.getTimezoneOffset();
+
+      const local =
+        new Date(
+          now.getTime() -
+          offset * 60000
+        );
+
+      tanggal.value =
+        local
+          .toISOString()
+          .slice(0, 16);
+    }
+
+    function resetForm() {
+      newsForm.reset();
+
+      editingId.value = "";
+
+      currentImageUrl = null;
+
+      preview.src = "";
+      preview.style.display = "none";
+
+      currentImageNote.textContent = "";
+
+      formTitle.textContent =
+        "Tambah Berita";
+
+      saveButton.textContent =
+        "Simpan Berita";
+
+      cancelButton.classList.add(
+        "hidden"
       );
 
-      this.value = "";
+      setDefaultDate();
 
-      return;
+      hideMessage();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
 
-    const reader =
-      new FileReader();
+    function getStoragePathFromUrl(url) {
+      if (!url) return null;
 
-    reader.onload =
-      function (event) {
+      const marker =
+        "/storage/v1/object/public/berita/";
 
+      const index =
+        url.indexOf(marker);
+
+      if (index === -1) {
+        return null;
+      }
+
+      return decodeURIComponent(
+        url.substring(
+          index + marker.length
+        )
+      );
+    }
+
+    async function deleteStorageImage(url) {
+      const path =
+        getStoragePathFromUrl(url);
+
+      if (!path) {
+        return;
+      }
+
+      try {
+        const result =
+          await supabaseClient
+            .storage
+            .from("berita")
+            .remove([path]);
+
+        if (result.error) {
+          console.warn(
+            "Gagal menghapus gambar Storage:",
+            result.error
+          );
+        }
+      } catch (error) {
+        console.warn(
+          "Storage cleanup error:",
+          error
+        );
+      }
+    }
+
+    async function uploadImage(file) {
+      if (!file) {
+        return null;
+      }
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif"
+      ];
+
+      if (
+        !allowedTypes.includes(
+          file.type
+        )
+      ) {
+        throw new Error(
+          "Format gambar tidak didukung."
+        );
+      }
+
+      if (
+        file.size >
+        5 * 1024 * 1024
+      ) {
+        throw new Error(
+          "Ukuran gambar maksimal 5 MB."
+        );
+      }
+
+      const extension =
+        file.name
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+      const safeExtension =
+        extension === "jpeg"
+          ? "jpg"
+          : extension;
+
+      const randomPart =
+        Math.random()
+          .toString(36)
+          .substring(2, 10);
+
+      const path =
+        currentUser.id +
+        "/" +
+        Date.now() +
+        "-" +
+        randomPart +
+        "." +
+        safeExtension;
+
+      const uploadResult =
+        await supabaseClient
+          .storage
+          .from("berita")
+          .upload(
+            path,
+            file,
+            {
+              cacheControl: "3600",
+              upsert: false,
+              contentType: file.type
+            }
+          );
+
+      if (uploadResult.error) {
+        throw uploadResult.error;
+      }
+
+      const publicResult =
+        supabaseClient
+          .storage
+          .from("berita")
+          .getPublicUrl(path);
+
+      return publicResult.data.publicUrl;
+    }
+
+    async function loadNews() {
+      newsList.innerHTML =
+        '<div class="loading">Memuat berita...</div>';
+
+      const result =
+        await supabaseClient
+          .from("berita")
+          .select(
+            "id,judul,isi,gambar,kategori,penulis,tanggal,created_at,updated_at"
+          )
+          .order(
+            "tanggal",
+            {
+              ascending: false
+            }
+          );
+
+      if (result.error) {
+        console.error(result.error);
+
+        newsList.innerHTML =
+          '<div class="empty">Gagal memuat berita.</div>';
+
+        showMessage(
+          "Gagal memuat daftar berita: " +
+          result.error.message,
+          "error"
+        );
+
+        return;
+      }
+
+      beritaData =
+        result.data || [];
+
+      updateStatistics();
+      renderNews();
+    }
+
+    function updateStatistics() {
+      const total =
+        beritaData.length;
+
+      const today =
+        new Date()
+          .toISOString()
+          .slice(0, 10);
+
+      const todayCount =
+        beritaData.filter(item => {
+          if (!item.tanggal) {
+            return false;
+          }
+
+          return new Date(item.tanggal)
+            .toISOString()
+            .slice(0, 10) === today;
+        }).length;
+
+      const imageCount =
+        beritaData.filter(
+          item => !!item.gambar
+        ).length;
+
+      const categories =
+        new Set(
+          beritaData
+            .map(item => item.kategori)
+            .filter(Boolean)
+        );
+
+      statTotal.textContent =
+        total;
+
+      statToday.textContent =
+        todayCount;
+
+      statImages.textContent =
+        imageCount;
+
+      statCategories.textContent =
+        categories.size;
+    }
+
+    function renderNews() {
+      const search =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+      const category =
+        filterCategory.value;
+
+      const filtered =
+        beritaData.filter(item => {
+
+          const haystack =
+            [
+              item.judul,
+              item.isi,
+              item.penulis,
+              item.kategori
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase();
+
+          const matchesSearch =
+            !search ||
+            haystack.includes(search);
+
+          const matchesCategory =
+            !category ||
+            item.kategori === category;
+
+          return (
+            matchesSearch &&
+            matchesCategory
+          );
+        });
+
+      if (!filtered.length) {
+        newsList.innerHTML =
+          '<div class="empty">Tidak ada berita yang sesuai dengan pencarian.</div>';
+
+        return;
+      }
+
+      newsList.innerHTML =
+        filtered.map(item => {
+
+          const image =
+            item.gambar
+              ? escapeHtml(item.gambar)
+              : "";
+
+          const imageHtml =
+            image
+              ? `
+                <img
+                  class="news-thumb"
+                  src="${image}"
+                  alt="${escapeHtml(item.judul)}"
+                  loading="lazy"
+                >
+              `
+              : `
+                <div
+                  class="news-thumb"
+                  aria-label="Tidak ada gambar"
+                ></div>
+              `;
+
+          return `
+            <article class="news-item">
+
+              ${imageHtml}
+
+              <div class="news-content">
+
+                ${
+                  item.kategori
+                    ? `
+                      <div class="news-category">
+                        ${escapeHtml(item.kategori)}
+                      </div>
+                    `
+                    : ""
+                }
+
+                <div class="news-title">
+                  ${escapeHtml(item.judul)}
+                </div>
+
+                <div class="news-meta">
+                  Penulis:
+                  ${escapeHtml(item.penulis || "-")}
+                  <br>
+                  ${formatDate(item.tanggal)}
+                </div>
+
+              </div>
+
+              <div class="news-actions">
+
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-edit-id="${item.id}"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="danger"
+                  data-delete-id="${item.id}"
+                >
+                  Hapus
+                </button>
+
+              </div>
+
+            </article>
+          `;
+        }).join("");
+    }
+
+    function editNews(id) {
+      const item =
+        beritaData.find(
+          news => String(news.id) === String(id)
+        );
+
+      if (!item) {
+        showMessage(
+          "Berita tidak ditemukan.",
+          "error"
+        );
+
+        return;
+      }
+
+      editingId.value =
+        item.id;
+
+      judul.value =
+        item.judul || "";
+
+      kategori.value =
+        item.kategori || "";
+
+      penulis.value =
+        item.penulis || "";
+
+      isi.value =
+        item.isi || "";
+
+      currentImageUrl =
+        item.gambar || null;
+
+      if (item.gambar) {
         preview.src =
-          event.target.result;
+          item.gambar;
 
         preview.style.display =
           "block";
 
-      };
+        currentImageNote.textContent =
+          "Gambar saat ini tersimpan. Pilih gambar baru jika ingin menggantinya.";
+      } else {
+        preview.src = "";
+        preview.style.display =
+          "none";
 
-    reader.readAsDataURL(file);
+        currentImageNote.textContent =
+          "Belum ada gambar.";
+      }
 
-  }
-);
+      if (item.tanggal) {
+        const date =
+          new Date(item.tanggal);
 
+        const offset =
+          date.getTimezoneOffset();
 
-/* =========================
-   UPLOAD GAMBAR
-========================= */
+        const local =
+          new Date(
+            date.getTime() -
+            offset * 60000
+          );
 
-async function uploadGambar(file) {
+        tanggal.value =
+          local
+            .toISOString()
+            .slice(0, 16);
+      } else {
+        setDefaultDate();
+      }
 
-  if (!file) {
-    return currentImageUrl || null;
-  }
+      formTitle.textContent =
+        "Edit Berita";
 
-  if (!file.type.startsWith("image/")) {
+      saveButton.textContent =
+        "Simpan Perubahan";
 
-    throw new Error(
-      "File yang dipilih bukan gambar."
+      cancelButton.classList.remove(
+        "hidden"
+      );
+
+      hideMessage();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    async function deleteNews(id) {
+      const item =
+        beritaData.find(
+          news => String(news.id) === String(id)
+        );
+
+      if (!item) {
+        showMessage(
+          "Berita tidak ditemukan.",
+          "error"
+        );
+
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          "Hapus berita ini?\n\n" +
+          item.judul +
+          "\n\nTindakan ini tidak dapat dibatalkan."
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const result =
+          await supabaseClient
+            .from("berita")
+            .delete()
+            .eq(
+              "id",
+              id
+            );
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        if (item.gambar) {
+          await deleteStorageImage(
+            item.gambar
+          );
+        }
+
+        if (
+          String(editingId.value) ===
+          String(id)
+        ) {
+          resetForm();
+        }
+
+        showMessage(
+          "Berita berhasil dihapus.",
+          "success"
+        );
+
+        await loadNews();
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          "Gagal menghapus berita: " +
+          (error.message || error),
+          "error"
+        );
+      }
+    }
+
+    newsForm.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        hideMessage();
+
+        if (!currentUser) {
+          showMessage(
+            "Sesi login tidak ditemukan.",
+            "error"
+          );
+
+          return;
+        }
+
+        const title =
+          judul.value.trim();
+
+        const category =
+          kategori.value;
+
+        const author =
+          penulis.value.trim();
+
+        const content =
+          isi.value.trim();
+
+        const dateValue =
+          tanggal.value;
+
+        if (
+          !title ||
+          !category ||
+          !author ||
+          !content ||
+          !dateValue
+        ) {
+          showMessage(
+            "Lengkapi semua kolom yang wajib diisi.",
+            "error"
+          );
+
+          return;
+        }
+
+        saveButton.disabled =
+          true;
+
+        saveButton.textContent =
+          "Menyimpan...";
+
+        try {
+
+          const file =
+            gambarFile.files[0];
+
+          let imageUrl =
+            currentImageUrl;
+
+          if (file) {
+            imageUrl =
+              await uploadImage(file);
+          }
+
+          const isoDate =
+            new Date(
+              dateValue
+            ).toISOString();
+
+          const id =
+            editingId.value;
+
+          if (id) {
+
+            const updateData = {
+              judul: title,
+              kategori: category,
+              penulis: author,
+              isi: content,
+              tanggal: isoDate,
+              gambar: imageUrl
+            };
+
+            const result =
+              await supabaseClient
+                .from("berita")
+                .update(
+                  updateData
+                )
+                .eq(
+                  "id",
+                  id
+                );
+
+            if (result.error) {
+              throw result.error;
+            }
+
+            if (
+              file &&
+              currentImageUrl &&
+              currentImageUrl !== imageUrl
+            ) {
+              await deleteStorageImage(
+                currentImageUrl
+              );
+            }
+
+            showMessage(
+              "Perubahan berita berhasil disimpan.",
+              "success"
+            );
+
+          } else {
+
+            const insertData = {
+              judul: title,
+              kategori: category,
+              penulis: author,
+              isi: content,
+              tanggal: isoDate,
+              gambar: imageUrl
+            };
+
+            const result =
+              await supabaseClient
+                .from("berita")
+                .insert(
+                  insertData
+                );
+
+            if (result.error) {
+              throw result.error;
+            }
+
+            showMessage(
+              "Berita berhasil diterbitkan.",
+              "success"
+            );
+          }
+
+          resetForm();
+
+          await loadNews();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            "Gagal menyimpan berita: " +
+            (error.message || error),
+            "error"
+          );
+
+        } finally {
+
+          saveButton.disabled =
+            false;
+
+          saveButton.textContent =
+            editingId.value
+              ? "Simpan Perubahan"
+              : "Simpan Berita";
+        }
+      }
     );
 
-  }
+    gambarFile.addEventListener(
+      "change",
+      () => {
 
-  if (file.size > 5 * 1024 * 1024) {
+        const file =
+          gambarFile.files[0];
 
-    throw new Error(
-      "Ukuran gambar maksimal 5 MB."
+        if (!file) {
+          return;
+        }
+
+        const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "image/gif"
+        ];
+
+        if (
+          !allowedTypes.includes(
+            file.type
+          )
+        ) {
+          showMessage(
+            "Format gambar tidak didukung.",
+            "error"
+          );
+
+          gambarFile.value = "";
+
+          return;
+        }
+
+        if (
+          file.size >
+          5 * 1024 * 1024
+        ) {
+          showMessage(
+            "Ukuran gambar maksimal 5 MB.",
+            "error"
+          );
+
+          gambarFile.value = "";
+
+          return;
+        }
+
+        const reader =
+          new FileReader();
+
+        reader.onload =
+          event => {
+
+            preview.src =
+              event.target.result;
+
+            preview.style.display =
+              "block";
+
+            currentImageNote.textContent =
+              "Preview gambar baru. Gambar lama baru akan diganti setelah Anda menyimpan perubahan.";
+          };
+
+        reader.readAsDataURL(
+          file
+        );
+      }
     );
 
-  }
+    newsList.addEventListener(
+      "click",
+      event => {
 
-  const extension =
-    file.name
-      .split(".")
-      .pop()
-      .toLowerCase();
+        const editButton =
+          event.target.closest(
+            "[data-edit-id]"
+          );
 
-  const safeExtension =
-    extension.replace(
-      /[^a-z0-9]/g,
-      ""
-    ) || "jpg";
+        if (editButton) {
+          editNews(
+            editButton.dataset.editId
+          );
 
-  const userId =
-    currentSession.user.id;
+          return;
+        }
 
-  const filePath =
-    userId +
-    "/" +
-    Date.now() +
-    "-" +
-    Math.random()
-      .toString(36)
-      .substring(2, 10) +
-    "." +
-    safeExtension;
+        const deleteButton =
+          event.target.closest(
+            "[data-delete-id]"
+          );
 
+        if (deleteButton) {
+          deleteNews(
+            deleteButton.dataset.deleteId
+          );
+        }
+      }
+    );
 
-  showMessage(
-    "Mengunggah gambar...",
-    "loading"
-  );
+    searchInput.addEventListener(
+      "input",
+      renderNews
+    );
 
+    filterCategory.addEventListener(
+      "change",
+      renderNews
+    );
 
-  const {
-    error: uploadError
-  } =
-    await supabaseClient
-      .storage
-      .from("berita")
-      .upload(
-        filePath,
-        file,
-        {
-          cacheControl: "3600",
-          upsert: false,
-          contentType: file.type
+    clearFilterButton.addEventListener(
+      "click",
+      () => {
+
+        searchInput.value = "";
+        filterCategory.value = "";
+
+        renderNews();
+      }
+    );
+
+    refreshButton.addEventListener(
+      "click",
+      async () => {
+
+        refreshButton.disabled =
+          true;
+
+        refreshButton.textContent =
+          "Memuat...";
+
+        try {
+          await loadNews();
+        } finally {
+          refreshButton.disabled =
+            false;
+
+          refreshButton.textContent =
+            "↻ Muat Ulang";
+        }
+      }
+    );
+
+    newButton.addEventListener(
+      "click",
+      resetForm
+    );
+
+    cancelButton.addEventListener(
+      "click",
+      resetForm
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        logoutButton.disabled =
+          true;
+
+        logoutButton.textContent =
+          "Keluar...";
+
+        const result =
+          await supabaseClient
+            .auth
+            .signOut();
+
+        if (result.error) {
+
+          logoutButton.disabled =
+            false;
+
+          logoutButton.textContent =
+            "Keluar";
+
+          showMessage(
+            "Gagal keluar: " +
+            result.error.message,
+            "error"
+          );
+
+          return;
+        }
+
+        window.location.href =
+          "/login.html";
+      }
+    );
+
+    async function checkSession() {
+
+      try {
+
+        const result =
+          await supabaseClient
+            .auth
+            .getSession();
+
+        if (
+          result.error ||
+          !result.data.session
+        ) {
+          window.location.href =
+            "/login.html";
+
+          return;
+        }
+
+        currentUser =
+          result.data.session.user;
+
+        userEmail.textContent =
+          currentUser.email || "";
+
+        loginCheck.classList.add(
+          "hidden"
+        );
+
+        app.classList.remove(
+          "hidden"
+        );
+
+        setDefaultDate();
+
+        await loadNews();
+
+      } catch (error) {
+
+        console.error(error);
+
+        window.location.href =
+          "/login.html";
+      }
+    }
+
+    supabaseClient
+      .auth
+      .onAuthStateChange(
+        (event, session) => {
+
+          if (
+            event === "SIGNED_OUT"
+          ) {
+            window.location.href =
+              "/login.html";
+          }
+
+          if (
+            session &&
+            session.user
+          ) {
+            currentUser =
+              session.user;
+
+            userEmail.textContent =
+              currentUser.email || "";
+          }
         }
       );
 
-
-  if (uploadError) {
-
-    throw new Error(
-      "Upload gambar gagal: " +
-      uploadError.message
-    );
-
-  }
-
-
-  const {
-    data
-  } =
-    supabaseClient
-      .storage
-      .from("berita")
-      .getPublicUrl(filePath);
-
-
-  if (!data || !data.publicUrl) {
-
-    throw new Error(
-      "URL gambar tidak berhasil dibuat."
-    );
-
-  }
-
-  return data.publicUrl;
-
-}
-
-
-/* =========================
-   SUBMIT FORM
-========================= */
-
-beritaForm.addEventListener(
-  "submit",
-  async function (event) {
-
-    event.preventDefault();
-
-    submitButton.disabled = true;
-
-    cancelButton.disabled = true;
-
-    showMessage(
-      "Memproses berita...",
-      "loading"
-    );
-
-
-    try {
-
-      const id =
-        beritaId.value;
-
-      const file =
-        gambarFile.files[0];
-
-
-      let gambarUrl =
-        currentImageUrl || null;
-
-
-      if (file) {
-
-        gambarUrl =
-          await uploadGambar(file);
-
-      }
-
-
-      const payload = {
-
-        judul:
-          judul.value.trim(),
-
-        kategori:
-          kategori.value,
-
-        penulis:
-          penulis.value.trim(),
-
-        tanggal:
-          tanggal.value
-            ? new Date(
-                tanggal.value
-              ).toISOString()
-            : new Date().toISOString(),
-
-        isi:
-          isi.value.trim(),
-
-        gambar:
-          gambarUrl
-
-      };
-
-
-      let result;
-
-
-      if (id) {
-
-        result =
-          await supabaseClient
-            .from("berita")
-            .update(payload)
-            .eq("id", id);
-
-      } else {
-
-        result =
-          await supabaseClient
-            .from("berita")
-            .insert(payload);
-
-      }
-
-
-      if (result.error) {
-
-        throw new Error(
-          result.error.message
-        );
-
-      }
-
-
-      showMessage(
-        id
-          ? "Berita berhasil diperbarui."
-          : "Berita berhasil dipublikasikan.",
-        "success"
-      );
-
-
-      resetForm();
-
-      await loadBerita();
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        "Gagal: " +
-        error.message,
-        "error"
-      );
-
-    } finally {
-
-      submitButton.disabled = false;
-
-      cancelButton.disabled = false;
-
-    }
-
-  }
-);
-
-
-/* =========================
-   EDIT BERITA
-========================= */
-
-async function editBerita(id) {
-
-  showMessage(
-    "Memuat berita...",
-    "loading"
-  );
-
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("berita")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-
-  if (error) {
-
-    showMessage(
-      "Gagal memuat berita: " +
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  beritaId.value =
-    data.id;
-
-  judul.value =
-    data.judul || "";
-
-  kategori.value =
-    data.kategori || "Nasional";
-
-  penulis.value =
-    data.penulis ||
-    "Redaksi VISI Bangsa";
-
-  isi.value =
-    data.isi || "";
-
-  currentImageUrl =
-    data.gambar || "";
-
-
-  if (data.tanggal) {
-
-    const d =
-      new Date(data.tanggal);
-
-    d.setMinutes(
-      d.getMinutes() -
-      d.getTimezoneOffset()
-    );
-
-    tanggal.value =
-      d.toISOString()
-        .slice(0,16);
-
-  } else {
-
-    setDefaultDate();
-
-  }
-
-
-  gambarFile.value = "";
-
-  if (data.gambar) {
-
-    preview.src =
-      data.gambar;
-
-    preview.style.display =
-      "block";
-
-    currentImage.innerHTML =
-      "Gambar saat ini tersimpan. Pilih gambar baru jika ingin menggantinya.";
-
-  } else {
-
-    preview.style.display =
-      "none";
-
-    currentImage.innerHTML =
-      "";
-
-  }
-
-
-  formTitle.textContent =
-    "Edit Berita";
-
-  submitButton.textContent =
-    "Simpan Perubahan";
-
-  cancelButton.style.display =
-    "block";
-
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-
-}
-
-
-/* =========================
-   HAPUS BERITA
-========================= */
-
-async function hapusBerita(id) {
-
-  const yakin =
-    confirm(
-      "Apakah Anda yakin ingin menghapus berita ini?"
-    );
-
-  if (!yakin) {
-    return;
-  }
-
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("berita")
-      .delete()
-      .eq("id", id);
-
-
-  if (error) {
-
-    alert(
-      "Gagal menghapus berita:\n" +
-      error.message
-    );
-
-    return;
-  }
-
-
-  await loadBerita();
-
-}
-
-
-/* =========================
-   RESET FORM
-========================= */
-
-function resetForm() {
-
-  beritaForm.reset();
-
-  beritaId.value =
-    "";
-
-  currentImageUrl =
-    "";
-
-  formTitle.textContent =
-    "Tambah Berita";
-
-  submitButton.textContent =
-    "Publikasikan Berita";
-
-  cancelButton.style.display =
-    "none";
-
-  preview.src =
-    "";
-
-  preview.style.display =
-    "none";
-
-  currentImage.textContent =
-    "";
-
-  penulis.value =
-    "Redaksi VISI Bangsa";
-
-  setDefaultDate();
-
-  message.className =
-    "message";
-
-  message.textContent =
-    "";
-
-}
-
-
-/* =========================
-   BATAL EDIT
-========================= */
-
-cancelButton.addEventListener(
-  "click",
-  function () {
-
-    resetForm();
-
-  }
-);
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-logoutButton.addEventListener(
-  "click",
-  async function () {
-
-    logoutButton.disabled =
-      true;
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .auth
-        .signOut();
-
-    if (error) {
-
-      alert(
-        "Gagal keluar: " +
-        error.message
-      );
-
-      logoutButton.disabled =
-        false;
-
-      return;
-    }
-
-    window.location.href =
-      "/login.html";
-
-  }
-);
-
-
-/* =========================
-   MULAI DASHBOARD
-========================= */
-
-(async function () {
-
-  const loggedIn =
-    await cekLogin();
-
-  if (!loggedIn) {
-    return;
-  }
-
-  setDefaultDate();
-
-  await loadBerita();
-
-})();
-
-</script>
+    checkSession();
+  </script>
 
 </body>
 </html>
