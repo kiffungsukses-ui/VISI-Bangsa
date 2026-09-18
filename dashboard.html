@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="id">
 <head>
@@ -6,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Dashboard — VISI Bangsa</title>
-  <meta name="description" content="Dashboard pengelolaan berita VISI Bangsa">
+
+  <meta
+    name="description"
+    content="Dashboard pengelolaan berita VISI Bangsa"
+  >
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -18,249 +21,318 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: #f3f4f6;
-      color: #202124;
+      background: #f3f5f7;
+      color: #17212b;
     }
 
     header {
-      background: #b40000;
+      background: #17212b;
       color: white;
-      padding: 15px 20px;
-    }
-
-    .header-inner {
-      max-width: 1200px;
-      margin: auto;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .brand {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
     }
 
-    .brand small {
-      display: block;
-      font-size: 11px;
-      font-weight: normal;
-      margin-top: 3px;
+    .brand span {
+      color: #e21d2f;
     }
 
-    button,
-    .button {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-label {
+      font-size: 13px;
+      opacity: .85;
+    }
+
+    button {
       border: 0;
-      border-radius: 6px;
-      padding: 10px 15px;
-      cursor: pointer;
+      border-radius: 8px;
+      padding: 11px 16px;
       font-weight: 700;
-      font-size: 14px;
+      cursor: pointer;
     }
 
     .logout {
-      background: white;
-      color: #b40000;
+      background: #e21d2f;
+      color: white;
     }
 
     main {
       max-width: 1200px;
       margin: 25px auto;
-      padding: 0 20px;
+      padding: 0 15px;
     }
 
     .welcome {
       background: white;
+      border-radius: 12px;
       padding: 20px;
-      border-radius: 8px;
       margin-bottom: 20px;
-      border-left: 5px solid #b40000;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
     }
 
     .welcome h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
+      margin: 0 0 7px;
+      font-size: 25px;
     }
 
     .welcome p {
       margin: 0;
-      color: #666;
+      color: #66717d;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 390px 1fr;
       gap: 20px;
     }
 
     .card {
       background: white;
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
     }
 
     .card h2 {
       margin-top: 0;
+      margin-bottom: 18px;
       font-size: 20px;
     }
 
     label {
       display: block;
+      margin: 14px 0 7px;
+      font-size: 14px;
       font-weight: 700;
-      font-size: 13px;
-      margin: 15px 0 6px;
     }
 
     input,
-    textarea,
-    select {
+    select,
+    textarea {
       width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 11px;
-      font-family: inherit;
+      padding: 11px 12px;
+      border: 1px solid #d5dbe1;
+      border-radius: 8px;
       font-size: 14px;
       background: white;
     }
 
     textarea {
-      min-height: 150px;
+      min-height: 180px;
       resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #e21d2f;
+      box-shadow: 0 0 0 2px rgba(226,29,47,.1);
+    }
+
+    .image-box {
+      border: 2px dashed #cfd6dd;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      background: #fafbfc;
+    }
+
+    .image-box input {
+      border: 0;
+      padding: 5px;
+      background: transparent;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 9px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .current-image {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #68737e;
+      word-break: break-all;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .primary {
-      width: 100%;
-      margin-top: 18px;
-      background: #b40000;
+      background: #e21d2f;
       color: white;
+      flex: 1;
     }
 
     .secondary {
-      background: #e5e7eb;
-      color: #222;
-    }
-
-    .danger {
-      background: #b40000;
-      color: white;
+      background: #e9edf1;
+      color: #17212b;
     }
 
     .message {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 5px;
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 8px;
       display: none;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .success {
-      background: #e7f6ec;
-      color: #176b35;
+      display: block;
+      background: #e8f7ed;
+      color: #176b37;
     }
 
     .error {
-      background: #fdeaea;
-      color: #9b1c1c;
+      display: block;
+      background: #fdebed;
+      color: #a51e2d;
     }
 
-    .berita-list {
-      display: grid;
-      gap: 15px;
+    .loading {
+      display: block;
+      background: #eef3f8;
+      color: #43515e;
     }
 
-    .berita {
-      border: 1px solid #ddd;
-      border-radius: 7px;
-      padding: 15px;
-      display: grid;
-      grid-template-columns: 130px 1fr;
-      gap: 15px;
+    .berita-item {
+      border-bottom: 1px solid #e4e8ec;
+      padding: 16px 0;
     }
 
-    .berita img,
-    .no-image {
-      width: 130px;
-      height: 95px;
-      object-fit: cover;
-      border-radius: 5px;
-      background: #eee;
+    .berita-item:first-child {
+      padding-top: 0;
     }
 
-    .no-image {
+    .berita-item:last-child {
+      border-bottom: 0;
+    }
+
+    .berita-flex {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #888;
-      font-size: 12px;
-      text-align: center;
+      gap: 15px;
     }
 
-    .berita h3 {
-      margin: 0 0 6px;
-      font-size: 18px;
+    .thumb {
+      width: 130px;
+      height: 90px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #e7ebef;
+      flex-shrink: 0;
+    }
+
+    .berita-content {
+      flex: 1;
+    }
+
+    .berita-title {
+      font-weight: 800;
+      font-size: 17px;
+      margin-bottom: 6px;
     }
 
     .meta {
-      color: #777;
+      color: #707b86;
       font-size: 12px;
       margin-bottom: 8px;
     }
 
-    .excerpt {
-      color: #555;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
     .actions {
-      margin-top: 10px;
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
     }
 
-    .actions button {
-      padding: 7px 11px;
+    .edit {
+      background: #17212b;
+      color: white;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .delete {
+      background: #f3dadd;
+      color: #a51e2d;
+      padding: 8px 12px;
       font-size: 12px;
     }
 
     .empty {
       text-align: center;
-      color: #777;
-      padding: 30px;
+      padding: 35px 10px;
+      color: #727d87;
     }
 
-    .loading {
-      text-align: center;
-      color: #777;
-      padding: 20px;
+    .site-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: #e21d2f;
+      font-weight: 700;
+      text-decoration: none;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 850px) {
       .grid {
         grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 600px) {
-      .header-inner {
-        align-items: flex-start;
+      header {
+        padding: 13px 15px;
       }
 
       .brand {
-        font-size: 20px;
+        font-size: 19px;
       }
 
-      .berita {
-        grid-template-columns: 1fr;
+      .admin-label {
+        display: none;
       }
 
-      .berita img,
-      .no-image {
-        width: 100%;
-        height: 180px;
+      .card {
+        padding: 16px;
+      }
+
+      .berita-flex {
+        align-items: flex-start;
+      }
+
+      .thumb {
+        width: 95px;
+        height: 75px;
+      }
+
+      .berita-title {
+        font-size: 15px;
+      }
+
+      .form-actions {
+        flex-direction: column;
       }
     }
   </style>
@@ -269,13 +341,16 @@
 <body>
 
 <header>
-  <div class="header-inner">
-    <div class="brand">
-      VISI Bangsa
-      <small>Dashboard Pengelola Berita</small>
+  <div class="brand">
+    VISI <span>Bangsa</span>
+  </div>
+
+  <div class="header-right">
+    <div class="admin-label" id="adminEmail">
+      Memeriksa akun...
     </div>
 
-    <button id="logoutButton" class="logout">
+    <button class="logout" id="logoutButton">
       Keluar
     </button>
   </div>
@@ -284,11 +359,19 @@
 <main>
 
   <section class="welcome">
-    <h1>Kelola Berita</h1>
+    <h1>Dashboard Pengelola Berita</h1>
+
     <p>
-      Tambahkan, edit, atau hapus berita VISI Bangsa.
-      Berita yang dipublikasikan akan tampil di website publik.
+      Tambahkan, edit, hapus, dan kelola berita VISI Bangsa.
     </p>
+
+    <a
+      class="site-link"
+      href="https://visi-bangsa.vercel.app/"
+      target="_blank"
+    >
+      Buka Website VISI Bangsa →
+    </a>
   </section>
 
   <section class="grid">
@@ -296,11 +379,16 @@
     <!-- FORM -->
     <div class="card">
 
-      <h2 id="formTitle">Tambah Berita</h2>
+      <h2 id="formTitle">
+        Tambah Berita
+      </h2>
 
       <form id="beritaForm">
 
-        <input type="hidden" id="beritaId">
+        <input
+          type="hidden"
+          id="beritaId"
+        >
 
         <label for="judul">
           Judul Berita
@@ -320,14 +408,14 @@
         <select id="kategori">
           <option value="Nasional">Nasional</option>
           <option value="Daerah">Daerah</option>
-          <option value="Ekonomi">Ekonomi</option>
           <option value="Politik">Politik</option>
-          <option value="Olahraga">Olahraga</option>
+          <option value="Ekonomi">Ekonomi</option>
           <option value="Teknologi">Teknologi</option>
           <option value="Pendidikan">Pendidikan</option>
           <option value="Kesehatan">Kesehatan</option>
+          <option value="Olahraga">Olahraga</option>
           <option value="Hukum">Hukum</option>
-          <option value="Lainnya">Lainnya</option>
+          <option value="Lifestyle">Lifestyle</option>
         </select>
 
         <label for="penulis">
@@ -337,7 +425,6 @@
         <input
           id="penulis"
           type="text"
-          placeholder="Nama penulis"
           value="Redaksi VISI Bangsa"
           required
         >
@@ -352,15 +439,34 @@
           required
         >
 
-        <label for="gambar">
-          URL Gambar
+        <label>
+          Gambar Berita
         </label>
 
-        <input
-          id="gambar"
-          type="url"
-          placeholder="https://..."
-        >
+        <div class="image-box">
+
+          <div>
+            Pilih gambar dari HP
+          </div>
+
+          <input
+            id="gambarFile"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+          >
+
+          <img
+            id="preview"
+            class="preview"
+            alt="Preview gambar"
+          >
+
+          <div
+            id="currentImage"
+            class="current-image"
+          ></div>
+
+        </div>
 
         <label for="isi">
           Isi Berita
@@ -368,42 +474,50 @@
 
         <textarea
           id="isi"
-          placeholder="Tulis isi berita di sini..."
+          placeholder="Tulis isi berita..."
           required
         ></textarea>
 
-        <button
-          id="submitButton"
-          type="submit"
-          class="primary"
-        >
-          Publikasikan Berita
-        </button>
+        <div class="form-actions">
 
-        <button
-          id="cancelButton"
-          type="button"
-          class="secondary"
-          style="display:none;width:100%;margin-top:8px;"
-        >
-          Batal Edit
-        </button>
+          <button
+            class="primary"
+            id="submitButton"
+            type="submit"
+          >
+            Publikasikan Berita
+          </button>
 
-        <div id="message" class="message"></div>
+          <button
+            class="secondary"
+            id="cancelButton"
+            type="button"
+            style="display:none"
+          >
+            Batal Edit
+          </button>
+
+        </div>
+
+        <div
+          id="message"
+          class="message"
+        ></div>
 
       </form>
 
     </div>
 
+
     <!-- DAFTAR BERITA -->
     <div class="card">
 
-      <h2>Daftar Berita</h2>
+      <h2>
+        Daftar Berita
+      </h2>
 
-      <div id="beritaList" class="berita-list">
-        <div class="loading">
-          Memuat berita...
-        </div>
+      <div id="beritaList">
+        Memuat berita...
       </div>
 
     </div>
@@ -412,257 +526,248 @@
 
 </main>
 
+
 <script>
 
-  /*
-   * ============================
-   * KONFIGURASI SUPABASE
-   * ============================
-   */
+const SUPABASE_URL =
+  "https://vupvgdfdnpqactlqufbu.supabase.co";
 
-  const SUPABASE_URL =
-    "https://vupvgdfdnpqactlqufbu.supabase.co";
+const SUPABASE_ANON_KEY =
+  "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
 
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-  /*
-   * ============================
-   * ELEMENT
-   * ============================
-   */
+const beritaForm =
+  document.getElementById("beritaForm");
 
-  const form =
-    document.getElementById("beritaForm");
+const beritaId =
+  document.getElementById("beritaId");
 
-  const beritaId =
-    document.getElementById("beritaId");
+const judul =
+  document.getElementById("judul");
 
-  const judul =
-    document.getElementById("judul");
+const kategori =
+  document.getElementById("kategori");
 
-  const kategori =
-    document.getElementById("kategori");
+const penulis =
+  document.getElementById("penulis");
 
-  const penulis =
-    document.getElementById("penulis");
+const tanggal =
+  document.getElementById("tanggal");
 
-  const tanggal =
-    document.getElementById("tanggal");
+const isi =
+  document.getElementById("isi");
 
-  const gambar =
-    document.getElementById("gambar");
+const gambarFile =
+  document.getElementById("gambarFile");
 
-  const isi =
-    document.getElementById("isi");
+const preview =
+  document.getElementById("preview");
 
-  const beritaList =
-    document.getElementById("beritaList");
+const currentImage =
+  document.getElementById("currentImage");
 
-  const message =
-    document.getElementById("message");
+const beritaList =
+  document.getElementById("beritaList");
 
-  const submitButton =
-    document.getElementById("submitButton");
+const message =
+  document.getElementById("message");
 
-  const cancelButton =
-    document.getElementById("cancelButton");
+const submitButton =
+  document.getElementById("submitButton");
 
-  const formTitle =
-    document.getElementById("formTitle");
+const cancelButton =
+  document.getElementById("cancelButton");
 
-  const logoutButton =
-    document.getElementById("logoutButton");
+const formTitle =
+  document.getElementById("formTitle");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const adminEmail =
+  document.getElementById("adminEmail");
 
 
-  /*
-   * ============================
-   * TANGGAL DEFAULT
-   * ============================
-   */
+let currentSession = null;
+let currentImageUrl = "";
 
-  function setTanggalSekarang() {
 
-    const now = new Date();
+/* =========================
+   PESAN
+========================= */
 
-    now.setMinutes(
-      now.getMinutes() -
-      now.getTimezoneOffset()
-    );
+function showMessage(text, type) {
 
-    tanggal.value =
-      now.toISOString().slice(0,16);
+  message.textContent = text;
+
+  message.className =
+    "message " + type;
+
+}
+
+
+/* =========================
+   TANGGAL
+========================= */
+
+function setDefaultDate() {
+
+  const now = new Date();
+
+  now.setMinutes(
+    now.getMinutes() -
+    now.getTimezoneOffset()
+  );
+
+  tanggal.value =
+    now.toISOString().slice(0,16);
+
+}
+
+
+/* =========================
+   CEK LOGIN
+========================= */
+
+async function cekLogin() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.getSession();
+
+  if (error || !data.session) {
+
+    window.location.href =
+      "/login.html";
+
+    return false;
+
   }
 
-  setTanggalSekarang();
+  currentSession =
+    data.session;
+
+  adminEmail.textContent =
+    data.session.user.email || "Admin";
+
+  return true;
+}
 
 
-  /*
-   * ============================
-   * MESSAGE
-   * ============================
-   */
+/* =========================
+   LOAD BERITA
+========================= */
 
-  function showMessage(text, type) {
+async function loadBerita() {
 
-    message.textContent = text;
+  beritaList.innerHTML =
+    "Memuat berita...";
 
-    message.className =
-      "message " + type;
-
-    message.style.display = "block";
-
-    setTimeout(() => {
-      message.style.display = "none";
-    }, 5000);
-  }
-
-
-  /*
-   * ============================
-   * FORMAT TANGGAL
-   * ============================
-   */
-
-  function formatTanggal(value) {
-
-    if (!value) return "-";
-
-    return new Date(value).toLocaleString(
-      "id-ID",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      }
-    );
-  }
-
-
-  /*
-   * ============================
-   * POTONG TEKS
-   * ============================
-   */
-
-  function potong(text, length = 180) {
-
-    if (!text) return "";
-
-    const clean =
-      text.replace(/<[^>]*>/g, "");
-
-    if (clean.length <= length) {
-      return clean;
-    }
-
-    return clean.substring(0, length) + "...";
-  }
-
-
-  /*
-   * ============================
-   * LOAD BERITA
-   * ============================
-   */
-
-  async function loadBerita() {
-
-    beritaList.innerHTML =
-      '<div class="loading">Memuat berita...</div>';
-
-    const {
-      data,
-      error
-    } = await supabaseClient
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
       .from("berita")
       .select("*")
       .order("tanggal", {
         ascending: false
       });
 
-    if (error) {
+  if (error) {
 
-      console.error(error);
+    beritaList.innerHTML =
+      `<div class="empty">
+        Gagal memuat berita:<br>
+        ${escapeHtml(error.message)}
+      </div>`;
 
-      beritaList.innerHTML =
-        `<div class="empty">
-          Gagal mengambil berita.<br>
-          ${error.message}
-        </div>`;
+    return;
+  }
 
-      return;
-    }
+  if (!data || data.length === 0) {
 
-    if (!data || data.length === 0) {
+    beritaList.innerHTML =
+      `<div class="empty">
+        Belum ada berita.
+      </div>`;
 
-      beritaList.innerHTML =
-        `<div class="empty">
-          Belum ada berita.
-        </div>`;
+    return;
+  }
 
-      return;
-    }
+  beritaList.innerHTML =
+    data.map(renderBerita).join("");
 
-    beritaList.innerHTML = "";
+}
 
-    data.forEach(item => {
 
-      const article =
-        document.createElement("div");
+/* =========================
+   RENDER BERITA
+========================= */
 
-      article.className = "berita";
+function renderBerita(item) {
 
-      const image =
-        item.gambar
-          ? `<img src="${item.gambar}" alt="${item.judul}">`
-          : `<div class="no-image">Tidak ada gambar</div>`;
+  const gambar =
+    item.gambar ||
+    "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80";
 
-      article.innerHTML = `
+  const date =
+    item.tanggal
+      ? new Date(item.tanggal).toLocaleString(
+          "id-ID",
+          {
+            dateStyle: "medium",
+            timeStyle: "short"
+          }
+        )
+      : "-";
 
-        <div>
-          ${image}
-        </div>
+  return `
+    <div class="berita-item">
 
-        <div>
+      <div class="berita-flex">
 
-          <h3>
-            ${item.judul || "Tanpa judul"}
-          </h3>
+        <img
+          class="thumb"
+          src="${escapeAttribute(gambar)}"
+          alt=""
+          onerror="this.style.display='none'"
+        >
 
-          <div class="meta">
-            ${item.kategori || "Umum"}
-            ·
-            ${item.penulis || "Redaksi VISI Bangsa"}
-            ·
-            ${formatTanggal(item.tanggal || item.created_at)}
+        <div class="berita-content">
+
+          <div class="berita-title">
+            ${escapeHtml(item.judul)}
           </div>
 
-          <div class="excerpt">
-            ${potong(item.isi)}
+          <div class="meta">
+            ${escapeHtml(item.kategori || "-")}
+            •
+            ${escapeHtml(item.penulis || "-")}
+            •
+            ${escapeHtml(date)}
           </div>
 
           <div class="actions">
 
             <button
-              class="secondary"
-              onclick="editBerita('${item.id}')"
+              class="edit"
+              onclick="editBerita(${item.id})"
             >
               Edit
             </button>
 
             <button
-              class="danger"
-              onclick="hapusBerita('${item.id}')"
+              class="delete"
+              onclick="hapusBerita(${item.id})"
             >
               Hapus
             </button>
@@ -670,37 +775,254 @@
           </div>
 
         </div>
-      `;
 
-      beritaList.appendChild(article);
-    });
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   ESCAPE
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+function escapeAttribute(value) {
+
+  return escapeHtml(value);
+
+}
+
+
+/* =========================
+   PREVIEW GAMBAR
+========================= */
+
+gambarFile.addEventListener(
+  "change",
+  function () {
+
+    const file =
+      this.files[0];
+
+    if (!file) {
+
+      preview.style.display =
+        "none";
+
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+
+      showMessage(
+        "File harus berupa gambar.",
+        "error"
+      );
+
+      this.value = "";
+
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+
+      showMessage(
+        "Ukuran gambar maksimal 5 MB.",
+        "error"
+      );
+
+      this.value = "";
+
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload =
+      function (event) {
+
+        preview.src =
+          event.target.result;
+
+        preview.style.display =
+          "block";
+
+      };
+
+    reader.readAsDataURL(file);
+
+  }
+);
+
+
+/* =========================
+   UPLOAD GAMBAR
+========================= */
+
+async function uploadGambar(file) {
+
+  if (!file) {
+    return currentImageUrl || null;
+  }
+
+  if (!file.type.startsWith("image/")) {
+
+    throw new Error(
+      "File yang dipilih bukan gambar."
+    );
+
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+
+    throw new Error(
+      "Ukuran gambar maksimal 5 MB."
+    );
+
+  }
+
+  const extension =
+    file.name
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+  const safeExtension =
+    extension.replace(
+      /[^a-z0-9]/g,
+      ""
+    ) || "jpg";
+
+  const userId =
+    currentSession.user.id;
+
+  const filePath =
+    userId +
+    "/" +
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .substring(2, 10) +
+    "." +
+    safeExtension;
+
+
+  showMessage(
+    "Mengunggah gambar...",
+    "loading"
+  );
+
+
+  const {
+    error: uploadError
+  } =
+    await supabaseClient
+      .storage
+      .from("berita")
+      .upload(
+        filePath,
+        file,
+        {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type
+        }
+      );
+
+
+  if (uploadError) {
+
+    throw new Error(
+      "Upload gambar gagal: " +
+      uploadError.message
+    );
+
   }
 
 
-  /*
-   * ============================
-   * TAMBAH / EDIT BERITA
-   * ============================
-   */
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from("berita")
+      .getPublicUrl(filePath);
 
-  form.addEventListener(
-    "submit",
-    async function(event) {
 
-      event.preventDefault();
+  if (!data || !data.publicUrl) {
 
-      submitButton.disabled = true;
+    throw new Error(
+      "URL gambar tidak berhasil dibuat."
+    );
 
-      const dataBerita = {
+  }
+
+  return data.publicUrl;
+
+}
+
+
+/* =========================
+   SUBMIT FORM
+========================= */
+
+beritaForm.addEventListener(
+  "submit",
+  async function (event) {
+
+    event.preventDefault();
+
+    submitButton.disabled = true;
+
+    cancelButton.disabled = true;
+
+    showMessage(
+      "Memproses berita...",
+      "loading"
+    );
+
+
+    try {
+
+      const id =
+        beritaId.value;
+
+      const file =
+        gambarFile.files[0];
+
+
+      let gambarUrl =
+        currentImageUrl || null;
+
+
+      if (file) {
+
+        gambarUrl =
+          await uploadGambar(file);
+
+      }
+
+
+      const payload = {
 
         judul:
           judul.value.trim(),
-
-        isi:
-          isi.value.trim(),
-
-        gambar:
-          gambar.value.trim() || null,
 
         kategori:
           kategori.value,
@@ -710,329 +1032,362 @@
 
         tanggal:
           tanggal.value
-            ? new Date(tanggal.value).toISOString()
-            : new Date().toISOString()
+            ? new Date(
+                tanggal.value
+              ).toISOString()
+            : new Date().toISOString(),
+
+        isi:
+          isi.value.trim(),
+
+        gambar:
+          gambarUrl
+
       };
 
 
-      try {
+      let result;
 
-        /*
-         * EDIT
-         */
 
-        if (beritaId.value) {
+      if (id) {
 
-          const {
-            error
-          } = await supabaseClient
+        result =
+          await supabaseClient
             .from("berita")
-            .update(dataBerita)
-            .eq("id", beritaId.value);
+            .update(payload)
+            .eq("id", id);
 
-          if (error) {
-            throw error;
-          }
+      } else {
 
-          showMessage(
-            "Berita berhasil diperbarui.",
-            "success"
-          );
-
-        }
-
-        /*
-         * TAMBAH
-         */
-
-        else {
-
-          const {
-            error
-          } = await supabaseClient
+        result =
+          await supabaseClient
             .from("berita")
-            .insert([dataBerita]);
-
-          if (error) {
-            throw error;
-          }
-
-          showMessage(
-            "Berita berhasil dipublikasikan.",
-            "success"
-          );
-        }
-
-
-        resetForm();
-
-        await loadBerita();
+            .insert(payload);
 
       }
 
-      catch (error) {
 
-        console.error(error);
+      if (result.error) {
 
-        showMessage(
-          "Gagal menyimpan berita: " +
-          error.message,
-          "error"
+        throw new Error(
+          result.error.message
         );
 
       }
 
-      finally {
-
-        submitButton.disabled = false;
-
-      }
-
-    }
-  );
-
-
-  /*
-   * ============================
-   * EDIT
-   * ============================
-   */
-
-  window.editBerita =
-    async function(id) {
-
-      const {
-        data,
-        error
-      } = await supabaseClient
-        .from("berita")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) {
-
-        showMessage(
-          "Gagal mengambil berita: " +
-          error.message,
-          "error"
-        );
-
-        return;
-      }
-
-      beritaId.value =
-        data.id;
-
-      judul.value =
-        data.judul || "";
-
-      isi.value =
-        data.isi || "";
-
-      gambar.value =
-        data.gambar || "";
-
-      kategori.value =
-        data.kategori || "Nasional";
-
-      penulis.value =
-        data.penulis || "Redaksi VISI Bangsa";
-
-      if (data.tanggal) {
-
-        const d =
-          new Date(data.tanggal);
-
-        d.setMinutes(
-          d.getMinutes() -
-          d.getTimezoneOffset()
-        );
-
-        tanggal.value =
-          d.toISOString().slice(0,16);
-      }
-
-      formTitle.textContent =
-        "Edit Berita";
-
-      submitButton.textContent =
-        "Simpan Perubahan";
-
-      cancelButton.style.display =
-        "block";
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    };
-
-
-  /*
-   * ============================
-   * HAPUS
-   * ============================
-   */
-
-  window.hapusBerita =
-    async function(id) {
-
-      const yakin =
-        confirm(
-          "Apakah Anda yakin ingin menghapus berita ini?"
-        );
-
-      if (!yakin) {
-        return;
-      }
-
-      const {
-        error
-      } = await supabaseClient
-        .from("berita")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
-
-        showMessage(
-          "Gagal menghapus berita: " +
-          error.message,
-          "error"
-        );
-
-        return;
-      }
 
       showMessage(
-        "Berita berhasil dihapus.",
+        id
+          ? "Berita berhasil diperbarui."
+          : "Berita berhasil dipublikasikan.",
         "success"
       );
 
+
+      resetForm();
+
       await loadBerita();
-    };
 
 
-  /*
-   * ============================
-   * RESET FORM
-   * ============================
-   */
+    } catch (error) {
 
-  function resetForm() {
+      console.error(error);
 
-    form.reset();
+      showMessage(
+        "Gagal: " +
+        error.message,
+        "error"
+      );
 
-    beritaId.value = "";
+    } finally {
 
-    formTitle.textContent =
-      "Tambah Berita";
+      submitButton.disabled = false;
 
-    submitButton.textContent =
-      "Publikasikan Berita";
+      cancelButton.disabled = false;
 
-    cancelButton.style.display =
+    }
+
+  }
+);
+
+
+/* =========================
+   EDIT BERITA
+========================= */
+
+async function editBerita(id) {
+
+  showMessage(
+    "Memuat berita...",
+    "loading"
+  );
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("berita")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+
+  if (error) {
+
+    showMessage(
+      "Gagal memuat berita: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  beritaId.value =
+    data.id;
+
+  judul.value =
+    data.judul || "";
+
+  kategori.value =
+    data.kategori || "Nasional";
+
+  penulis.value =
+    data.penulis ||
+    "Redaksi VISI Bangsa";
+
+  isi.value =
+    data.isi || "";
+
+  currentImageUrl =
+    data.gambar || "";
+
+
+  if (data.tanggal) {
+
+    const d =
+      new Date(data.tanggal);
+
+    d.setMinutes(
+      d.getMinutes() -
+      d.getTimezoneOffset()
+    );
+
+    tanggal.value =
+      d.toISOString()
+        .slice(0,16);
+
+  } else {
+
+    setDefaultDate();
+
+  }
+
+
+  gambarFile.value = "";
+
+  if (data.gambar) {
+
+    preview.src =
+      data.gambar;
+
+    preview.style.display =
+      "block";
+
+    currentImage.innerHTML =
+      "Gambar saat ini tersimpan. Pilih gambar baru jika ingin menggantinya.";
+
+  } else {
+
+    preview.style.display =
       "none";
 
-    penulis.value =
-      "Redaksi VISI Bangsa";
+    currentImage.innerHTML =
+      "";
 
-    setTanggalSekarang();
   }
 
 
-  cancelButton.addEventListener(
-    "click",
-    resetForm
-  );
+  formTitle.textContent =
+    "Edit Berita";
+
+  submitButton.textContent =
+    "Simpan Perubahan";
+
+  cancelButton.style.display =
+    "block";
 
 
-  /*
-   * ============================
-   * LOGOUT
-   * ============================
-   */
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
-  logoutButton.addEventListener(
-    "click",
-    async function() {
-
-      logoutButton.disabled = true;
-
-      const {
-        error
-      } =
-        await supabaseClient.auth.signOut();
-
-      if (error) {
-
-        console.error(error);
-
-        showMessage(
-          "Gagal keluar: " +
-          error.message,
-          "error"
-        );
-
-        logoutButton.disabled = false;
-
-        return;
-      }
-
-      window.location.href =
-        "login.html";
-    }
-  );
+}
 
 
-  /*
-   * ============================
-   * CEK LOGIN
-   * ============================
-   */
+/* =========================
+   HAPUS BERITA
+========================= */
 
-  async function cekLogin() {
+async function hapusBerita(id) {
+
+  const yakin =
+    confirm(
+      "Apakah Anda yakin ingin menghapus berita ini?"
+    );
+
+  if (!yakin) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("berita")
+      .delete()
+      .eq("id", id);
+
+
+  if (error) {
+
+    alert(
+      "Gagal menghapus berita:\n" +
+      error.message
+    );
+
+    return;
+  }
+
+
+  await loadBerita();
+
+}
+
+
+/* =========================
+   RESET FORM
+========================= */
+
+function resetForm() {
+
+  beritaForm.reset();
+
+  beritaId.value =
+    "";
+
+  currentImageUrl =
+    "";
+
+  formTitle.textContent =
+    "Tambah Berita";
+
+  submitButton.textContent =
+    "Publikasikan Berita";
+
+  cancelButton.style.display =
+    "none";
+
+  preview.src =
+    "";
+
+  preview.style.display =
+    "none";
+
+  currentImage.textContent =
+    "";
+
+  penulis.value =
+    "Redaksi VISI Bangsa";
+
+  setDefaultDate();
+
+  message.className =
+    "message";
+
+  message.textContent =
+    "";
+
+}
+
+
+/* =========================
+   BATAL EDIT
+========================= */
+
+cancelButton.addEventListener(
+  "click",
+  function () {
+
+    resetForm();
+
+  }
+);
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+logoutButton.addEventListener(
+  "click",
+  async function () {
+
+    logoutButton.disabled =
+      true;
 
     const {
-      data
+      error
     } =
-      await supabaseClient.auth.getSession();
+      await supabaseClient
+        .auth
+        .signOut();
 
-    if (!data.session) {
+    if (error) {
 
-      window.location.href =
-        "login.html";
+      alert(
+        "Gagal keluar: " +
+        error.message
+      );
 
-      return false;
-    }
+      logoutButton.disabled =
+        false;
 
-    return true;
-  }
-
-
-  /*
-   * ============================
-   * MULAI DASHBOARD
-   * ============================
-   */
-
-  async function mulai() {
-
-    const login =
-      await cekLogin();
-
-    if (!login) {
       return;
     }
 
-    await loadBerita();
+    window.location.href =
+      "/login.html";
+
+  }
+);
+
+
+/* =========================
+   MULAI DASHBOARD
+========================= */
+
+(async function () {
+
+  const loggedIn =
+    await cekLogin();
+
+  if (!loggedIn) {
+    return;
   }
 
-  mulai();
+  setDefaultDate();
+
+  await loadBerita();
+
+})();
 
 </script>
 
 </body>
 </html>
-```
