@@ -657,6 +657,73 @@
     .settings-note { font-size:12px; color:#777; line-height:1.5; margin-top:7px; }
     .hidden { display: none !important; }
 
+    .admin-folder {
+      overflow: hidden;
+    }
+
+    .admin-folder > summary {
+      list-style: none;
+      cursor: pointer;
+      margin: -20px;
+      padding: 20px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .admin-folder > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .admin-folder > summary::after {
+      content: "＋";
+      float: right;
+      font-size: 24px;
+      line-height: 1;
+      color: #b40000;
+      font-weight: 800;
+    }
+
+    .admin-folder[open] > summary::after {
+      content: "−";
+    }
+
+    .admin-folder-body {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .folder-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notification-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #d60000;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(180,0,0,.25);
+      animation: notificationPulse 1.5s infinite;
+    }
+
+    .notification-badge.hidden {
+      display: none;
+    }
+
+    @keyframes notificationPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
     .user-email {
       font-size: 12px;
       opacity: .9;
@@ -953,13 +1020,16 @@
       </section>
 
 
-      <section class="panel">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Pengaturan Website</h2>
-            <div class="panel-subtitle">Edit profil dan logo VISI Bangsa langsung dari dashboard.</div>
+      <details class="panel admin-folder">
+        <summary>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Pengaturan Website</h2>
+              <div class="panel-subtitle">Klik untuk membuka pengaturan profil, kontak, dan logo VISI Bangsa.</div>
+            </div>
           </div>
-        </div>
+        </summary>
+        <div class="admin-folder-body">
         <div id="settingsMessage" class="message"></div>
         <form id="settingsForm">
           <div class="grid-2">
@@ -985,20 +1055,33 @@
             <button id="refreshSettingsButton" type="button" class="secondary">Muat Ulang</button>
           </div>
         </form>
-      </section>
+        </div>
+      </details>
 
-      <section class="panel">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Kiriman Pengunjung</h2>
-            <div class="panel-subtitle">
-              Tinjau berita dan artikel dari pengunjung sebelum diterbitkan.
+      <details class="panel admin-folder">
+        <summary>
+          <div class="panel-header">
+            <div>
+              <div class="folder-title-row">
+                <h2 class="panel-title">Kiriman Pengunjung</h2>
+                <span id="submissionNotificationBadge" class="notification-badge hidden" aria-label="Kiriman baru">0</span>
+              </div>
+              <div class="panel-subtitle">
+                Klik untuk membuka kiriman yang menunggu pemeriksaan.
+              </div>
             </div>
           </div>
-          <button id="refreshSubmissionsButton" type="button" class="secondary">
-            ↻ Muat Ulang
-          </button>
-        </div>
+        </summary>
+        <div class="admin-folder-body">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Daftar Kiriman Menunggu Pemeriksaan</div>
+              <div class="panel-subtitle">Periksa, edit, terbitkan, atau tolak kiriman pengunjung.</div>
+            </div>
+            <button id="refreshSubmissionsButton" type="button" class="secondary">
+              ↻ Muat Ulang
+            </button>
+          </div>
         <div id="submissionMessage" class="message"></div>
 
         <div id="reviewModal" class="review-modal" aria-hidden="true">
@@ -1020,29 +1103,34 @@
         <div id="submissionList" class="submission-list">
           <div class="loading">Memuat kiriman pengunjung...</div>
         </div>
-      </section>
+        </div>
+      </details>
 
-      <section class="panel">
-
-        <div class="panel-header">
-
-          <div>
-            <h2 class="panel-title">Daftar Berita</h2>
-
-            <div class="panel-subtitle">
-              Berita yang sudah tersimpan di database.
+      <details class="panel admin-folder">
+        <summary>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Daftar Berita</h2>
+              <div class="panel-subtitle">
+                Klik untuk membuka daftar berita yang sudah tersimpan.
+              </div>
             </div>
           </div>
-
-          <button
-            id="refreshButton"
-            type="button"
-            class="secondary"
-          >
-            ↻ Muat Ulang
-          </button>
-
-        </div>
+        </summary>
+        <div class="admin-folder-body">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Berita Tersimpan</div>
+              <div class="panel-subtitle">Cari, edit, hapus, dan kelola berita yang sudah diterbitkan.</div>
+            </div>
+            <button
+              id="refreshButton"
+              type="button"
+              class="secondary"
+            >
+              ↻ Muat Ulang
+            </button>
+          </div>
 
         <div class="toolbar">
 
@@ -1079,8 +1167,8 @@
         <div id="newsList" class="news-list">
           <div class="loading">Memuat berita...</div>
         </div>
-
-      </section>
+        </div>
+      </details>
 
     </main>
 
@@ -1150,6 +1238,7 @@
     const submissionList = document.getElementById("submissionList");
     const refreshSubmissionsButton = document.getElementById("refreshSubmissionsButton");
     const submissionMessage = document.getElementById("submissionMessage");
+    const submissionNotificationBadge = document.getElementById("submissionNotificationBadge");
 
     const reviewModal = document.getElementById("reviewModal");
     const reviewContent = document.getElementById("reviewContent");
@@ -1275,7 +1364,30 @@
       }
 
       kirimanData = result.data || [];
+      updateSubmissionNotification();
       renderSubmissions();
+    }
+
+    function updateSubmissionNotification() {
+      const count = kirimanData.length;
+
+      if (!submissionNotificationBadge) return;
+
+      if (count > 0) {
+        submissionNotificationBadge.textContent = count > 99 ? "99+" : String(count);
+        submissionNotificationBadge.classList.remove("hidden");
+        submissionNotificationBadge.setAttribute(
+          "aria-label",
+          count + " kiriman baru menunggu pemeriksaan"
+        );
+      } else {
+        submissionNotificationBadge.textContent = "0";
+        submissionNotificationBadge.classList.add("hidden");
+        submissionNotificationBadge.setAttribute(
+          "aria-label",
+          "Tidak ada kiriman baru"
+        );
+      }
     }
 
     function renderSubmissions() {
