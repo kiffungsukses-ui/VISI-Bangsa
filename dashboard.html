@@ -869,7 +869,15 @@
 
       .news-title { font-size: 15px; }
     }
-  </style>
+  
+<style id="tagline-editor-style">
+.tagline-editor{margin:0 0 20px;padding:16px;border:1px solid #d9dee5;border-radius:10px;background:#fafbfc}
+.tagline-editor .field{margin:0}
+.tagline-editor input:disabled{background:#eef1f4;color:#4b5563;cursor:not-allowed}
+.tagline-actions{margin-top:10px;display:flex;gap:8px}
+@media(max-width:600px){.tagline-editor{padding:12px}.tagline-actions button{flex:1}}
+</style>
+</style>
 </head>
 
 <body>
@@ -1106,10 +1114,20 @@
         <div class="admin-folder-body">
         <div id="settingsMessage" class="message"></div>
         <form id="settingsForm">
-          <div class="grid-2">
-            <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
-            <div class="field"><label for="siteTagline">Tulisan Running / Tagline</label><input id="siteTagline" type="text" maxlength="180" placeholder="VISI Bangsa - Media Elektronik Indonesia"><div class="settings-note">Tulisan ini akan berjalan (running text) di bagian paling atas website dan dapat diubah kapan saja.</div></div>
+          <div class="tagline-editor">
+          <div class="field">
+            <label for="siteTagline">Tulisan Running / Tagline</label>
+            <input id="siteTagline" type="text" maxlength="180" placeholder="TERDEPAN DALAM MENCERAHKAN" disabled>
+            <div class="settings-note">Pengaturan tagline berdiri sendiri. Klik <strong>Ubah</strong> untuk mengedit, lalu <strong>Simpan Tagline</strong> untuk menerapkannya.</div>
           </div>
+          <div class="form-actions tagline-actions">
+            <button id="editTaglineButton" type="button" class="secondary">Ubah</button>
+            <button id="saveTaglineButton" type="button" class="primary" disabled>Simpan Tagline</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
+        </div>
           <div class="field"><label for="siteProfile">Profil / Tentang VISI Bangsa</label><textarea id="siteProfile" placeholder="Tulis profil media VISI Bangsa..."></textarea></div>
           <div class="grid-2">
             <div class="field"><label for="siteEmail">Email Kontak</label><input id="siteEmail" type="email" maxlength="180" placeholder="Email media"></div>
@@ -1329,6 +1347,8 @@
     const settingsMessage = document.getElementById("settingsMessage");
     const siteNameInput = document.getElementById("siteName");
     const siteTaglineInput = document.getElementById("siteTagline");
+    const editTaglineButton = document.getElementById("editTaglineButton");
+    const saveTaglineButton = document.getElementById("saveTaglineButton");
     const siteProfileInput = document.getElementById("siteProfile");
     const siteEmailInput = document.getElementById("siteEmail");
     const sitePhoneInput = document.getElementById("sitePhone");
@@ -2108,7 +2128,10 @@
       }
       const item = result.data || {};
       siteNameInput.value = item.site_name || "VISI Bangsa";
-      siteTaglineInput.value = item.tagline || "VISI Bangsa - Media Elektronik Indonesia";
+      siteTaglineInput.value = item.tagline || "TERDEPAN DALAM MENCERAHKAN";
+      siteTaglineInput.disabled = true;
+      saveTaglineButton.disabled = true;
+      editTaglineButton.disabled = false;
       siteProfileInput.value = item.profile || "";
       siteEmailInput.value = item.email || "";
       sitePhoneInput.value = item.phone || "";
@@ -2149,7 +2172,7 @@
         let logoUrl=current.data?.logo_url || null;
         const file=siteLogoFile.files[0];
         if (file) logoUrl=await uploadSiteLogo(file);
-        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"VISI Bangsa - Media Elektronik Indonesia",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
+        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"TERDEPAN DALAM MENCERAHKAN",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
         const result=await supabaseClient.from("site_settings").upsert(payload,{onConflict:"id"});
         if (result.error) throw result.error;
         if (file && current.data?.logo_url && current.data.logo_url!==logoUrl) await deleteSiteLogo(current.data.logo_url);
@@ -2165,6 +2188,37 @@
         saveSettingsButton.textContent="Simpan Pengaturan";
       }
     });
+
+    editTaglineButton.addEventListener("click",()=>{
+      siteTaglineInput.disabled=false;
+      siteTaglineInput.focus();
+      siteTaglineInput.select();
+      saveTaglineButton.disabled=false;
+      editTaglineButton.disabled=true;
+      showSettingsMessage("Tagline siap diubah. Setelah selesai, klik Simpan Tagline.","success");
+    });
+
+    saveTaglineButton.addEventListener("click",async()=>{
+      clearSettingsMessage();
+      saveTaglineButton.disabled=true;
+      saveTaglineButton.textContent="Menyimpan...";
+      try{
+        const value=siteTaglineInput.value.trim()||"TERDEPAN DALAM MENCERAHKAN";
+        const result=await supabaseClient.from("site_settings").update({tagline:value,updated_at:new Date().toISOString()}).eq("id",1);
+        if(result.error) throw result.error;
+        siteTaglineInput.value=value;
+        siteTaglineInput.disabled=true;
+        editTaglineButton.disabled=false;
+        showSettingsMessage("Tagline berhasil disimpan dan diterapkan.","success");
+      }catch(error){
+        console.error(error);
+        saveTaglineButton.disabled=false;
+        showSettingsMessage("Gagal menyimpan tagline: "+(error.message||error),"error");
+      }finally{
+        saveTaglineButton.textContent="Simpan Tagline";
+      }
+    });
+
     siteLogoFile.addEventListener("change",()=>{
       const file=siteLogoFile.files[0];
       if(!file)return;
