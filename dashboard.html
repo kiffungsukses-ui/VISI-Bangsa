@@ -1368,7 +1368,7 @@
         const status=a.status==="aktif"?"AKTIF":a.status==="pending"?"MENUNGGU":a.status==="ditolak"?"DITOLAK":"SELESAI";
         const actions='<button type="button" class="secondary" data-ad-action="preview" data-ad-id="'+a.id+'">Lihat sebelum diterbitkan</button>'+
           (a.link_url?'<a class="secondary" href="'+escapeHtml(a.link_url)+'" target="_blank" rel="noopener">Buka Link</a>':"")+
-          (a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Aktifkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+
+          (a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Terbitkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+
           '<button type="button" class="danger" data-ad-action="delete" data-ad-id="'+a.id+'">Hapus</button>';
         return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+escapeHtml(status)+'</div><div class="submission-title">'+escapeHtml(a.judul)+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Usaha: '+escapeHtml(a.perusahaan||"-")+'<br>Email: '+escapeHtml(a.email||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'</div></div></div>'+(a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Materi iklan">':"")+'<div class="submission-actions">'+actions+'</div></article>';
       }).join("");
@@ -1381,6 +1381,7 @@
       const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
       adPreviewBody.innerHTML=(a.gambar?'<img class="ad-preview-image" src="'+escapeHtml(a.gambar)+'" alt="Pratinjau materi iklan">':"")+
         '<div class="ad-preview-meta"><strong>'+escapeHtml(a.judul)+'</strong><br>Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'<br>Catatan: '+escapeHtml(a.catatan||"-")+'</div>';
+      adPreviewActivate.textContent="Terbitkan";
       adPreviewActivate.style.display=a.status==="pending"?"inline-block":"none";
       adPreviewModal.classList.add("open");
       adPreviewModal.setAttribute("aria-hidden","false");
