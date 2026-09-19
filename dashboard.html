@@ -1064,6 +1064,16 @@
         </div>
       </details>
 
+
+      <details class="panel admin-folder">
+        <summary><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Iklan</h2><span id="adNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Terima permintaan pengiklan, atur periode, posisi, dan tampilkan atau sembunyikan iklan.</div></div></div></summary>
+        <div class="admin-folder-body">
+          <div class="panel-header"><div><div class="panel-title">Pengelolaan Iklan</div><div class="panel-subtitle">Iklan di bawah logo dapat dinonaktifkan kapan saja tanpa menghapus data iklan.</div></div><button id="refreshAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
+          <div id="adsMessage" class="message"></div>
+          <div class="field"><label><input id="adsEnabled" type="checkbox" style="width:auto;margin-right:8px"> Aktifkan iklan di website publik</label><div class="settings-note">Jika dimatikan, slot iklan di bawah logo tidak akan ditampilkan meskipun ada iklan aktif.</div></div>
+          <div id="adsList" class="submission-list"><div class="loading">Memuat iklan...</div></div>
+        </div>
+      </details>
       <details class="panel admin-folder">
         <summary>
           <div class="panel-header">
@@ -1260,6 +1270,44 @@
     let currentImageUrl = null;
     let kirimanData = [];
     let currentReviewId = null;
+
+    const adsList=document.getElementById("adsList");
+    const adsMessage=document.getElementById("adsMessage");
+    const adsEnabled=document.getElementById("adsEnabled");
+    const refreshAdsButton=document.getElementById("refreshAdsButton");
+    const adNotificationBadge=document.getElementById("adNotificationBadge");
+    let adsData=[];
+    function showAdsMessage(text,type="success"){adsMessage.textContent=text;adsMessage.className="message "+type;}
+    async function loadAdsAdmin(){
+      if(!adsList)return;
+      adsList.innerHTML='<div class="loading">Memuat iklan...</div>';
+      const setting=await supabaseClient.from("site_settings").select("ads_enabled").eq("id",1).maybeSingle();
+      if(setting.error){showAdsMessage("Gagal memuat status iklan: "+setting.error.message,"error");return;}
+      adsEnabled.checked=!!setting.data?.ads_enabled;
+      const r=await supabaseClient.from("iklan").select("id,nama_pengiklan,perusahaan,email,telepon,judul,posisi,mulai,selesai,gambar,link_url,status,catatan,created_at").order("created_at",{ascending:false});
+      if(r.error){showAdsMessage("Gagal memuat iklan: "+r.error.message,"error");adsList.innerHTML='<div class="empty">Gagal memuat iklan.</div>';return;}
+      adsData=r.data||[];const pending=adsData.filter(a=>a.status==="pending").length;
+      adNotificationBadge.classList.remove("hidden");adNotificationBadge.textContent=pending>0?String(pending):"✓";if(!pending)adNotificationBadge.classList.add("checked");
+      renderAds();
+    }
+    function renderAds(){
+      if(!adsData.length){adsList.innerHTML='<div class="empty">Belum ada permintaan iklan.</div>';return;}
+      adsList.innerHTML=adsData.map(a=>{
+        const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
+        const status=a.status==="aktif"?"AKTIF":a.status==="pending"?"MENUNGGU":"DITOLAK/SELESAI";
+        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+escapeHtml(status)+'</div><div class="submission-title">'+escapeHtml(a.judul)+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Usaha: '+escapeHtml(a.perusahaan||"-")+'<br>Email: '+escapeHtml(a.email||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'</div></div></div>'+(a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Materi iklan">':"")+'<div class="submission-actions">'+(a.link_url?'<a class="secondary" href="'+escapeHtml(a.link_url)+'" target="_blank" rel="noopener">Buka Link</a>':"")+(a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Aktifkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+'</div></article>';}).join("");
+    }
+    async function setAdsEnabled(){
+      const r=await supabaseClient.from("site_settings").update({ads_enabled:adsEnabled.checked,updated_at:new Date().toISOString()}).eq("id",1);
+      if(r.error){showAdsMessage("Gagal mengubah tampilan iklan: "+r.error.message,"error");await loadAdsAdmin();return;}
+      showAdsMessage(adsEnabled.checked?"Iklan publik diaktifkan.":"Iklan publik dinonaktifkan. Slot bawah logo sekarang tersembunyi.","success");
+    }
+    async function updateAdStatus(id,status){
+      const r=await supabaseClient.from("iklan").update({status,updated_at:new Date().toISOString()}).eq("id",id);
+      if(r.error){showAdsMessage("Gagal mengubah status iklan: "+r.error.message,"error");return;}
+      showAdsMessage(status==="aktif"?"Iklan berhasil diaktifkan.":"Iklan berhasil dinonaktifkan/ditolak.","success");await loadAdsAdmin();
+    }
+
 
     function showMessage(text, type = "success") {
       message.textContent = text;
@@ -1992,6 +2040,11 @@
       reader.onload=e=>{siteLogoPreview.src=e.target.result;siteLogoNote.textContent="Preview logo baru. Klik Simpan Pengaturan untuk menerapkannya.";};
       reader.readAsDataURL(file);
     });
+
+
+    adsEnabled.addEventListener("change",setAdsEnabled);
+    refreshAdsButton.addEventListener("click",async()=>{refreshAdsButton.disabled=true;try{await loadAdsAdmin()}finally{refreshAdsButton.disabled=false}});
+    adsList.addEventListener("click",e=>{const b=e.target.closest("[data-ad-action]");if(!b)return;const action=b.dataset.adAction;const status=action==="approve"?"aktif":action==="reject"?"ditolak":"selesai";updateAdStatus(b.dataset.adId,status)});
 
     async function loadNews() {
       newsList.innerHTML =
@@ -2730,7 +2783,8 @@
         await Promise.all([
           loadNews(),
           loadSubmissions(),
-          loadSiteSettings()
+          loadSiteSettings(),
+          loadAdsAdmin()
         ]);
       } catch (error) {
         console.error("Kesalahan inisialisasi dashboard:", error);
