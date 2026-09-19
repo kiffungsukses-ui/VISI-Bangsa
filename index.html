@@ -1073,6 +1073,7 @@ async function loadBerita() {
     await supabaseClient
       .from("berita")
       .select("*")
+      .eq("status","terbit")
       .order(
         "tanggal",
         {
