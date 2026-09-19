@@ -719,6 +719,12 @@
       display: none;
     }
 
+    .notification-badge.checked {
+      background: #198754;
+      box-shadow: 0 2px 6px rgba(25,135,84,.25);
+      animation: none;
+    }
+
     @keyframes notificationPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.08); }
@@ -1368,26 +1374,56 @@
       renderSubmissions();
     }
 
-    function updateSubmissionNotification() {
-      const count = kirimanData.length;
-
-      if (!submissionNotificationBadge) return;
-
-      if (count > 0) {
-        submissionNotificationBadge.textContent = count > 99 ? "99+" : String(count);
-        submissionNotificationBadge.classList.remove("hidden");
-        submissionNotificationBadge.setAttribute(
-          "aria-label",
-          count + " kiriman baru menunggu pemeriksaan"
+    function getCheckedSubmissionIds() {
+      try {
+        return JSON.parse(
+          localStorage.getItem("visiBangsaCheckedSubmissionIds") || "[]"
         );
-      } else {
-        submissionNotificationBadge.textContent = "0";
-        submissionNotificationBadge.classList.add("hidden");
-        submissionNotificationBadge.setAttribute(
-          "aria-label",
-          "Tidak ada kiriman baru"
+      } catch {
+        return [];
+      }
+    }
+
+    function markSubmissionAsChecked(id) {
+      const ids = getCheckedSubmissionIds().map(String);
+      const key = String(id);
+
+      if (!ids.includes(key)) {
+        ids.push(key);
+        localStorage.setItem(
+          "visiBangsaCheckedSubmissionIds",
+          JSON.stringify(ids)
         );
       }
+    }
+
+    function updateSubmissionNotification() {
+      if (!submissionNotificationBadge) return;
+
+      const checkedIds = getCheckedSubmissionIds().map(String);
+      const pendingIds = kirimanData.map(item => String(item.id));
+      const uncheckedCount = pendingIds.filter(
+        id => !checkedIds.includes(id)
+      ).length;
+
+      submissionNotificationBadge.classList.remove("hidden", "checked");
+
+      if (uncheckedCount > 0) {
+        submissionNotificationBadge.textContent =
+          uncheckedCount > 99 ? "99+" : String(uncheckedCount);
+        submissionNotificationBadge.setAttribute(
+          "aria-label",
+          uncheckedCount + " kiriman baru belum diperiksa"
+        );
+        return;
+      }
+
+      submissionNotificationBadge.textContent = "✓";
+      submissionNotificationBadge.classList.add("checked");
+      submissionNotificationBadge.setAttribute(
+        "aria-label",
+        "Semua kiriman yang masuk sudah diperiksa"
+      );
     }
 
     function renderSubmissions() {
@@ -1452,6 +1488,10 @@
       }
 
       currentReviewId = item.id;
+
+      // Membuka menu Periksa menandai kiriman ini sudah diperiksa.
+      markSubmissionAsChecked(item.id);
+      updateSubmissionNotification();
 
       const typeLabel = item.jenis === "artikel" ? "ARTIKEL" : "BERITA";
       const photo = item.gambar
