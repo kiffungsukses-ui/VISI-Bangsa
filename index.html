@@ -49,14 +49,11 @@
       gap: 20px;
     }
 
-    .logo {
-      font-size: 29px;
-      font-weight: 900;
-      letter-spacing: -.5px;
-    }
-
-    .logo span {
-      color: #ffd400;
+    .brand-logo {
+      display: block;
+      width: 285px;
+      max-width: 62vw;
+      height: auto;
     }
 
     .tagline {
@@ -414,12 +411,9 @@
         padding: 13px 15px;
       }
 
-      .logo {
-        font-size: 23px;
-      }
-
-      .tagline {
-        font-size: 10px;
+      .brand-logo {
+        width: 235px;
+        max-width: 60vw;
       }
 
       .login {
@@ -491,13 +485,13 @@
   <div class="header-inner">
 
     <div>
-      <div class="logo">
-        VISI <span>Bangsa</span>
-      </div>
-
-      <div class="tagline">
-        Media Elektronik Indonesia
-      </div>
+      <a href="/" aria-label="VISI Bangsa">
+        <img
+          class="brand-logo"
+          src="/visi-bangsa-logo.svg"
+          alt="VISI Bangsa — Media Elektronik Indonesia"
+        >
+      </a>
     </div>
 
     <a
