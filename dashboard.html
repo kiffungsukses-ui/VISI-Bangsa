@@ -653,6 +653,8 @@
       cursor: pointer;
     }
 
+    .settings-logo-preview { display:block; width:180px; height:110px; object-fit:contain; background:#f8f8f8; border:1px solid #ddd; border-radius:10px; padding:10px; margin-top:10px; }
+    .settings-note { font-size:12px; color:#777; line-height:1.5; margin-top:7px; }
     .hidden { display: none !important; }
 
     .user-email {
@@ -954,6 +956,40 @@
       <section class="panel">
         <div class="panel-header">
           <div>
+            <h2 class="panel-title">Pengaturan Website</h2>
+            <div class="panel-subtitle">Edit profil dan logo VISI Bangsa langsung dari dashboard.</div>
+          </div>
+        </div>
+        <div id="settingsMessage" class="message"></div>
+        <form id="settingsForm">
+          <div class="grid-2">
+            <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
+            <div class="field"><label for="siteTagline">Slogan / Tagline</label><input id="siteTagline" type="text" maxlength="180" placeholder="MEDIA ELEKTRONIK INDONESIA"></div>
+          </div>
+          <div class="field"><label for="siteProfile">Profil / Tentang VISI Bangsa</label><textarea id="siteProfile" placeholder="Tulis profil media VISI Bangsa..."></textarea></div>
+          <div class="grid-2">
+            <div class="field"><label for="siteEmail">Email Kontak</label><input id="siteEmail" type="email" maxlength="180" placeholder="Email media"></div>
+            <div class="field"><label for="sitePhone">WhatsApp / Telepon</label><input id="sitePhone" type="text" maxlength="50" placeholder="Nomor kontak"></div>
+          </div>
+          <div class="field">
+            <label>Logo Website</label>
+            <div class="image-box">
+              <input id="siteLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml">
+              <div class="settings-note">JPG, PNG, WEBP, atau SVG. Maksimal 5 MB.</div>
+              <img id="siteLogoPreview" class="settings-logo-preview" src="/visi-bangsa-logo.svg" alt="Preview logo VISI Bangsa">
+              <div id="siteLogoNote" class="settings-note"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="saveSettingsButton" type="submit" class="primary">Simpan Pengaturan</button>
+            <button id="refreshSettingsButton" type="button" class="secondary">Muat Ulang</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
             <h2 class="panel-title">Kiriman Pengunjung</h2>
             <div class="panel-subtitle">
               Tinjau berita dan artikel dari pengunjung sebelum diterbitkan.
@@ -1097,6 +1133,19 @@
     const statToday = document.getElementById("statToday");
     const statImages = document.getElementById("statImages");
     const statCategories = document.getElementById("statCategories");
+
+    const settingsForm = document.getElementById("settingsForm");
+    const settingsMessage = document.getElementById("settingsMessage");
+    const siteNameInput = document.getElementById("siteName");
+    const siteTaglineInput = document.getElementById("siteTagline");
+    const siteProfileInput = document.getElementById("siteProfile");
+    const siteEmailInput = document.getElementById("siteEmail");
+    const sitePhoneInput = document.getElementById("sitePhone");
+    const siteLogoFile = document.getElementById("siteLogoFile");
+    const siteLogoPreview = document.getElementById("siteLogoPreview");
+    const siteLogoNote = document.getElementById("siteLogoNote");
+    const saveSettingsButton = document.getElementById("saveSettingsButton");
+    const refreshSettingsButton = document.getElementById("refreshSettingsButton");
 
     const submissionList = document.getElementById("submissionList");
     const refreshSubmissionsButton = document.getElementById("refreshSubmissionsButton");
@@ -1702,6 +1751,95 @@
 
       return publicResult.data.publicUrl;
     }
+
+    function showSettingsMessage(text, type) {
+      settingsMessage.textContent = text;
+      settingsMessage.className = "message " + type;
+    }
+    function clearSettingsMessage() {
+      settingsMessage.textContent = "";
+      settingsMessage.className = "message";
+    }
+    async function loadSiteSettings() {
+      clearSettingsMessage();
+      const result = await supabaseClient.from("site_settings")
+        .select("id,site_name,tagline,profile,email,phone,logo_url").eq("id",1).maybeSingle();
+      if (result.error) {
+        console.error(result.error);
+        showSettingsMessage("Gagal memuat pengaturan: " + result.error.message, "error");
+        return;
+      }
+      const item = result.data || {};
+      siteNameInput.value = item.site_name || "VISI Bangsa";
+      siteTaglineInput.value = item.tagline || "MEDIA ELEKTRONIK INDONESIA";
+      siteProfileInput.value = item.profile || "";
+      siteEmailInput.value = item.email || "";
+      sitePhoneInput.value = item.phone || "";
+      siteLogoPreview.src = item.logo_url || "/visi-bangsa-logo.svg";
+      siteLogoNote.textContent = item.logo_url ? "Logo aktif. Pilih file baru untuk menggantinya." : "Logo bawaan VISI Bangsa sedang digunakan.";
+    }
+    async function uploadSiteLogo(file) {
+      const allowed=["image/jpeg","image/png","image/webp","image/svg+xml"];
+      if (!file) return null;
+      if (!allowed.includes(file.type)) throw new Error("Format logo tidak didukung.");
+      if (file.size > 5*1024*1024) throw new Error("Ukuran logo maksimal 5 MB.");
+      const ext=file.name.split(".").pop().toLowerCase().replace("jpeg","jpg");
+      const path=currentUser.id+"/logo-"+Date.now()+"."+ext;
+      const upload=await supabaseClient.storage.from("site-assets").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+      if (upload.error) throw upload.error;
+      return supabaseClient.storage.from("site-assets").getPublicUrl(path).data.publicUrl;
+    }
+    function getSiteAssetPath(url) {
+      if (!url) return null;
+      const marker="/storage/v1/object/public/site-assets/";
+      const p=url.indexOf(marker);
+      return p===-1 ? null : decodeURIComponent(url.substring(p+marker.length));
+    }
+    async function deleteSiteLogo(url) {
+      const path=getSiteAssetPath(url);
+      if (!path) return;
+      const r=await supabaseClient.storage.from("site-assets").remove([path]);
+      if (r.error) console.warn("Gagal menghapus logo lama:",r.error);
+    }
+    settingsForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearSettingsMessage();
+      saveSettingsButton.disabled=true;
+      saveSettingsButton.textContent="Menyimpan...";
+      try {
+        const current=await supabaseClient.from("site_settings").select("logo_url").eq("id",1).maybeSingle();
+        if (current.error) throw current.error;
+        let logoUrl=current.data?.logo_url || null;
+        const file=siteLogoFile.files[0];
+        if (file) logoUrl=await uploadSiteLogo(file);
+        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"MEDIA ELEKTRONIK INDONESIA",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
+        const result=await supabaseClient.from("site_settings").upsert(payload,{onConflict:"id"});
+        if (result.error) throw result.error;
+        if (file && current.data?.logo_url && current.data.logo_url!==logoUrl) await deleteSiteLogo(current.data.logo_url);
+        siteLogoFile.value="";
+        siteLogoPreview.src=logoUrl||"/visi-bangsa-logo.svg";
+        siteLogoNote.textContent="Pengaturan tersimpan. Logo baru sudah aktif di website publik.";
+        showSettingsMessage("Profil dan pengaturan logo berhasil disimpan.","success");
+      } catch(error) {
+        console.error(error);
+        showSettingsMessage("Gagal menyimpan pengaturan: "+(error.message||error),"error");
+      } finally {
+        saveSettingsButton.disabled=false;
+        saveSettingsButton.textContent="Simpan Pengaturan";
+      }
+    });
+    siteLogoFile.addEventListener("change",()=>{
+      const file=siteLogoFile.files[0];
+      if(!file)return;
+      const allowed=["image/jpeg","image/png","image/webp","image/svg+xml"];
+      if(!allowed.includes(file.type)||file.size>5*1024*1024){
+        showSettingsMessage("Logo harus JPG, PNG, WEBP, atau SVG dan maksimal 5 MB.","error");
+        siteLogoFile.value=""; return;
+      }
+      const reader=new FileReader();
+      reader.onload=e=>{siteLogoPreview.src=e.target.result;siteLogoNote.textContent="Preview logo baru. Klik Simpan Pengaturan untuk menerapkannya.";};
+      reader.readAsDataURL(file);
+    });
 
     async function loadNews() {
       newsList.innerHTML =
@@ -2375,6 +2513,8 @@
       resetForm
     );
 
+    refreshSettingsButton.addEventListener("click", loadSiteSettings);
+
     cancelButton.addEventListener(
       "click",
       resetForm
@@ -2437,7 +2577,8 @@
 
         await Promise.all([
           loadNews(),
-          loadSubmissions()
+          loadSubmissions(),
+          loadSiteSettings()
         ]);
       } catch (error) {
         console.error("Kesalahan inisialisasi dashboard:", error);
