@@ -2135,7 +2135,7 @@
       siteProfileInput.value = item.profile || "";
       siteEmailInput.value = item.email || "";
       sitePhoneInput.value = item.phone || "";
-      siteLogoPreview.src = item.logo_url || "/visi-bangsa-logo.svg";
+      siteLogoPreview.src = item.logo_url || "/visi-bangsa-logo.svg"; const dashboardLogo = document.getElementById("dashboardLogo"); if (dashboardLogo) dashboardLogo.src = item.logo_url || "/visi-bangsa-logo.svg";
       siteLogoNote.textContent = item.logo_url ? "Logo aktif. Pilih file baru untuk menggantinya." : "Logo bawaan VISI Bangsa sedang digunakan.";
     }
     async function uploadSiteLogo(file) {
