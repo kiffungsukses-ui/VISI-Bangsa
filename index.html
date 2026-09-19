@@ -794,6 +794,9 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 .nav-inner a:hover,.nav-inner a:active{background:rgba(255,255,255,.16);color:#fff}
 .nav-inner a:first-child{background:rgba(255,255,255,.14);font-weight:900}
 }
+</style><style id="search-button-fix">
+.nav-inner .nav-search{font:inherit;color:inherit;background:transparent;border:0;cursor:pointer;text-decoration:none}
+@media(max-width:600px){.nav-inner .nav-search{display:inline-flex!important}}
 </style></head>
 
 <body>
@@ -817,7 +820,7 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 <a href="#olahraga"><span class="nav-icon">⚽</span><span>Olahraga</span></a>
 <a href="#pesona-budaya"><span class="nav-icon">✦</span><span>Pesona &amp; Budaya</span></a>
 <a href="#opini"><span class="nav-icon">◉</span><span>Opini</span></a>
-<a href="#search" id="navSearchButton" class="nav-search" role="button" tabindex="0"><span class="nav-icon">⌕</span><span>Pencarian</span></a>\n</div></nav>
+<button type="button" id="navSearchButton" class="nav-search" aria-label="Buka pencarian"><span class="nav-icon">⌕</span><span>Pencarian</span></button>\n</div></nav>
 <div class="breaking-bar" aria-label="Berita terkini"><span class="breaking-label">TERKINI</span><span id="breakingText" class="breaking-text">Memuat berita terbaru...</span></div>
 
 <main>
@@ -936,6 +939,8 @@ const searchInput =
 
 const searchButton =
   document.getElementById("searchButton");
+const navSearchButton =
+  document.getElementById("navSearchButton");
 
 
 document.getElementById("year").textContent = new Date().getFullYear();
@@ -1413,6 +1418,21 @@ searchButton.addEventListener(
   "click",
   lakukanPencarian
 );
+
+if(navSearchButton){
+  navSearchButton.addEventListener("click",function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    const brandSearch=document.querySelector(".brand-search");
+    if(brandSearch) brandSearch.scrollIntoView({behavior:"smooth",block:"center"});
+    setTimeout(function(){
+      if(searchInput){
+        searchInput.focus({preventScroll:true});
+        searchInput.click();
+      }
+    },250);
+  });
+}
 
 
 searchInput.addEventListener(
