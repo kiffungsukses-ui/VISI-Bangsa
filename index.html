@@ -796,7 +796,43 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 }
 </style><style id="search-button-fix">
 .nav-inner .nav-search{font:inherit;color:inherit;background:transparent;border:0;cursor:pointer;text-decoration:none}
-@media(max-width:600px){.nav-inner .nav-search{display:inline-flex!important}}
+@media(max-width:600px){
+  .nav-inner .nav-search{
+    display:inline-flex!important;
+    flex:0 0 20%!important;
+    width:20%!important;
+    min-width:0!important;
+    height:44px!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:2px 2px!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    color:#fff!important;
+    font-size:10.5px!important;
+    line-height:1.05!important;
+    font-weight:700!important;
+    text-align:center!important;
+    border:0!important;
+    border-radius:7px!important;
+    box-sizing:border-box!important;
+    appearance:none!important;
+    -webkit-appearance:none!important;
+  }
+  .nav-inner .nav-search:hover,.nav-inner .nav-search:active,.nav-inner .nav-search:focus{
+    background:rgba(255,255,255,.16)!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+  .nav-inner .nav-search .nav-icon{
+    width:auto!important;
+    height:21px!important;
+    font-size:17px!important;
+    line-height:20px!important;
+  }
+}
 </style></head>
 
 <body>
