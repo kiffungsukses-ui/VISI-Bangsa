@@ -514,7 +514,7 @@ main{max-width:1280px;margin:22px auto;padding:0 22px}
 .headline-content p{color:#f1f4f7;margin:0 0 10px;line-height:1.5;font-size:15px}
 .headline-meta{color:#fff;font-size:13px}
 .latest-panel{background:#fff;border-radius:8px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.08);margin-top:14px}
-.latest-head{display:flex;justify-content:space-between;align-items:center;border-left:5px solid #c40000;padding-left:10px;margin-bottom:10px}
+.latest-head{display:flex;justify-content:space-between;align-items:center;border-left:5px solid #c40000;padding-left:10px;margin-bottom:10px}.latest-panel{margin-top:0}
 .latest-head h2{margin:0;font-size:23px}.latest-head a{color:#c40000;font-weight:700;text-decoration:none;font-size:13px}
 .latest-item{display:grid;grid-template-columns:125px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #e8ebee;text-decoration:none}
 .latest-item:last-child{border-bottom:0}.latest-item img{width:125px;height:80px;object-fit:cover;border-radius:6px;background:#ddd}
@@ -840,6 +840,14 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 .mobile-search-panel input{flex:1;min-width:0;height:44px;border:1px solid #bfc8d2;border-radius:7px;padding:0 12px;font-size:16px;outline:none}
 .mobile-search-panel button{height:44px;background:#c40000;color:#fff;border:0;border-radius:7px;padding:0 16px;font-weight:800}
 @media(min-width:601px){.mobile-search-panel{display:none!important}}
+</style><style id="opini-latest-spacing">
+/* Jarak visual yang tegas antara blok Opini/foto di atas dan Berita Terbaru */
+@media (max-width:600px){
+  .latest-panel{
+    margin-top:24px!important;
+    position:relative;
+  }
+}
 </style></head>
 
 <body>
