@@ -388,6 +388,82 @@
       color: #666;
     }
 
+
+    .submission-list { display: grid; gap: 12px; }
+    .submission-item {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+    }
+    .submission-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .submission-type {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #b40000;
+      background: #fff0f0;
+      padding: 4px 7px;
+      border-radius: 5px;
+      margin-bottom: 6px;
+    }
+    .submission-title {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .submission-meta {
+      color: #777;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .submission-body {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      color: #333;
+    }
+    .submission-photo {
+      width: 180px;
+      max-width: 100%;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      margin-top: 10px;
+    }
+    .submission-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .approve-btn {
+      border: 0;
+      background: #19733a;
+      color: white;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+    .reject-btn {
+      border: 0;
+      background: #666;
+      color: white;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+
     .hidden { display: none !important; }
 
     .user-email {
@@ -681,6 +757,25 @@
 
       </section>
 
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Kiriman Pengunjung</h2>
+            <div class="panel-subtitle">
+              Tinjau berita dan artikel dari pengunjung sebelum diterbitkan.
+            </div>
+          </div>
+          <button id="refreshSubmissionsButton" type="button" class="secondary">
+            ↻ Muat Ulang
+          </button>
+        </div>
+        <div id="submissionMessage" class="message"></div>
+        <div id="submissionList" class="submission-list">
+          <div class="loading">Memuat kiriman pengunjung...</div>
+        </div>
+      </section>
+
       <section class="panel">
 
         <div class="panel-header">
@@ -793,9 +888,15 @@
     const statImages = document.getElementById("statImages");
     const statCategories = document.getElementById("statCategories");
 
+    const submissionList = document.getElementById("submissionList");
+    const refreshSubmissionsButton = document.getElementById("refreshSubmissionsButton");
+    const submissionMessage = document.getElementById("submissionMessage");
+
+
     let beritaData = [];
     let currentUser = null;
     let currentImageUrl = null;
+    let kirimanData = [];
 
     function showMessage(text, type = "success") {
       message.textContent = text;
@@ -876,6 +977,192 @@
         top: 0,
         behavior: "smooth"
       });
+    }
+
+
+    function showSubmissionMessage(text, type = "success") {
+      submissionMessage.textContent = text;
+      submissionMessage.className = "message " + type;
+    }
+
+    async function loadSubmissions() {
+      submissionList.innerHTML =
+        '<div class="loading">Memuat kiriman pengunjung...</div>';
+
+      const result = await supabaseClient
+        .from("kiriman")
+        .select("id,jenis,nama,email,telepon,judul,kategori,isi,gambar,status,created_at")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (result.error) {
+        console.error(result.error);
+        submissionList.innerHTML =
+          '<div class="empty">Gagal memuat kiriman pengunjung.</div>';
+        showSubmissionMessage(
+          "Gagal memuat kiriman: " + result.error.message,
+          "error"
+        );
+        return;
+      }
+
+      kirimanData = result.data || [];
+      renderSubmissions();
+    }
+
+    function renderSubmissions() {
+      if (!kirimanData.length) {
+        submissionList.innerHTML =
+          '<div class="empty">Belum ada kiriman pengunjung yang menunggu pemeriksaan.</div>';
+        return;
+      }
+
+      submissionList.innerHTML = kirimanData.map(item => {
+        const typeLabel =
+          item.jenis === "artikel" ? "ARTIKEL" : "BERITA";
+
+        const photo = item.gambar
+          ? `
+            <img
+              class="submission-photo"
+              src="${escapeHtml(item.gambar)}"
+              alt="Foto kiriman"
+              loading="lazy"
+            >
+          `
+          : "";
+
+        return `
+          <article class="submission-item">
+            <div class="submission-head">
+              <div>
+                <div class="submission-type">${typeLabel}</div>
+                <div class="submission-title">${escapeHtml(item.judul)}</div>
+                <div class="submission-meta">
+                  Pengirim: ${escapeHtml(item.nama || "-")}<br>
+                  Email: ${escapeHtml(item.email || "-")}<br>
+                  WhatsApp/Telepon: ${escapeHtml(item.telepon || "-")}<br>
+                  Kategori: ${escapeHtml(item.kategori || "-")}<br>
+                  Dikirim: ${formatDate(item.created_at)}
+                </div>
+              </div>
+            </div>
+
+            <div class="submission-body">${escapeHtml(item.isi || "")}</div>
+            ${photo}
+
+            <div class="submission-actions">
+              <button type="button" class="approve-btn" data-approve-submission-id="${item.id}">
+                Terbitkan
+              </button>
+              <button type="button" class="reject-btn" data-reject-submission-id="${item.id}">
+                Tolak
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function publishSubmission(id) {
+      const item = kirimanData.find(
+        submission => String(submission.id) === String(id)
+      );
+
+      if (!item) {
+        showSubmissionMessage("Kiriman tidak ditemukan.", "error");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        "Terbitkan kiriman ini ke website VISI Bangsa?\n\n" +
+        item.judul
+      );
+
+      if (!confirmed) return;
+
+      try {
+        const insertResult = await supabaseClient
+          .from("berita")
+          .insert({
+            judul: item.judul,
+            kategori: item.kategori || "Daerah",
+            penulis: item.nama || "Kontributor",
+            isi: item.isi,
+            tanggal: item.created_at || new Date().toISOString(),
+            gambar: item.gambar || null
+          });
+
+        if (insertResult.error) {
+          throw insertResult.error;
+        }
+
+        const statusResult = await supabaseClient
+          .from("kiriman")
+          .update({ status: "diterima" })
+          .eq("id", id);
+
+        if (statusResult.error) {
+          throw statusResult.error;
+        }
+
+        showSubmissionMessage(
+          "Kiriman berhasil diterbitkan ke website.",
+          "success"
+        );
+
+        await loadSubmissions();
+        await loadNews();
+
+      } catch (error) {
+        console.error(error);
+        showSubmissionMessage(
+          "Gagal menerbitkan kiriman: " + (error.message || error),
+          "error"
+        );
+      }
+    }
+
+    async function rejectSubmission(id) {
+      const item = kirimanData.find(
+        submission => String(submission.id) === String(id)
+      );
+
+      if (!item) {
+        showSubmissionMessage("Kiriman tidak ditemukan.", "error");
+        return;
+      }
+
+      const confirmed = window.confirm(
+        "Tolak kiriman ini?\n\n" + item.judul
+      );
+
+      if (!confirmed) return;
+
+      try {
+        const result = await supabaseClient
+          .from("kiriman")
+          .update({ status: "ditolak" })
+          .eq("id", id);
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        showSubmissionMessage(
+          "Kiriman berhasil ditolak.",
+          "success"
+        );
+
+        await loadSubmissions();
+
+      } catch (error) {
+        console.error(error);
+        showSubmissionMessage(
+          "Gagal menolak kiriman: " + (error.message || error),
+          "error"
+        );
+      }
     }
 
     function getStoragePathFromUrl(url) {
@@ -1548,6 +1835,48 @@
       }
     );
 
+
+    submissionList.addEventListener(
+      "click",
+      event => {
+        const approveButton = event.target.closest(
+          "[data-approve-submission-id]"
+        );
+
+        if (approveButton) {
+          publishSubmission(
+            approveButton.dataset.approveSubmissionId
+          );
+          return;
+        }
+
+        const rejectButton = event.target.closest(
+          "[data-reject-submission-id]"
+        );
+
+        if (rejectButton) {
+          rejectSubmission(
+            rejectButton.dataset.rejectSubmissionId
+          );
+        }
+      }
+    );
+
+    refreshSubmissionsButton.addEventListener(
+      "click",
+      async () => {
+        refreshSubmissionsButton.disabled = true;
+        refreshSubmissionsButton.textContent = "Memuat...";
+
+        try {
+          await loadSubmissions();
+        } finally {
+          refreshSubmissionsButton.disabled = false;
+          refreshSubmissionsButton.textContent = "↻ Muat Ulang";
+        }
+      }
+    );
+
     newsList.addEventListener(
       "click",
       event => {
@@ -1687,6 +2016,7 @@
         setDefaultDate();
 
         await loadNews();
+        await loadSubmissions();
 
       } catch (error) {
 
