@@ -1103,7 +1103,7 @@
       </section>
 
 
-      <details class="panel admin-folder">
+      <details id="adminSettingsFolder" class="panel admin-folder">
         <summary>
           <div class="panel-header">
             <div>
@@ -1152,7 +1152,7 @@
       </details>
 
 
-      <details class="panel admin-folder">
+      <details id="adminAdsFolder" class="panel admin-folder">
         <summary><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Iklan</h2><span id="adNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Terima permintaan pengiklan, atur periode, posisi, dan tampilkan atau sembunyikan iklan.</div></div></div></summary>
         <div class="admin-folder-body">
           <div class="panel-header"><div><div class="panel-title">Pengelolaan Iklan</div><div class="panel-subtitle">Periksa materi iklan terlebih dahulu sebelum diterbitkan. Iklan dapat diaktifkan, dinonaktifkan, atau dihapus.</div></div><button id="refreshAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
@@ -1308,6 +1308,9 @@
 
     const app = document.getElementById("app");
     const loginCheck = document.getElementById("loginCheck");
+    const adminSettingsFolder = document.getElementById("adminSettingsFolder");
+    const adminAdsFolder = document.getElementById("adminAdsFolder");
+    let currentUserRole = "admin";
     const userEmail = document.getElementById("userEmail");
     const logoutButton = document.getElementById("logoutButton");
 
@@ -2979,6 +2982,18 @@ ${item.status === "draft" ? `
 
         currentUser = session.user;
         userEmail.textContent = currentUser.email || "";
+
+        const appRole =
+          currentUser.app_metadata && currentUser.app_metadata.role;
+        const userRole =
+          currentUser.user_metadata && currentUser.user_metadata.role;
+        currentUserRole = appRole || userRole || "admin";
+        sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
+
+        if (currentUserRole !== "admin") {
+          if (adminSettingsFolder) adminSettingsFolder.classList.add("hidden");
+          if (adminAdsFolder) adminAdsFolder.classList.add("hidden");
+        }
 
         loginCheck.style.display = "none";
         app.classList.remove("hidden");
