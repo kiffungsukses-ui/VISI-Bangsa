@@ -2198,7 +2198,6 @@
         const reviewButton = event.target.closest(
           "[data-review-submission-id]"
         );
-
         if (reviewButton) {
           openReviewModal(
             reviewButton.dataset.reviewSubmissionId
@@ -2342,3 +2341,58 @@
 
           return;
         }
+        
+        window.location.href = "login.html";
+      }
+    );
+
+    async function initializeDashboard() {
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+
+        if (error) {
+          console.error("Gagal memeriksa sesi:", error);
+          window.location.href = "login.html";
+          return;
+        }
+
+        const session = data && data.session;
+
+        if (!session || !session.user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentUser = session.user;
+        userEmail.textContent = currentUser.email || "";
+
+        loginCheck.style.display = "none";
+        app.classList.remove("hidden");
+
+        setDefaultDate();
+
+        await Promise.all([
+          loadNews(),
+          loadSubmissions()
+        ]);
+      } catch (error) {
+        console.error("Kesalahan inisialisasi dashboard:", error);
+        loginCheck.textContent = "Sesi login tidak dapat diperiksa. Silakan login kembali.";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1200);
+      }
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        window.location.href = "login.html";
+      }
+    });
+
+    initializeDashboard();
+
+  </script>
+
+</body>
+</html>
