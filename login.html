@@ -323,7 +323,8 @@
           document
             .getElementById("email")
             .value
-            .trim();
+            .trim()
+            .toLowerCase();
 
         const password =
           document
@@ -366,8 +367,13 @@
 
           // Akun lama tanpa role tetap diperlakukan sebagai Admin
           // agar fungsi login yang sudah berjalan tidak terputus.
+          const normalizedUserEmail =
+            String((user && user.email) || email)
+              .trim()
+              .toLowerCase();
+
           const actualRole =
-            (user && user.email && user.email.toLowerCase() === "redaksivisbangsa@gmail.com")
+            normalizedUserEmail === "redaksivisbangsa@gmail.com"
               ? "redaksi"
               : (appRole || userRole || "admin");
 
