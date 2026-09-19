@@ -1,31 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
-  <title id="title">VISI Bangsa</title>
-  <desc id="desc">Logo VISI Bangsa Media Elektronik Indonesia</desc>
-  <defs>
-    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ff1b1b"/>
-      <stop offset="1" stop-color="#9d0000"/>
-    </linearGradient>
-    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#15202b"/>
-      <stop offset="1" stop-color="#07111b"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="420" fill="white"/>
-  <g transform="translate(35 35)">
-    <path d="M18 115 C85 18 215 10 285 104" fill="none" stroke="#d00000" stroke-width="12"/>
-    <path d="M42 95 C92 55 145 45 205 55 C188 70 174 85 166 102 C132 82 97 82 65 98 Z" fill="#c9ced2" opacity=".85"/>
-    <path d="M72 112 L8 112 L72 270 L145 205 Z" fill="url(#red)"/>
-    <path d="M68 270 C155 205 203 142 270 115 C232 170 190 220 118 302 Z" fill="url(#red)"/>
-    <path d="M78 235 C155 190 191 145 247 126 C205 171 163 214 104 268 Z" fill="white" opacity=".98"/>
-    <path d="M154 116 C188 83 244 76 279 104 C252 105 234 114 220 128 C235 125 250 126 263 133 C242 151 215 159 190 151 C177 143 165 132 154 116 Z" fill="url(#red)"/>
-    <path d="M204 108 C224 94 250 94 268 106 C251 107 238 113 229 123 Z" fill="#fff"/>
-    <circle cx="251" cy="111" r="4" fill="#111"/>
-  </g>
-  <text x="335" y="178" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="900" fill="url(#navy)" letter-spacing="-5">VISI</text>
-  <text x="335" y="285" font-family="Arial, Helvetica, sans-serif" font-size="105" font-weight="900" fill="url(#red)" letter-spacing="-4">Bangsa</text>
-  <line x1="335" y1="325" x2="375" y2="325" stroke="#d00000" stroke-width="5"/>
-  <text x="390" y="335" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#17212b" letter-spacing="5">MEDIA ELEKTRONIK INDONESIA</text>
-  <line x1="1035" y1="325" x2="1170" y2="325" stroke="#d00000" stroke-width="5"/>
-  <text x="335" y="378" font-family="Arial, Helvetica, sans-serif" font-size="25" font-style="italic" fill="#17212b" letter-spacing="1.2">Menyajikan Fakta, Menginspirasi Bangsa</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">VISI Bangsa</title>
+<desc id="desc">Logo VISI Bangsa Media Elektronik Indonesia</desc>
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#063b9f"/><stop offset=".55" stop-color="#0875df"/><stop offset="1" stop-color="#00266f"/></linearGradient>
+  <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff1717"/><stop offset=".55" stop-color="#e00000"/><stop offset="1" stop-color="#8d0000"/></linearGradient>
+  <radialGradient id="earth" cx="35%" cy="30%"><stop offset="0" stop-color="#59b7ff"/><stop offset=".5" stop-color="#086bd4"/><stop offset="1" stop-color="#001e67"/></radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-opacity=".28"/></filter>
+</defs>
+<g filter="url(#shadow)" transform="translate(65 28)">
+  <path d="M120 20 L330 20 L520 280 L410 405 L255 250 Z" fill="url(#blue)"/>
+  <path d="M555 20 L735 20 L650 145 L555 255 L470 385 L365 405 L455 235 Z" fill="url(#red)"/>
+  <path d="M500 170 C545 92 665 78 750 128 C826 173 850 266 808 337 C772 399 691 430 616 411 C553 395 507 351 488 295 C475 254 480 211 500 170 Z" fill="url(#red)"/>
+  <circle cx="654" cy="255" r="128" fill="url(#earth)" stroke="#eaf5ff" stroke-width="5"/>
+  <path d="M592 167 C616 151 647 145 678 151 L704 171 L682 190 L648 186 L626 210 L600 204 Z
+           M690 199 L734 195 L763 218 L752 241 L715 238 L696 257 L675 243 Z
+           M603 235 L631 230 L650 250 L637 277 L614 295 L588 279 L575 250 Z
+           M669 270 L704 263 L732 286 L720 316 L687 332 L660 314 Z" fill="#fff" opacity=".95"/>
+  <path d="M548 350 C615 385 700 380 764 340 C736 390 674 422 612 410 C582 403 560 381 548 350 Z" fill="#061b58" opacity=".55"/>
+  <path d="M820 40 h48 v48 h-48z M875 92 h42 v42 h-42z M846 145 h51 v51 h-51z M900 208 h38 v38 h-38z" fill="url(#red)"/>
+</g>
+<text x="62" y="575" font-family="Arial, Helvetica, sans-serif" font-size="132" font-weight="900" letter-spacing="-6">
+  <tspan fill="url(#blue)">VISI</tspan><tspan fill="url(#red)"> BANGSA</tspan>
+</text>
+<g transform="translate(92 625)">
+  <rect x="0" y="8" width="150" height="7" rx="3.5" fill="#242a31"/>
+  <text x="172" y="28" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" letter-spacing="8" fill="#242a31">MEDIA ELEKTRONIK</text>
+  <rect x="790" y="8" width="145" height="7" rx="3.5" fill="#242a31"/>
+</g>
+<text x="92" y="706" font-family="Arial, Helvetica, sans-serif" font-size="30" font-style="italic" letter-spacing="1.8" fill="#252525">Menyajikan Berita untuk Masa Depan Bangsa</text>
 </svg>
