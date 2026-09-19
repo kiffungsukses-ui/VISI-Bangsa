@@ -636,6 +636,58 @@
       pointer-events: auto;
     }
 
+    .ad-preview-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(0,0,0,.68);
+    }
+    .ad-preview-modal.open { display: flex; }
+    .ad-preview-dialog {
+      width: min(760px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    .ad-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 18px;
+      border-bottom: 1px solid #eee;
+    }
+    .ad-preview-header h3 { margin: 0; font-size: 20px; }
+    .ad-preview-body { padding: 18px; }
+    .ad-preview-image {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+    .ad-preview-meta {
+      line-height: 1.7;
+      color: #444;
+    }
+    .ad-preview-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 15px 18px;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+    }
+
     .review-actions button {
       position: relative;
       z-index: 6;
@@ -1068,10 +1120,23 @@
       <details class="panel admin-folder">
         <summary><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Iklan</h2><span id="adNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Terima permintaan pengiklan, atur periode, posisi, dan tampilkan atau sembunyikan iklan.</div></div></div></summary>
         <div class="admin-folder-body">
-          <div class="panel-header"><div><div class="panel-title">Pengelolaan Iklan</div><div class="panel-subtitle">Iklan di bawah logo dapat dinonaktifkan kapan saja tanpa menghapus data iklan.</div></div><button id="refreshAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
+          <div class="panel-header"><div><div class="panel-title">Pengelolaan Iklan</div><div class="panel-subtitle">Periksa materi iklan terlebih dahulu sebelum diterbitkan. Iklan dapat diaktifkan, dinonaktifkan, atau dihapus.</div></div><button id="refreshAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
           <div id="adsMessage" class="message"></div>
           <div class="field"><label><input id="adsEnabled" type="checkbox" style="width:auto;margin-right:8px"> Aktifkan iklan di website publik</label><div class="settings-note">Jika dimatikan, slot iklan di bawah logo tidak akan ditampilkan meskipun ada iklan aktif.</div></div>
           <div id="adsList" class="submission-list"><div class="loading">Memuat iklan...</div></div>
+        </div>
+        <div id="adPreviewModal" class="ad-preview-modal" aria-hidden="true">
+          <div class="ad-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="adPreviewTitle">
+            <div class="ad-preview-header">
+              <h3 id="adPreviewTitle">Pratinjau Iklan</h3>
+              <button id="adPreviewClose" type="button" class="review-close">Tutup</button>
+            </div>
+            <div id="adPreviewBody" class="ad-preview-body"></div>
+            <div class="ad-preview-actions">
+              <button id="adPreviewActivate" type="button" class="approve-btn">Aktifkan</button>
+              <button id="adPreviewCloseBottom" type="button" class="secondary">Kembali</button>
+            </div>
+          </div>
         </div>
       </details>
       <details class="panel admin-folder">
@@ -1276,7 +1341,13 @@
     const adsEnabled=document.getElementById("adsEnabled");
     const refreshAdsButton=document.getElementById("refreshAdsButton");
     const adNotificationBadge=document.getElementById("adNotificationBadge");
+    const adPreviewModal=document.getElementById("adPreviewModal");
+    const adPreviewBody=document.getElementById("adPreviewBody");
+    const adPreviewClose=document.getElementById("adPreviewClose");
+    const adPreviewCloseBottom=document.getElementById("adPreviewCloseBottom");
+    const adPreviewActivate=document.getElementById("adPreviewActivate");
     let adsData=[];
+    let currentAdPreviewId=null;
     function showAdsMessage(text,type="success"){adsMessage.textContent=text;adsMessage.className="message "+type;}
     async function loadAdsAdmin(){
       if(!adsList)return;
@@ -1294,8 +1365,51 @@
       if(!adsData.length){adsList.innerHTML='<div class="empty">Belum ada permintaan iklan.</div>';return;}
       adsList.innerHTML=adsData.map(a=>{
         const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
-        const status=a.status==="aktif"?"AKTIF":a.status==="pending"?"MENUNGGU":"DITOLAK/SELESAI";
-        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+escapeHtml(status)+'</div><div class="submission-title">'+escapeHtml(a.judul)+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Usaha: '+escapeHtml(a.perusahaan||"-")+'<br>Email: '+escapeHtml(a.email||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'</div></div></div>'+(a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Materi iklan">':"")+'<div class="submission-actions">'+(a.link_url?'<a class="secondary" href="'+escapeHtml(a.link_url)+'" target="_blank" rel="noopener">Buka Link</a>':"")+(a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Aktifkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+'</div></article>';}).join("");
+        const status=a.status==="aktif"?"AKTIF":a.status==="pending"?"MENUNGGU":a.status==="ditolak"?"DITOLAK":"SELESAI";
+        const actions='<button type="button" class="secondary" data-ad-action="preview" data-ad-id="'+a.id+'">Lihat sebelum diterbitkan</button>'+
+          (a.link_url?'<a class="secondary" href="'+escapeHtml(a.link_url)+'" target="_blank" rel="noopener">Buka Link</a>':"")+
+          (a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Aktifkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+
+          '<button type="button" class="danger" data-ad-action="delete" data-ad-id="'+a.id+'">Hapus</button>';
+        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+escapeHtml(status)+'</div><div class="submission-title">'+escapeHtml(a.judul)+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Usaha: '+escapeHtml(a.perusahaan||"-")+'<br>Email: '+escapeHtml(a.email||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'</div></div></div>'+(a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Materi iklan">':"")+'<div class="submission-actions">'+actions+'</div></article>';
+      }).join("");
+    }
+
+    function openAdPreview(id){
+      const a=adsData.find(x=>String(x.id)===String(id));
+      if(!a)return;
+      currentAdPreviewId=a.id;
+      const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
+      adPreviewBody.innerHTML=(a.gambar?'<img class="ad-preview-image" src="'+escapeHtml(a.gambar)+'" alt="Pratinjau materi iklan">':"")+
+        '<div class="ad-preview-meta"><strong>'+escapeHtml(a.judul)+'</strong><br>Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'<br>Catatan: '+escapeHtml(a.catatan||"-")+'</div>';
+      adPreviewActivate.style.display=a.status==="pending"?"inline-block":"none";
+      adPreviewModal.classList.add("open");
+      adPreviewModal.setAttribute("aria-hidden","false");
+    }
+
+    function closeAdPreview(){
+      adPreviewModal.classList.remove("open");
+      adPreviewModal.setAttribute("aria-hidden","true");
+      currentAdPreviewId=null;
+    }
+
+    async function deleteAd(id){
+      const a=adsData.find(x=>String(x.id)===String(id));
+      if(!a)return;
+      if(!window.confirm("Hapus iklan ini?\n\n"+(a.judul||"Iklan")+"\n\nTindakan ini tidak dapat dibatalkan."))return;
+      const r=await supabaseClient.from("iklan").delete().eq("id",id);
+      if(r.error){showAdsMessage("Gagal menghapus iklan: "+r.error.message,"error");return;}
+      if(a.gambar){
+        try{
+          const marker="/storage/v1/object/public/iklan/";
+          const i=a.gambar.indexOf(marker);
+          if(i>=0){
+            const path=decodeURIComponent(a.gambar.slice(i+marker.length));
+            await supabaseClient.storage.from("iklan").remove([path]);
+          }
+        }catch(e){console.warn("Gagal membersihkan file iklan:",e);}
+      }
+      showAdsMessage("Iklan berhasil dihapus.","success");
+      await loadAdsAdmin();
     }
     async function setAdsEnabled(){
       const r=await supabaseClient.from("site_settings").update({ads_enabled:adsEnabled.checked,updated_at:new Date().toISOString()}).eq("id",1);
@@ -2044,7 +2158,21 @@
 
     adsEnabled.addEventListener("change",setAdsEnabled);
     refreshAdsButton.addEventListener("click",async()=>{refreshAdsButton.disabled=true;try{await loadAdsAdmin()}finally{refreshAdsButton.disabled=false}});
-    adsList.addEventListener("click",e=>{const b=e.target.closest("[data-ad-action]");if(!b)return;const action=b.dataset.adAction;const status=action==="approve"?"aktif":action==="reject"?"ditolak":"selesai";updateAdStatus(b.dataset.adId,status)});
+    adsList.addEventListener("click",e=>{
+      const b=e.target.closest("[data-ad-action]");if(!b)return;
+      const action=b.dataset.adAction;
+      if(action==="preview"){openAdPreview(b.dataset.adId);return;}
+      if(action==="delete"){deleteAd(b.dataset.adId);return;}
+      const status=action==="approve"?"aktif":action==="reject"?"ditolak":"selesai";
+      updateAdStatus(b.dataset.adId,status);
+    });
+    adPreviewClose.addEventListener("click",closeAdPreview);
+    adPreviewCloseBottom.addEventListener("click",closeAdPreview);
+    adPreviewActivate.addEventListener("click",async()=>{
+      if(currentAdPreviewId){await updateAdStatus(currentAdPreviewId,"aktif");closeAdPreview();}
+    });
+    adPreviewModal.addEventListener("click",e=>{if(e.target===adPreviewModal)closeAdPreview();});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&adPreviewModal.classList.contains("open"))closeAdPreview();});
 
     async function loadNews() {
       newsList.innerHTML =
