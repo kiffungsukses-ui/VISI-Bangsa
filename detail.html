@@ -377,7 +377,7 @@
   <header class="header">
     <div class="header-inner">
 
-      <a href="/" aria-label="VISI Bangsa"><img class="site-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
+      <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 
       <a
         class="back"
@@ -514,6 +514,23 @@
         SUPABASE_URL,
         SUPABASE_KEY
       );
+
+    async function loadSiteLogo() {
+      try {
+        const { data, error } = await supabaseClient
+          .from("site_settings")
+          .select("logo_url")
+          .eq("id", 1)
+          .maybeSingle();
+        if (error) throw error;
+        const logo = document.getElementById("siteLogo");
+        if (logo) logo.src = String(data?.logo_url || "/visi-bangsa-logo.svg").trim();
+      } catch (error) {
+        console.warn("Logo situs menggunakan logo bawaan:", error);
+      }
+    }
+
+    loadSiteLogo();
 
     const params =
       new URLSearchParams(
