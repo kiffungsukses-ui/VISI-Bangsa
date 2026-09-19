@@ -795,7 +795,7 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 .nav-inner a:first-child{background:rgba(255,255,255,.14);font-weight:900}
 }
 </style><style id="search-button-fix">
-.nav-inner .nav-search{font:inherit;color:inherit;background:transparent;border:0;cursor:pointer;text-decoration:none}
+.nav-inner .nav-search{font:inherit;color:inherit;background:transparent;border:0;cursor:pointer;text-decoration:none;user-select:none;-webkit-tap-highlight-color:transparent}
 @media(max-width:600px){
   .nav-inner .nav-search{
     display:inline-flex!important;
@@ -856,7 +856,7 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 <a href="#olahraga"><span class="nav-icon">⚽</span><span>Olahraga</span></a>
 <a href="#pesona-budaya"><span class="nav-icon">✦</span><span>Pesona &amp; Budaya</span></a>
 <a href="#opini"><span class="nav-icon">◉</span><span>Opini</span></a>
-<button type="button" id="navSearchButton" class="nav-search" aria-label="Buka pencarian"><span class="nav-icon">⌕</span><span>Pencarian</span></button>\n</div></nav>
+<label for="searchInput" id="navSearchButton" class="nav-search" role="button" tabindex="0" aria-label="Buka pencarian"><span class="nav-icon">⌕</span><span>Pencarian</span></label>\n</div></nav>
 <div class="breaking-bar" aria-label="Berita terkini"><span class="breaking-label">TERKINI</span><span id="breakingText" class="breaking-text">Memuat berita terbaru...</span></div>
 
 <main>
@@ -1394,31 +1394,15 @@ function pilihKategoriMenu(kategori){
 const navMenu=document.querySelector(".nav-inner");
 if(navMenu){
   navMenu.addEventListener("click",function(event){
-    const target=event.target.closest("a,button");
+    const target=event.target.closest("a,button,label");
     if(!target || !navMenu.contains(target)) return;
-
     const href=target.getAttribute("href");
 
-    if(href === "#search" || target.id === "navSearchButton"){
+    if(target.id === "navSearchButton"){
       event.preventDefault();
-      event.stopPropagation();
-
-      // Fokus harus dilakukan langsung di dalam event klik agar
-      // keyboard virtual Android dapat terbuka.
       if(searchInput){
-        searchInput.removeAttribute("readonly");
-        searchInput.disabled=false;
         searchInput.focus();
         searchInput.click();
-        try{ searchInput.setSelectionRange(searchInput.value.length,searchInput.value.length); }catch(e){}
-      }
-
-      const brandSearch=document.querySelector(".brand-search");
-      if(brandSearch){
-        window.scrollTo({
-          top:Math.max(0,brandSearch.getBoundingClientRect().top+window.scrollY-12),
-          behavior:"smooth"
-        });
       }
       return;
     }
