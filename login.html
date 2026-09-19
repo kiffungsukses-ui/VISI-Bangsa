@@ -50,6 +50,66 @@
       font-size: 14px;
     }
 
+    .role-choice {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .role-button {
+      width: 100%;
+      margin: 0;
+      padding: 15px 16px;
+      border: 1px solid #d9dee5;
+      border-radius: 10px;
+      background: #fff;
+      color: #17212b;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    .role-button:hover {
+      border-color: #b40000;
+      background: #fff8f8;
+    }
+
+    .role-button strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    .role-button span {
+      display: block;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .login-form-wrap.hidden,
+    .role-choice.hidden {
+      display: none;
+    }
+
+    .selected-role {
+      text-align: center;
+      color: #b40000;
+      font-size: 13px;
+      font-weight: 800;
+      margin: -5px 0 14px;
+    }
+
+    .change-role {
+      display: block;
+      margin: 0 auto 4px;
+      border: 0;
+      background: transparent;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     label {
       display: block;
       margin: 15px 0 7px;
@@ -119,6 +179,22 @@
       Login Pengelola
     </div>
 
+    <div id="roleChoice" class="role-choice">
+      <button type="button" class="role-button" data-role="admin">
+        <strong>🔐 Login Admin</strong>
+        <span>Kelola seluruh sistem dan pengaturan VISI Bangsa.</span>
+      </button>
+
+      <button type="button" class="role-button" data-role="redaksi">
+        <strong>📰 Login Redaksi</strong>
+        <span>Kelola berita, artikel, kiriman pengunjung, dan penerbitan.</span>
+      </button>
+    </div>
+
+    <div id="loginFormWrap" class="login-form-wrap hidden">
+      <div id="selectedRole" class="selected-role"></div>
+      <button id="changeRoleButton" type="button" class="change-role">← Ganti pilihan</button>
+
     <form id="loginForm">
 
       <label for="email">
@@ -155,6 +231,7 @@
       <div id="message"></div>
 
     </form>
+    </div>
 
     <a
       class="back"
@@ -188,12 +265,48 @@
     const form =
       document.getElementById("loginForm");
 
+    const roleChoice =
+      document.getElementById("roleChoice");
+
+    const loginFormWrap =
+      document.getElementById("loginFormWrap");
+
+    const selectedRole =
+      document.getElementById("selectedRole");
+
+    const changeRoleButton =
+      document.getElementById("changeRoleButton");
+
+    let selectedLoginRole = "";
+
     const message =
       document.getElementById("message");
 
     const loginButton =
       document.getElementById("loginButton");
 
+
+    document.querySelectorAll("[data-role]").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedLoginRole = button.dataset.role;
+        selectedRole.textContent =
+          selectedLoginRole === "admin"
+            ? "Login sebagai ADMIN"
+            : "Login sebagai REDAKSI";
+        roleChoice.classList.add("hidden");
+        loginFormWrap.classList.remove("hidden");
+        message.textContent = "";
+        document.getElementById("email").focus();
+      });
+    });
+
+    changeRoleButton.addEventListener("click", () => {
+      selectedLoginRole = "";
+      loginFormWrap.classList.add("hidden");
+      roleChoice.classList.remove("hidden");
+      message.textContent = "";
+      form.reset();
+    });
 
     form.addEventListener(
       "submit",
@@ -242,10 +355,37 @@
             return;
           }
 
+          const { data: userData } =
+            await supabaseClient.auth.getUser();
+
+          const user = userData && userData.user;
+          const appRole =
+            user && user.app_metadata && user.app_metadata.role;
+          const userRole =
+            user && user.user_metadata && user.user_metadata.role;
+
+          // Akun lama tanpa role tetap diperlakukan sebagai Admin
+          // agar fungsi login yang sudah berjalan tidak terputus.
+          const actualRole =
+            appRole || userRole || "admin";
+
+          if (selectedLoginRole !== actualRole) {
+            await supabaseClient.auth.signOut();
+            message.textContent =
+              selectedLoginRole === "redaksi"
+                ? "Akun ini belum terdaftar sebagai Redaksi."
+                : "Akun ini bukan akun Admin.";
+            loginButton.disabled = false;
+            return;
+          }
+
+          sessionStorage.setItem(
+            "visiBangsaLoginRole",
+            actualRole
+          );
 
           message.textContent =
             "Login berhasil. Membuka dashboard...";
-
 
           window.location.href =
             "./dashboard.html";
