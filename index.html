@@ -1391,47 +1391,41 @@ function pilihKategoriMenu(kategori){
   if(target) target.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
-document.querySelectorAll(".nav-inner a").forEach(link=>{
-  link.addEventListener("click", function(event){
-    const href=this.getAttribute("href");
-    if(href === "#berita"){
-      event.preventDefault();
-      pilihKategoriMenu("Semua");
-    }else if(href === "#nasional"){
-      event.preventDefault();
-      pilihKategoriMenu("Nasional");
-    }else if(href === "#daerah"){
-      event.preventDefault();
-      pilihKategoriMenu("Daerah");
-    }else if(href === "#ekonomi"){
-      event.preventDefault();
-      pilihKategoriMenu("Ekonomi");
-    }else if(href === "#pendidikan"){
-      event.preventDefault();
-      pilihKategoriMenu("Pendidikan");
-    }else if(href === "#olahraga"){
-      event.preventDefault();
-      pilihKategoriMenu("Olahraga");
-    }else if(href === "#pesona-budaya"){
-      event.preventDefault();
-      pilihKategoriMenu("Pesona & Budaya");
-    }else if(href === "#opini"){
-      event.preventDefault();
-      pilihKategoriMenu("Opini");
-    }else if(href === "#search"){
+const navMenu=document.querySelector(".nav-inner");
+if(navMenu){
+  navMenu.addEventListener("click",function(event){
+    const target=event.target.closest("a,button");
+    if(!target || !navMenu.contains(target)) return;
+    const href=target.getAttribute("href");
+    if(href === "#search" || target.id === "navSearchButton"){
       event.preventDefault();
       event.stopPropagation();
-      if(searchInput){
-        const header=document.querySelector(".brand-search");
-        if(header) header.scrollIntoView({behavior:"smooth", block:"center"});
-        setTimeout(()=>{
+      const header=document.querySelector(".brand-search");
+      if(header) header.scrollIntoView({behavior:"smooth",block:"center"});
+      setTimeout(function(){
+        if(searchInput){
           searchInput.focus({preventScroll:true});
-          searchInput.select();
-        },180);
-      }
+          searchInput.click();
+        }
+      },300);
+      return;
+    }
+    const kategori={
+      "#berita":"Semua",
+      "#nasional":"Nasional",
+      "#daerah":"Daerah",
+      "#ekonomi":"Ekonomi",
+      "#pendidikan":"Pendidikan",
+      "#olahraga":"Olahraga",
+      "#pesona-budaya":"Pesona & Budaya",
+      "#opini":"Opini"
+    }[href];
+    if(kategori){
+      event.preventDefault();
+      pilihKategoriMenu(kategori);
     }
   });
-});
+}
 
 function lakukanPencarian() {
 
@@ -1455,20 +1449,7 @@ searchButton.addEventListener(
   lakukanPencarian
 );
 
-if(navSearchButton){
-  navSearchButton.addEventListener("click",function(event){
-    event.preventDefault();
-    event.stopPropagation();
-    const brandSearch=document.querySelector(".brand-search");
-    if(brandSearch) brandSearch.scrollIntoView({behavior:"smooth",block:"center"});
-    setTimeout(function(){
-      if(searchInput){
-        searchInput.focus({preventScroll:true});
-        searchInput.click();
-      }
-    },250);
-  });
-}
+
 
 
 searchInput.addEventListener(
