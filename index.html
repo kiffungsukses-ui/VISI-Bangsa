@@ -852,7 +852,7 @@ nav{height:84px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 
 <body>
 
-<div class="topbar"><div class="topbar-inner"><div class="running-tagline"><span class="running-tagline-track"><span id="siteTagline">VISI Bangsa - Media Elektronik Indonesia</span><span aria-hidden="true">VISI Bangsa - Media Elektronik Indonesia</span></span></div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
+<div class="topbar"><div class="topbar-inner"><div class="running-tagline"><span class="running-tagline-track"><span id="siteTagline"></span><span id="siteTaglineDuplicate" aria-hidden="true"></span></span></div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
 <header class="brand-header"><div class="brand-inner">
 <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 <div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
@@ -963,7 +963,7 @@ async function loadSiteSettings() {
 
   const tagline = document.getElementById("siteTagline");
   if (tagline) {
-    tagline.textContent = s.tagline || "VISI Bangsa - Media Elektronik Indonesia";
+    tagline.textContent = s.tagline || "";\n    const taglineDuplicate = document.getElementById("siteTaglineDuplicate");\n    if (taglineDuplicate) taglineDuplicate.textContent = s.tagline || "";
   }
 
   const profile = document.getElementById("siteProfile");
