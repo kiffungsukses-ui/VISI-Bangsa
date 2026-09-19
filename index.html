@@ -916,6 +916,11 @@ body.vb-menu-open{overflow:hidden}
   .vb-menu-brand img{width:52px;height:52px}
   .vb-menu-brand strong{font-size:16px}
 }
+</style><style id="header-admin-cleanup">
+/* Keep the header balanced after moving admin access into the hamburger drawer. */
+.brand-inner .login{display:none!important}
+.brand-inner{justify-content:flex-start}
+@media(max-width:600px){.brand-inner .login{display:none!important}}
 </style></head>
 
 <body>
@@ -928,7 +933,7 @@ body.vb-menu-open{overflow:hidden}
 <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 <button type="button" id="headerSearchToggle" class="header-search-toggle" aria-label="Buka pencarian">⌕</button>
 <div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
-<a class="login" href="/login.html">Login Admin</a>
+
 </div></header>
 
 <div id="topAdSlot" class="ad-slot" aria-label="Iklan"></div>
