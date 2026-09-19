@@ -967,10 +967,9 @@ async function loadSiteSettings() {
     document.title = s.site_name + " — Media Elektronik Indonesia";
   }
 
-  const tagline = document.getElementById("siteTagline");
-  if (tagline) {
-    tagline.textContent = s.tagline || "";\n    const taglineDuplicate = document.getElementById("siteTaglineDuplicate");\n    if (taglineDuplicate) taglineDuplicate.textContent = s.tagline || "";
-  }
+  const savedTagline = String(s.tagline || "").trim() || defaultTagline;
+  if (tagline) tagline.textContent = savedTagline;
+  if (taglineDuplicate) taglineDuplicate.textContent = savedTagline;
 
   const profile = document.getElementById("siteProfile");
   if (profile && s.profile) {
