@@ -595,12 +595,16 @@
     }
 
     .review-actions {
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
       display: flex;
       gap: 9px;
       flex-wrap: wrap;
       padding: 16px 18px;
       border-top: 1px solid #eee;
       background: #fafafa;
+      pointer-events: auto;
     }
 
     .review-publish {
@@ -628,6 +632,25 @@
       border-radius: 8px;
       padding: 10px 15px;
       font-weight: 800;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .review-actions button {
+      position: relative;
+      z-index: 6;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .review-save {
+      border: 1px solid #b40000;
+      background: white;
+      color: #222;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: 800;
+      cursor: pointer;
     }
 
     .hidden { display: none !important; }
@@ -950,7 +973,7 @@
             </div>
             <div id="reviewContent" class="review-content"></div>
             <div class="review-actions">
-              <button id="reviewSaveButton" type="button" class="review-cancel">Simpan Perubahan</button>
+              <button id="reviewSaveButton" type="button" class="review-save">Simpan Perubahan</button>
               <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
               <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
               <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
@@ -1407,7 +1430,37 @@
     }
 
     async function reviewSave() {
-      await saveReviewChanges(true);
+      if (!currentReviewId) {
+        showSubmissionMessage("Kiriman belum dipilih.", "error");
+        return;
+      }
+
+      reviewSaveButton.disabled = true;
+      reviewSaveButton.textContent = "Menyimpan...";
+
+      try {
+        const saved = await saveReviewChanges(true);
+
+        if (saved) {
+          reviewSaveButton.textContent = "Tersimpan ✓";
+          setTimeout(() => {
+            if (reviewModal.classList.contains("open")) {
+              reviewSaveButton.textContent = "Simpan Perubahan";
+            }
+          }, 1500);
+        } else {
+          reviewSaveButton.textContent = "Simpan Perubahan";
+        }
+      } catch (error) {
+        console.error("Review save error:", error);
+        showSubmissionMessage(
+          "Gagal menyimpan perubahan: " + (error.message || error),
+          "error"
+        );
+        reviewSaveButton.textContent = "Simpan Perubahan";
+      } finally {
+        reviewSaveButton.disabled = false;
+      }
     }
 
     async function reviewPublish() {
