@@ -1267,7 +1267,8 @@
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY
+        SUPABASE_KEY,
+        { global: { fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }) } }
       );
 
     const app = document.getElementById("app");
