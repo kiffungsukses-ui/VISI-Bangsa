@@ -945,18 +945,32 @@ let kategoriAktif = "Semua";
 let pencarian = "";
 
 async function loadSiteSettings() {
-  const result=await supabaseClient.from("site_settings").select("site_name,tagline,profile,email,phone,logo_url").eq("id",1).maybeSingle();
-  if(result.error||!result.data)return;
-  const s=result.data;
-  const logo=document.getElementById("siteLogo");
-  if(logo)logo.src="/visi-bangsa-logo.svg";
-  if(s.site_name)document.title=s.site_name+" — Media Elektronik Indonesia";\n  const tagline=document.getElementById("siteTagline");\n  if(tagline)tagline.textContent=s.tagline||"VISI Bangsa - Media Elektronik Indonesia";
-  const profile=document.getElementById("siteProfile");
-  if(profile&&s.profile)profile.textContent=s.profile;
-  const tagline=document.getElementById("siteTagline");
-  if(tagline&&s.tagline)tagline.textContent=s.tagline;
-}
+  const result = await supabaseClient
+    .from("site_settings")
+    .select("site_name,tagline,profile,email,phone,logo_url")
+    .eq("id",1)
+    .maybeSingle();
 
+  if (result.error || !result.data) return;
+
+  const s = result.data;
+  const logo = document.getElementById("siteLogo");
+  if (logo) logo.src = "/visi-bangsa-logo.svg";
+
+  if (s.site_name) {
+    document.title = s.site_name + " — Media Elektronik Indonesia";
+  }
+
+  const tagline = document.getElementById("siteTagline");
+  if (tagline) {
+    tagline.textContent = s.tagline || "VISI Bangsa - Media Elektronik Indonesia";
+  }
+
+  const profile = document.getElementById("siteProfile");
+  if (profile && s.profile) {
+    profile.textContent = s.profile;
+  }
+}
 
 
 const beritaGrid =
