@@ -527,6 +527,42 @@
       line-height: 1.6;
     }
 
+    .review-field {
+      margin-bottom: 16px;
+    }
+
+    .review-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .review-field input,
+    .review-field select,
+    .review-field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font: inherit;
+      background: white;
+      color: #222;
+    }
+
+    .review-field textarea {
+      min-height: 260px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .review-original {
+      font-size: 12px;
+      color: #777;
+      margin-top: 5px;
+    }
+
     .review-title {
       font-size: 25px;
       font-weight: 850;
@@ -904,6 +940,7 @@
             </div>
             <div id="reviewContent" class="review-content"></div>
             <div class="review-actions">
+              <button id="reviewSaveButton" type="button" class="review-cancel">Simpan Perubahan</button>
               <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
               <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
               <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
@@ -1036,6 +1073,7 @@
     const reviewContent = document.getElementById("reviewContent");
     const reviewCloseButton = document.getElementById("reviewCloseButton");
     const reviewCancelButton = document.getElementById("reviewCancelButton");
+    const reviewSaveButton = document.getElementById("reviewSaveButton");
     const reviewPublishButton = document.getElementById("reviewPublishButton");
     const reviewRejectButton = document.getElementById("reviewRejectButton");
 
@@ -1228,19 +1266,36 @@
 
       reviewContent.innerHTML = `
         <div class="submission-type">${typeLabel}</div>
-        <div class="review-title">${escapeHtml(item.judul || "-")}</div>
 
-        <div class="review-label">Pengirim</div>
-        <div class="review-value">${escapeHtml(item.nama || "-")}</div>
+        <div class="review-field">
+          <label for="reviewJudul">Judul</label>
+          <input id="reviewJudul" type="text" maxlength="250" value="${escapeHtml(item.judul || "")}">
+        </div>
 
-        <div class="review-label">Email</div>
-        <div class="review-value">${escapeHtml(item.email || "-")}</div>
+        <div class="review-field">
+          <label for="reviewKategori">Kategori</label>
+          <select id="reviewKategori">
+            <option value="">Pilih kategori</option>
+            <option value="Nasional">Nasional</option>
+            <option value="Daerah">Daerah</option>
+            <option value="Ekonomi">Ekonomi</option>
+            <option value="Pendidikan">Pendidikan</option>
+            <option value="Olahraga">Olahraga</option>
+            <option value="Pesona &amp; Budaya">Pesona &amp; Budaya</option>
+            <option value="Opini">Opini</option>
+          </select>
+        </div>
 
-        <div class="review-label">WhatsApp / Telepon</div>
-        <div class="review-value">${escapeHtml(item.telepon || "-")}</div>
+        <div class="review-field">
+          <label for="reviewPenulis">Nama Penulis</label>
+          <input id="reviewPenulis" type="text" maxlength="100" value="${escapeHtml(item.nama || "Kontributor")}">
+        </div>
 
-        <div class="review-label">Kategori</div>
-        <div class="review-value">${escapeHtml(item.kategori || "-")}</div>
+        <div class="review-label">Informasi Pengirim</div>
+        <div class="review-value">
+          ${escapeHtml(item.nama || "-")} · ${escapeHtml(item.email || "-")}<br>
+          WhatsApp/Telepon: ${escapeHtml(item.telepon || "-")}
+        </div>
 
         <div class="review-label">Tanggal Kirim</div>
         <div class="review-value">${formatDate(item.created_at)}</div>
@@ -1248,9 +1303,20 @@
         <div class="review-label">Foto</div>
         ${photo}
 
-        <div class="review-label">Isi Kiriman</div>
-        <div class="review-body">${escapeHtml(item.isi || "-")}</div>
+        <div class="review-field">
+          <label for="reviewIsi">Isi Kiriman</label>
+          <textarea id="reviewIsi" maxlength="50000">${escapeHtml(item.isi || "")}</textarea>
+        </div>
+
+        <div class="review-original">
+          Perubahan dapat disimpan sebagai versi yang akan diperiksa sebelum diterbitkan.
+        </div>
       `;
+
+      const reviewKategori = document.getElementById("reviewKategori");
+      if (reviewKategori) {
+        reviewKategori.value = item.kategori || "";
+      }
 
       reviewModal.classList.add("open");
       reviewModal.setAttribute("aria-hidden", "false");
@@ -1265,8 +1331,81 @@
       document.body.style.overflow = "";
     }
 
+    function getReviewValues() {
+      const judulField = document.getElementById("reviewJudul");
+      const kategoriField = document.getElementById("reviewKategori");
+      const penulisField = document.getElementById("reviewPenulis");
+      const isiField = document.getElementById("reviewIsi");
+
+      if (!judulField || !kategoriField || !penulisField || !isiField) {
+        throw new Error("Form pemeriksaan belum siap.");
+      }
+
+      const values = {
+        judul: judulField.value.trim(),
+        kategori: kategoriField.value,
+        penulis: penulisField.value.trim(),
+        isi: isiField.value.trim()
+      };
+
+      if (!values.judul) throw new Error("Judul tidak boleh kosong.");
+      if (!values.kategori) throw new Error("Kategori harus dipilih.");
+      if (!values.penulis) throw new Error("Nama penulis tidak boleh kosong.");
+      if (!values.isi) throw new Error("Isi kiriman tidak boleh kosong.");
+
+      return values;
+    }
+
+    async function saveReviewChanges(showSuccess = true) {
+      if (!currentReviewId) return false;
+
+      let values;
+      try {
+        values = getReviewValues();
+      } catch (error) {
+        showSubmissionMessage(error.message || String(error), "error");
+        return false;
+      }
+
+      const result = await supabaseClient
+        .from("kiriman")
+        .update(values)
+        .eq("id", currentReviewId);
+
+      if (result.error) {
+        console.error(result.error);
+        showSubmissionMessage(
+          "Gagal menyimpan perubahan: " + result.error.message,
+          "error"
+        );
+        return false;
+      }
+
+      const item = kirimanData.find(
+        submission => String(submission.id) === String(currentReviewId)
+      );
+
+      if (item) {
+        Object.assign(item, values);
+      }
+
+      if (showSuccess) {
+        showSubmissionMessage("Perubahan kiriman berhasil disimpan.", "success");
+      }
+
+      return true;
+    }
+
+    async function reviewSave() {
+      await saveReviewChanges(true);
+    }
+
     async function reviewPublish() {
       if (!currentReviewId) return;
+
+      const saved = await saveReviewChanges(false);
+      if (!saved) return;
+
       const id = currentReviewId;
       closeReviewModal();
       await publishSubmission(id);
@@ -1274,6 +1413,10 @@
 
     async function reviewReject() {
       if (!currentReviewId) return;
+
+      const saved = await saveReviewChanges(false);
+      if (!saved) return;
+
       const id = currentReviewId;
       closeReviewModal();
       await rejectSubmission(id);
@@ -2066,6 +2209,7 @@
 
     reviewCloseButton.addEventListener("click", closeReviewModal);
     reviewCancelButton.addEventListener("click", closeReviewModal);
+    reviewSaveButton.addEventListener("click", reviewSave);
     reviewPublishButton.addEventListener("click", reviewPublish);
     reviewRejectButton.addEventListener("click", reviewReject);
 
@@ -2198,79 +2342,3 @@
 
           return;
         }
-
-        window.location.href =
-          "/login.html";
-      }
-    );
-
-    async function checkSession() {
-
-      try {
-
-        const result =
-          await supabaseClient
-            .auth
-            .getSession();
-
-        if (
-          result.error ||
-          !result.data.session
-        ) {
-          window.location.href =
-            "/login.html";
-
-          return;
-        }
-
-        currentUser =
-          result.data.session.user;
-
-        userEmail.textContent =
-          currentUser.email || "";
-
-        loginCheck.classList.add("hidden");
-        app.classList.remove("hidden");
-
-        setDefaultDate();
-
-        await loadNews();
-        await loadSubmissions();
-
-      } catch (error) {
-
-        console.error(error);
-
-        window.location.href =
-          "/login.html";
-      }
-    }
-
-    supabaseClient
-      .auth
-      .onAuthStateChange(
-        (event, session) => {
-
-          if (event === "SIGNED_OUT") {
-            window.location.href =
-              "/login.html";
-          }
-
-          if (
-            session &&
-            session.user
-          ) {
-            currentUser =
-              session.user;
-
-            userEmail.textContent =
-              currentUser.email || "";
-          }
-        }
-      );
-
-    checkSession();
-  </script>
-
-</body>
-</html>
