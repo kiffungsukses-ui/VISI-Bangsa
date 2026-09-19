@@ -817,7 +817,7 @@ nav{height:94px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 <a href="#olahraga"><span class="nav-icon">⚽</span><span>Olahraga</span></a>
 <a href="#pesona-budaya"><span class="nav-icon">✦</span><span>Pesona &amp; Budaya</span></a>
 <a href="#opini"><span class="nav-icon">◉</span><span>Opini</span></a>
-<a href="#search" class="nav-search"><span class="nav-icon">⌕</span><span>Pencarian</span></a>\n</div></nav>
+<a href="#search" id="navSearchButton" class="nav-search" role="button" tabindex="0"><span class="nav-icon">⌕</span><span>Pencarian</span></a>\n</div></nav>
 <div class="breaking-bar" aria-label="Berita terkini"><span class="breaking-label">TERKINI</span><span id="breakingText" class="breaking-text">Memuat berita terbaru...</span></div>
 
 <main>
@@ -1379,9 +1379,15 @@ document.querySelectorAll(".nav-inner a").forEach(link=>{
       pilihKategoriMenu("Opini");
     }else if(href === "#search"){
       event.preventDefault();
-      searchInput.focus();
-      const header=document.querySelector(".brand-search");
-      if(header) header.scrollIntoView({behavior:"smooth", block:"center"});
+      event.stopPropagation();
+      if(searchInput){
+        const header=document.querySelector(".brand-search");
+        if(header) header.scrollIntoView({behavior:"smooth", block:"center"});
+        setTimeout(()=>{
+          searchInput.focus({preventScroll:true});
+          searchInput.select();
+        },180);
+      }
     }
   });
 });
