@@ -531,12 +531,38 @@ main{max-width:1280px;margin:22px auto;padding:0 22px}
 footer{margin-top:50px;background:#082c52}
 @media(max-width:950px){.brand-logo{width:360px;height:125px}.hero-layout{grid-template-columns:1fr}.latest-panel{margin-top:0}.category-tiles{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.topbar-inner{padding:8px 12px}.topbar-links{display:none}.brand-inner{padding:8px 12px;gap:8px;align-items:center}.brand-logo{width:210px;height:105px;max-width:52vw}.brand-search{display:none}.login{padding:9px 10px;font-size:12px}.nav-inner{padding:0 8px}.nav-inner a{font-size:14px;padding:13px 12px}main{margin:14px auto;padding:0 10px}.headline-card,.headline-image{min-height:330px;height:330px}.headline-content{padding:17px}.headline-content h2{font-size:23px}.headline-content p{font-size:13px}.latest-item{grid-template-columns:95px 1fr}.latest-item img{width:95px;height:70px}.category-tiles{grid-template-columns:repeat(2,1fr);gap:10px}.category-tile{height:120px}.berita-grid{grid-template-columns:1fr}}
+
+/* ===== VISI BANGSA VISITOR REDESIGN v2 ===== */
+:root{--vb-blue:#07539c;--vb-blue-dark:#063c73;--vb-red:#c40000;--vb-ink:#172433;--vb-muted:#66727e;--vb-bg:#f3f6f9;--vb-line:#dfe5eb}
+body{background:var(--vb-bg);color:var(--vb-ink)}
+.topbar{background:linear-gradient(90deg,var(--vb-blue-dark),var(--vb-blue));font-size:12px}
+.topbar-inner{max-width:1320px;padding:8px 24px;min-height:36px}
+.topbar-links{gap:14px}.topbar a{text-decoration:none}.topbar a:hover{text-decoration:underline}
+.brand-header{background:#fff;border-bottom:1px solid var(--vb-line)}
+.brand-inner{max-width:1320px;padding:10px 24px;min-height:178px;gap:22px}
+.brand-logo{width:340px;height:auto;max-width:42vw;object-fit:contain;object-position:left center}
+.brand-search{max-width:620px}.brand-search input{height:46px;border-radius:6px;font-size:15px;background:#f8fafc}.brand-search button{height:46px;border-radius:6px;padding:0 22px;background:var(--vb-red)}
+.login{background:var(--vb-red);padding:11px 16px;border-radius:6px;white-space:nowrap}
+nav{background:var(--vb-blue);border:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.nav-inner{max-width:1320px;padding:0 24px}.nav-inner a{padding:14px 16px;font-size:14px;border-bottom:3px solid transparent}.nav-inner a:first-child{border-bottom-color:#fff}.nav-inner a:hover{background:var(--vb-blue-dark)}
+main{max-width:1320px;margin:0 auto;padding:0 24px}
+.breaking-bar{display:flex;align-items:center;gap:14px;max-width:1320px;margin:14px auto 0;padding:0 24px;height:42px;background:#fff;border:1px solid var(--vb-line);border-radius:6px;overflow:hidden;box-shadow:0 2px 7px rgba(23,36,51,.04)}
+.breaking-label{background:var(--vb-red);color:#fff;font-weight:900;font-size:12px;letter-spacing:.7px;padding:8px 12px;border-radius:4px}.breaking-text{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#334252}
+.hero-layout{grid-template-columns:minmax(0,1.65fr) minmax(330px,.85fr);gap:18px;margin-top:18px}
+.headline-card{min-height:455px;border-radius:7px;box-shadow:0 5px 18px rgba(23,36,51,.13)}.headline-image{height:455px}.headline-content{padding:24px 26px}.headline-content h2{font-size:32px}.headline-category{background:var(--vb-red);font-size:11px;letter-spacing:.5px;padding:6px 10px}
+.latest-panel{border-radius:7px;padding:15px;box-shadow:0 5px 18px rgba(23,36,51,.08)}.latest-head{border-left:4px solid var(--vb-red)}.latest-head h2{font-size:21px}.latest-item{grid-template-columns:110px 1fr;padding:11px 0}.latest-item img{width:110px;height:72px}.latest-title{font-size:14px}.latest-cat{color:var(--vb-red);font-size:10px}.latest-time{font-size:11px}
+.category-tiles{gap:12px;margin:18px 0 30px}.category-tile{height:120px;border-radius:6px}.category-tile span{font-size:14px;padding:10px 11px}
+#berita{padding-top:4px}.section-header{border-left:4px solid var(--vb-red);margin-bottom:12px}.section-header h2{font-size:22px}.filter-btn{border-radius:5px;padding:7px 13px;font-size:13px}.filter-btn.active{background:var(--vb-red);border-color:var(--vb-red)}
+.berita-grid{grid-template-columns:repeat(3,1fr);gap:16px}.berita{border-radius:7px;box-shadow:0 2px 9px rgba(23,36,51,.07)}.berita:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(23,36,51,.12)}.gambar{height:185px}.isi{padding:14px}.kategori{color:var(--vb-red);font-size:11px}.judul{font-size:17px}.ringkasan{font-size:13px;color:#697582}.meta{font-size:10px}
+footer{margin-top:42px;background:#082f58}.footer-inner{max-width:1320px}.copyright{max-width:1320px}
+@media(max-width:950px){.brand-inner{min-height:145px}.brand-logo{width:290px}.hero-layout{grid-template-columns:1fr}.headline-card,.headline-image{min-height:400px;height:400px}.category-tiles{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.topbar-inner{min-height:32px}.brand-inner{min-height:118px;padding:7px 12px}.brand-logo{width:205px;max-width:56vw}.login{padding:8px 10px;font-size:11px}.nav-inner{padding:0 6px}.nav-inner a{font-size:13px;padding:12px 10px}.breaking-bar{margin:10px 10px 0;padding:0 8px;height:38px}.breaking-label{font-size:10px;padding:7px 9px}.breaking-text{font-size:12px}.hero-layout{margin-top:10px}.headline-card,.headline-image{min-height:320px;height:320px}.headline-content{padding:15px}.headline-content h2{font-size:22px}.latest-panel{padding:12px}.category-tiles{grid-template-columns:repeat(2,1fr);gap:9px}.category-tile{height:105px}.berita-grid{grid-template-columns:1fr}.gambar{height:205px}}
 </style>
 </head>
 
 <body>
 
-<div class="topbar"><div class="topbar-inner"><div>VISI Bangsa — Media Elektronik Indonesia</div><div class="topbar-links"><span>Senin, 22 September 2025</span><span>|</span><span>19:08 WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
+<div class="topbar"><div class="topbar-inner"><div>VISI Bangsa — Media Elektronik Indonesia</div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span>19:08 WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
 <header class="brand-header"><div class="brand-inner">
 <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 <div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
@@ -548,7 +574,7 @@ footer{margin-top:50px;background:#082c52}
 <nav><div class="nav-inner">
 <a href="/">⌂ &nbsp;Beranda</a><a href="#berita">Berita</a><a href="#nasional">Nasional</a><a href="#daerah">Daerah</a><a href="#ekonomi">Ekonomi</a><a href="#pendidikan">Pendidikan</a><a href="#olahraga">Olahraga</a><a href="#pesona-budaya">Pesona &amp; Budaya</a><a href="#opini">Opini</a><a href="/hubungi.html">Hubungi Kami</a>
 </div></nav>
-
+<div class="breaking-bar" aria-label="Berita terkini"><span class="breaking-label">TERKINI</span><span id="breakingText" class="breaking-text">Memuat berita terbaru...</span></div>
 
 <main>
 <div class="hero-layout">
@@ -669,9 +695,9 @@ const searchButton =
   document.getElementById("searchButton");
 
 
-document.getElementById("year")
-  .textContent =
-  new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
+const dateEl=document.getElementById("currentDate");
+if(dateEl)dateEl.textContent=new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
 
 
 function escapeHtml(value) {
@@ -786,6 +812,7 @@ async function loadBerita() {
 
   renderHeadline();
   renderLatest();
+  renderBreaking();
   renderCategoryTiles();
   renderBerita();
 
@@ -793,6 +820,7 @@ async function loadBerita() {
 
 
 function renderLatest(){const el=document.getElementById("latestList");if(!el)return;const items=semuaBerita.slice(0,5);if(!items.length){el.innerHTML='<div class="empty">Belum ada berita.</div>';return;}el.innerHTML=items.map(item=>{const img=item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">':'<div class="latest-item" style="background:#eee"></div>';return '<a class="latest-item" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+img+'<div><div class="latest-cat">'+escapeHtml(item.kategori||"Berita")+'</div><div class="latest-title">'+escapeHtml(item.judul)+'</div><div class="latest-time">'+escapeHtml(formatTanggal(item.tanggal))+'</div></div></a>';}).join("");}
+function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
 function renderCategoryTiles(){const el=document.getElementById("categoryTiles");if(!el)return;const cats=["Nasional","Daerah","Ekonomi","Pendidikan","Olahraga","Pesona & Budaya"];el.innerHTML=cats.map((cat,i)=>{const item=semuaBerita.find(x=>String(x.kategori||"").toLowerCase()===cat.toLowerCase())||semuaBerita[i];const img=item&&item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="">':'';return '<a class="category-tile" href="#berita" data-cat="'+escapeAttribute(cat)+'">'+img+'<span>'+escapeHtml(cat)+'</span></a>';}).join("");el.querySelectorAll(".category-tile").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();kategoriAktif=a.dataset.cat;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.category===kategoriAktif));renderBerita();document.getElementById("berita").scrollIntoView({behavior:"smooth"});}));}
 function renderHeadline() {
 
