@@ -131,6 +131,8 @@
       gap: 20px;
     }
 
+    .site-logo { display:block; width:260px; max-width:65vw; height:auto; }
+
     .brand {
       font-size: 30px;
       font-weight: 900;
@@ -327,6 +329,8 @@
     }
 
     @media (max-width: 700px) {
+      .site-logo { width:220px; }
+
       .brand {
         font-size: 24px;
       }
@@ -373,12 +377,7 @@
   <header class="header">
     <div class="header-inner">
 
-      <a
-        class="brand"
-        href="/"
-      >
-        VISI <span>Bangsa</span>
-      </a>
+      <a href="/" aria-label="VISI Bangsa"><img class="site-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 
       <a
         class="back"
