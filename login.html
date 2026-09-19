@@ -367,13 +367,22 @@
 
           // Akun lama tanpa role tetap diperlakukan sebagai Admin
           // agar fungsi login yang sudah berjalan tidak terputus.
-          const normalizedUserEmail =
-            String((user && user.email) || email)
+          const normalizedLoginEmail =
+            String(email || "")
               .trim()
               .toLowerCase();
 
+          const normalizedUserEmail =
+            String((user && user.email) || "")
+              .trim()
+              .toLowerCase();
+
+          const isRedaksiAccount =
+            normalizedLoginEmail === "redaksivisbangsa@gmail.com" ||
+            normalizedUserEmail === "redaksivisbangsa@gmail.com";
+
           const actualRole =
-            normalizedUserEmail === "redaksivisbangsa@gmail.com"
+            isRedaksiAccount
               ? "redaksi"
               : (appRole || userRole || "admin");
 
