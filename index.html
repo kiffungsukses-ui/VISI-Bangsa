@@ -732,44 +732,35 @@ footer{margin-top:34px}
 }
 
 
-/* ===== MOBILE TWO-ROW HEADER NAVIGATION ===== */
+/* ===== SINGLE HEADER NAVIGATION ===== */
 @media(max-width:600px){
-  nav{height:auto;overflow:hidden;background:#0b5aa6}
+  nav{height:48px;overflow:hidden;background:#0b5aa6}
   .nav-inner{
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr));
-    grid-template-rows:46px 46px;
+    display:flex!important;
     width:100%;
     min-width:0;
-    padding:0!important;
+    padding:0 6px!important;
     gap:0!important;
-    overflow:hidden!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scrollbar-width:none;
   }
+  .nav-inner::-webkit-scrollbar{display:none}
   .nav-inner a{
     display:flex!important;
     align-items:center;
     justify-content:center;
-    min-width:0!important;
-    min-height:46px!important;
-    height:46px!important;
-    padding:0 4px!important;
-    font-size:12px!important;
+    flex:0 0 auto;
+    min-width:auto!important;
+    min-height:48px!important;
+    height:48px!important;
+    padding:0 13px!important;
+    font-size:13px!important;
     line-height:1.1;
     white-space:nowrap;
-    border-bottom:1px solid rgba(255,255,255,.12);
   }
-  .nav-inner a:nth-child(1){grid-column:1;grid-row:1}
-  .nav-inner a:nth-child(2){grid-column:2;grid-row:1}
-  .nav-inner a:nth-child(3){grid-column:3;grid-row:1}
-  .nav-inner a:nth-child(4){grid-column:4;grid-row:1}
-  .nav-inner a:nth-child(5){grid-column:5;grid-row:1}
-  .nav-inner a:nth-child(6){grid-column:1;grid-row:2}
-  .nav-inner a:nth-child(7){grid-column:2;grid-row:2}
-  .nav-inner a:nth-child(8){grid-column:3;grid-row:2}
-  .nav-inner a:nth-child(9){grid-column:4;grid-row:2}
-  .nav-inner a:nth-child(10){grid-column:5;grid-row:2}
   .nav-inner a:last-child:after{content:none}
-  .nav-inner a:nth-child(1){font-weight:900}
+  .nav-inner a:first-child{font-weight:900}
 }
 
 </style>
@@ -787,7 +778,7 @@ footer{margin-top:34px}
 <div id="topAdSlot" class="ad-slot" aria-label="Iklan"></div>
 
 <nav><div class="nav-inner">
-<a href="/">⌂ &nbsp;Beranda</a><a href="#berita">Berita</a><a href="#nasional">Nasional</a><a href="#daerah">Daerah</a><a href="#ekonomi">Ekonomi</a><a href="#pendidikan">Pendidikan</a><a href="#olahraga">Olahraga</a><a href="#pesona-budaya">Pesona &amp; Budaya</a><a href="#opini">Opini</a><a href="/hubungi.html">Hubungi Kami</a>
+<a href="/">⌂ &nbsp;Beranda</a><a href="#berita">Berita</a><a href="#nasional">Nasional</a><a href="#daerah">Daerah</a><a href="#ekonomi">Ekonomi</a><a href="#pendidikan">Pendidikan</a><a href="#olahraga">Olahraga</a><a href="#pesona-budaya">Pesona &amp; Budaya</a><a href="#opini">Opini</a>
 </div></nav>
 <div class="breaking-bar" aria-label="Berita terkini"><span class="breaking-label">TERKINI</span><span id="breakingText" class="breaking-text">Memuat berita terbaru...</span></div>
 
