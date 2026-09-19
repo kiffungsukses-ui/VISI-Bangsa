@@ -2988,7 +2988,7 @@ ${item.status === "draft" ? `
         const userRole =
           currentUser.user_metadata && currentUser.user_metadata.role;
         currentUserRole =
-          (currentUser.email && currentUser.email.toLowerCase() === "redaksivisbangsa@gmail.com")
+          (currentUser.email && currentUser.email.toLowerCase() === "redaksivisibangsa@gmail.com")
             ? "redaksi"
             : (appRole || userRole || "admin");
         sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
