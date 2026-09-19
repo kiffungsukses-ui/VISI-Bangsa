@@ -487,6 +487,7 @@
     <div>
       <a href="/" aria-label="VISI Bangsa">
         <img
+          id="siteLogo"
           class="brand-logo"
           src="/visi-bangsa-logo.svg"
           alt="VISI Bangsa — Media Elektronik Indonesia"
@@ -650,9 +651,7 @@
       <h3>VISI Bangsa</h3>
 
       <p>
-        VISI Bangsa adalah media elektronik yang
-        menyajikan informasi dan berita terkini
-        untuk masyarakat Indonesia.
+        <span id="siteProfile">VISI Bangsa adalah media elektronik yang menyajikan informasi dan berita terkini untuk masyarakat Indonesia.</span>
       </p>
 
     </div>
@@ -717,6 +716,18 @@ let semuaBerita = [];
 let kategoriAktif = "Semua";
 
 let pencarian = "";
+
+async function loadSiteSettings() {
+  const result=await supabaseClient.from("site_settings").select("site_name,tagline,profile,email,phone,logo_url").eq("id",1).maybeSingle();
+  if(result.error||!result.data)return;
+  const s=result.data;
+  const logo=document.getElementById("siteLogo");
+  if(logo&&s.logo_url)logo.src=s.logo_url;
+  if(s.site_name)document.title=s.site_name+" — Media Elektronik Indonesia";
+  const profile=document.getElementById("siteProfile");
+  if(profile&&s.profile)profile.textContent=s.profile;
+}
+
 
 
 const beritaGrid =
@@ -1163,7 +1174,7 @@ searchInput.addEventListener(
 );
 
 
-loadBerita();
+Promise.all([loadSiteSettings(),loadBerita()]);
 
 </script>
 
