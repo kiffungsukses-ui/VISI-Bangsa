@@ -15,7 +15,7 @@ footer{background:#20252b;color:#fff;padding:25px 15px;margin-top:40px}footer .i
 </style>
 </head>
 <body>
-<header><div class="head"><a href="/" aria-label="VISI Bangsa"><img class="site-logo" src="visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a><a class="back" href="/">Beranda</a></div></header>
+<header><div class="head"><a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a><a class="back" href="/">Beranda</a></div></header>
 <main>
 <div class="tabs">
 <button class="tab active" data-tab="profil">Profil</button>
@@ -34,6 +34,7 @@ footer{background:#20252b;color:#fff;padding:25px 15px;margin-top:40px}footer .i
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const sb=window.supabase.createClient("https://vupvgdfdnpqactlqufbu.supabase.co","sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV");
+(async()=>{try{const r=await sb.from("site_settings").select("logo_url").eq("id",1).maybeSingle();if(r.error)throw r.error;const logo=document.getElementById("siteLogo");if(logo)logo.src=String(r.data?.logo_url||"visi-bangsa-logo.svg").trim();}catch(e){console.warn("Logo situs menggunakan logo bawaan:",e)}})();
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));t.classList.add("active");const target=document.getElementById(t.dataset.tab);target.classList.add("active");requestAnimationFrame(()=>target.scrollIntoView({behavior:"smooth",block:"start"}));});
 function msg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"err")}
 async function compressImage(file){
