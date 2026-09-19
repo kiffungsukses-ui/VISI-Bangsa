@@ -1396,20 +1396,33 @@ if(navMenu){
   navMenu.addEventListener("click",function(event){
     const target=event.target.closest("a,button");
     if(!target || !navMenu.contains(target)) return;
+
     const href=target.getAttribute("href");
+
     if(href === "#search" || target.id === "navSearchButton"){
       event.preventDefault();
       event.stopPropagation();
-      const header=document.querySelector(".brand-search");
-      if(header) header.scrollIntoView({behavior:"smooth",block:"center"});
-      setTimeout(function(){
-        if(searchInput){
-          searchInput.focus({preventScroll:true});
-          searchInput.click();
-        }
-      },300);
+
+      // Fokus harus dilakukan langsung di dalam event klik agar
+      // keyboard virtual Android dapat terbuka.
+      if(searchInput){
+        searchInput.removeAttribute("readonly");
+        searchInput.disabled=false;
+        searchInput.focus();
+        searchInput.click();
+        try{ searchInput.setSelectionRange(searchInput.value.length,searchInput.value.length); }catch(e){}
+      }
+
+      const brandSearch=document.querySelector(".brand-search");
+      if(brandSearch){
+        window.scrollTo({
+          top:Math.max(0,brandSearch.getBoundingClientRect().top+window.scrollY-12),
+          behavior:"smooth"
+        });
+      }
       return;
     }
+
     const kategori={
       "#berita":"Semua",
       "#nasional":"Nasional",
@@ -1420,6 +1433,7 @@ if(navMenu){
       "#pesona-budaya":"Pesona & Budaya",
       "#opini":"Opini"
     }[href];
+
     if(kategori){
       event.preventDefault();
       pilihKategoriMenu(kategori);
