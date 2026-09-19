@@ -1092,7 +1092,7 @@
         <form id="settingsForm">
           <div class="grid-2">
             <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
-            <div class="field"><label for="siteTagline">Slogan / Tagline</label><input id="siteTagline" type="text" maxlength="180" placeholder="MEDIA ELEKTRONIK INDONESIA"></div>
+            <div class="field"><label for="siteTagline">Tulisan Running / Tagline</label><input id="siteTagline" type="text" maxlength="180" placeholder="VISI Bangsa - Media Elektronik Indonesia"><div class="settings-note">Tulisan ini akan berjalan (running text) di bagian paling atas website dan dapat diubah kapan saja.</div></div>
           </div>
           <div class="field"><label for="siteProfile">Profil / Tentang VISI Bangsa</label><textarea id="siteProfile" placeholder="Tulis profil media VISI Bangsa..."></textarea></div>
           <div class="grid-2">
@@ -2086,7 +2086,7 @@
       }
       const item = result.data || {};
       siteNameInput.value = item.site_name || "VISI Bangsa";
-      siteTaglineInput.value = item.tagline || "MEDIA ELEKTRONIK INDONESIA";
+      siteTaglineInput.value = item.tagline || "VISI Bangsa - Media Elektronik Indonesia";
       siteProfileInput.value = item.profile || "";
       siteEmailInput.value = item.email || "";
       sitePhoneInput.value = item.phone || "";
@@ -2127,7 +2127,7 @@
         let logoUrl=current.data?.logo_url || null;
         const file=siteLogoFile.files[0];
         if (file) logoUrl=await uploadSiteLogo(file);
-        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"MEDIA ELEKTRONIK INDONESIA",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
+        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"VISI Bangsa - Media Elektronik Indonesia",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
         const result=await supabaseClient.from("site_settings").upsert(payload,{onConflict:"id"});
         if (result.error) throw result.error;
         if (file && current.data?.logo_url && current.data.logo_url!==logoUrl) await deleteSiteLogo(current.data.logo_url);
