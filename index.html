@@ -733,7 +733,7 @@ async function loadSiteSettings() {
   if(result.error||!result.data)return;
   const s=result.data;
   const logo=document.getElementById("siteLogo");
-  if(logo&&s.logo_url)logo.src=s.logo_url;
+  if(logo)logo.src="/visi-bangsa-logo.svg";
   if(s.site_name)document.title=s.site_name+" — Media Elektronik Indonesia";
   const profile=document.getElementById("siteProfile");
   if(profile&&s.profile)profile.textContent=s.profile;
