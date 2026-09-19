@@ -1442,7 +1442,12 @@ if(navMenu){
 
     if(target.id==="navSearchButton"){
       event.preventDefault();
-      bukaPencarianMobile();
+      if(window.matchMedia("(max-width:600px)").matches){
+        bukaPencarianMobile();
+      }else if(searchInput){
+        searchInput.focus();
+        searchInput.scrollIntoView({behavior:"smooth",block:"center"});
+      }
       return;
     }
 
