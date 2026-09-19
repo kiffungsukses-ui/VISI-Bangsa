@@ -951,6 +951,12 @@ async function loadSiteSettings() {
     .eq("id",1)
     .maybeSingle();
 
+  const defaultTagline = "TERDEPAN DALAM MENCERAHKAN";
+  const tagline = document.getElementById("siteTagline");
+  const taglineDuplicate = document.getElementById("siteTaglineDuplicate");
+  if (tagline) tagline.textContent = defaultTagline;
+  if (taglineDuplicate) taglineDuplicate.textContent = defaultTagline;
+
   if (result.error || !result.data) return;
 
   const s = result.data;
@@ -1066,7 +1072,7 @@ async function loadBerita() {
     </div>`;
 
 
-  const {
+  let {
     data,
     error
   } =
@@ -1081,6 +1087,19 @@ async function loadBerita() {
         }
       );
 
+  // Kompatibilitas berita lama: jika belum ada data berstatus terbit,
+  // tampilkan data lama kecuali yang secara eksplisit berstatus draft.
+  if (!error && (!data || data.length === 0)) {
+    const fallback = await supabaseClient
+      .from("berita")
+      .select("*")
+      .order("tanggal", { ascending: false });
+    if (!fallback.error) {
+      data = (fallback.data || []).filter(item =>
+        String(item.status || "").toLowerCase() !== "draft"
+      );
+    }
+  }
 
   if (error) {
 
