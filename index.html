@@ -1394,18 +1394,9 @@ function pilihKategoriMenu(kategori){
 const navMenu=document.querySelector(".nav-inner");
 if(navMenu){
   navMenu.addEventListener("click",function(event){
-    const target=event.target.closest("a,button,label");
+    const target=event.target.closest("a,button");
     if(!target || !navMenu.contains(target)) return;
     const href=target.getAttribute("href");
-
-    if(target.id === "navSearchButton"){
-      event.preventDefault();
-      if(searchInput){
-        searchInput.focus();
-        searchInput.click();
-      }
-      return;
-    }
 
     const kategori={
       "#berita":"Semua",
