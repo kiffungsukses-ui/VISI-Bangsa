@@ -309,6 +309,15 @@
       border: 1px solid #efb7b7;
     }
 
+    .publish-actions{margin-top:14px;padding:14px;border:1px solid #b9e6c5;border-radius:9px;background:#f3fbf5}
+    .publish-actions-text{margin-bottom:10px;font-weight:750;color:#146c2e}
+    .publish-actions-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .publish-button{border:0;background:#19733a;color:#fff;border-radius:8px;padding:10px 15px;font-weight:800}
+    .draft-button{border:1px solid #bbb;background:#fff;color:#222;border-radius:8px;padding:10px 15px;font-weight:800}
+    .status-badge{display:inline-block;margin-bottom:6px;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:900}
+    .status-published{background:#e8f7ee;color:#176b34}
+    .status-draft{background:#fff4df;color:#8a5a00}
+
     .loading {
       text-align: center;
       padding: 35px 15px;
@@ -941,6 +950,13 @@
       <section class="panel">
 
         <div id="message" class="message"></div>
+      <div id="publishActions" class="publish-actions hidden">
+        <div id="publishActionsText" class="publish-actions-text">Berita tersimpan sebagai draft.</div>
+        <div class="publish-actions-buttons">
+          <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
+          <button id="keepDraftButton" type="button" class="draft-button">Tetap Draft</button>
+        </div>
+      </div>
 
         <div class="panel-header">
           <div>
@@ -1286,6 +1302,11 @@
     const gambarFile = document.getElementById("gambarFile");
     const preview = document.getElementById("preview");
     const currentImageNote = document.getElementById("currentImageNote");
+    const publishActions = document.getElementById("publishActions");
+    const publishActionsText = document.getElementById("publishActionsText");
+    const publishButton = document.getElementById("publishButton");
+    const keepDraftButton = document.getElementById("keepDraftButton");
+    let pendingPublishId = null;
 
     const saveButton = document.getElementById("saveButton");
     const cancelButton = document.getElementById("cancelButton");
@@ -2184,7 +2205,7 @@
         await supabaseClient
           .from("berita")
           .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,created_at,updated_at"
+            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at"
           )
           .order(
             "tanggal",
@@ -2335,6 +2356,8 @@
                     : ""
                 }
 
+                <div class="status-badge ${item.status === "terbit" ? "status-published" : "status-draft"}">${item.status === "terbit" ? "TERBIT" : "DRAFT"}</div>
+
                 <div class="news-title">
                   ${escapeHtml(item.judul)}
                 </div>
@@ -2349,6 +2372,12 @@
               </div>
 
               <div class="news-actions">
+
+${item.status === "draft" ? `
+                  <button type="button" class="publish-button" data-publish-id="${item.id}">Terbitkan</button>
+                ` : `
+                  <button type="button" class="draft-button" data-draft-id="${item.id}">Jadikan Draft</button>
+                `}
 
                 <button
                   type="button"
@@ -2390,6 +2419,8 @@
       }
 
       editingId.value = item.id;
+      pendingPublishId = null;
+      publishActions.classList.add("hidden");
       judul.value = item.judul || "";
       kategori.value = item.kategori || "";
       penulis.value = item.penulis || "";
@@ -2522,16 +2553,13 @@
     newsForm.addEventListener(
       "submit",
       async event => {
-
         event.preventDefault();
         hideMessage();
+        publishActions.classList.add("hidden");
+        pendingPublishId = null;
 
         if (!currentUser) {
-          showMessage(
-            "Sesi login tidak ditemukan.",
-            "error"
-          );
-
+          showMessage("Sesi login tidak ditemukan.","error");
           return;
         }
 
@@ -2541,18 +2569,8 @@
         const content = isi.value.trim();
         const dateValue = tanggal.value;
 
-        if (
-          !title ||
-          !category ||
-          !author ||
-          !content ||
-          !dateValue
-        ) {
-          showMessage(
-            "Lengkapi semua kolom yang wajib diisi.",
-            "error"
-          );
-
+        if (!title || !category || !author || !content || !dateValue) {
+          showMessage("Lengkapi semua kolom yang wajib diisi.","error");
           return;
         }
 
@@ -2560,117 +2578,51 @@
         saveButton.textContent = "Menyimpan...";
 
         try {
+          const file = gambarFile.files[0];
+          let imageUrl = currentImageUrl;
+          if (file) imageUrl = await uploadImage(file);
 
-          const file =
-            gambarFile.files[0];
-
-          let imageUrl =
-            currentImageUrl;
-
-          if (file) {
-            imageUrl =
-              await uploadImage(file);
-          }
-
-          const isoDate =
-            new Date(
-              dateValue
-            ).toISOString();
-
-          const id =
-            editingId.value;
+          const isoDate = new Date(dateValue).toISOString();
+          const id = editingId.value;
 
           if (id) {
+            const result = await supabaseClient
+              .from("berita")
+              .update({judul:title,kategori:category,penulis:author,isi:content,tanggal:isoDate,gambar:imageUrl,status:"draft"})
+              .eq("id",id)
+              .select("id,judul,kategori,penulis,isi,tanggal,gambar,status")
+              .maybeSingle();
 
-            const updateData = {
-              judul: title,
-              kategori: category,
-              penulis: author,
-              isi: content,
-              tanggal: isoDate,
-              gambar: imageUrl
-            };
+            if (result.error) throw result.error;
+            if (!result.data) throw new Error("Perubahan tidak diterapkan ke data berita. Periksa izin Supabase (RLS) atau ID berita.");
+            pendingPublishId = result.data.id;
 
-            const result =
-              await supabaseClient
-                .from("berita")
-                .update(updateData)
-                .eq("id", id)
-                .select("id,judul,kategori,penulis,isi,tanggal,gambar")
-                .maybeSingle();
+            if (file && currentImageUrl && currentImageUrl !== imageUrl) await deleteStorageImage(currentImageUrl);
 
-            if (result.error) {
-              throw result.error;
-            }
-
-            if (!result.data) {
-              throw new Error(
-                "Perubahan tidak diterapkan ke data berita. Periksa izin Supabase (RLS) atau ID berita."
-              );
-            }
-
-            if (
-              file &&
-              currentImageUrl &&
-              currentImageUrl !== imageUrl
-            ) {
-              await deleteStorageImage(
-                currentImageUrl
-              );
-            }
-
-            showMessage(
-              "Perubahan berita berhasil disimpan.",
-              "success"
-            );
-
+            showMessage("Perubahan berita berhasil disimpan. Berita sekarang berstatus DRAFT.","success");
           } else {
+            const result = await supabaseClient
+              .from("berita")
+              .insert({judul:title,kategori:category,penulis:author,isi:content,tanggal:isoDate,gambar:imageUrl,status:"draft"})
+              .select("id,judul,kategori,penulis,isi,tanggal,gambar,status")
+              .maybeSingle();
 
-            const insertData = {
-              judul: title,
-              kategori: category,
-              penulis: author,
-              isi: content,
-              tanggal: isoDate,
-              gambar: imageUrl
-            };
-
-            const result =
-              await supabaseClient
-                .from("berita")
-                .insert(insertData);
-
-            if (result.error) {
-              throw result.error;
-            }
-
-            showMessage(
-              "Berita berhasil diterbitkan.",
-              "success"
-            );
+            if (result.error) throw result.error;
+            if (!result.data) throw new Error("Berita tidak berhasil disimpan.");
+            pendingPublishId = result.data.id;
+            showMessage("Berita berhasil disimpan sebagai DRAFT.","success");
           }
 
+          publishActionsText.textContent = "Berita sudah tersimpan. Apakah ingin menerbitkannya ke website pengunjung?";
+          publishActions.classList.remove("hidden");
           resetForm();
           await loadNews();
-
-        } catch (error) {
-
+        } catch(error) {
           console.error(error);
-
-          showMessage(
-            "Gagal menyimpan berita: " +
-            (error.message || error),
-            "error"
-          );
-
+          showMessage("Gagal menyimpan berita: " + (error.message || error),"error");
         } finally {
-
           saveButton.disabled = false;
-
-          saveButton.textContent =
-            editingId.value
-              ? "Simpan Perubahan"
-              : "Simpan Berita";
+          saveButton.textContent = editingId.value ? "Simpan Perubahan" : "Simpan Berita";
         }
       }
     );
@@ -2737,6 +2689,33 @@
     );
 
 
+    publishButton.addEventListener("click", async () => {
+      if (!pendingPublishId) return;
+      publishButton.disabled = true;
+      publishButton.textContent = "Menerbitkan...";
+      try {
+        const result = await supabaseClient.from("berita").update({status:"terbit"}).eq("id",pendingPublishId).select("id,status").maybeSingle();
+        if (result.error) throw result.error;
+        if (!result.data) throw new Error("Berita tidak berhasil diterbitkan.");
+        pendingPublishId = null;
+        publishActions.classList.add("hidden");
+        showMessage("Berita berhasil diterbitkan dan sekarang tampil di website pengunjung.","success");
+        await loadNews();
+      } catch(error) {
+        showMessage("Gagal menerbitkan berita: " + (error.message || error),"error");
+      } finally {
+        publishButton.disabled = false;
+        publishButton.textContent = "Terbitkan";
+      }
+    });
+
+    keepDraftButton.addEventListener("click", () => {
+      pendingPublishId = null;
+      publishActions.classList.add("hidden");
+      showMessage("Berita tetap tersimpan sebagai DRAFT dan belum tayang di website pengunjung.","success");
+      loadNews();
+    });
+
     submissionList.addEventListener(
       "click",
       event => {
@@ -2783,6 +2762,39 @@
         }
       }
     );
+
+    newsList.addEventListener("click", async event => {
+      const publishBtn = event.target.closest("[data-publish-id]");
+      const draftBtn = event.target.closest("[data-draft-id]");
+      if (publishBtn) {
+        try {
+          publishBtn.disabled = true;
+          const result = await supabaseClient.from("berita").update({status:"terbit"}).eq("id",publishBtn.dataset.publishId).select("id,status").maybeSingle();
+          if (result.error) throw result.error;
+          if (!result.data) throw new Error("Status berita tidak berubah.");
+          showMessage("Berita berhasil diterbitkan.","success");
+          await loadNews();
+        } catch(error) {
+          showMessage("Gagal menerbitkan berita: " + (error.message || error),"error");
+          publishBtn.disabled = false;
+        }
+        return;
+      }
+      if (draftBtn) {
+        try {
+          draftBtn.disabled = true;
+          const result = await supabaseClient.from("berita").update({status:"draft"}).eq("id",draftBtn.dataset.draftId).select("id,status").maybeSingle();
+          if (result.error) throw result.error;
+          if (!result.data) throw new Error("Status berita tidak berubah.");
+          showMessage("Berita berhasil dijadikan DRAFT dan tidak tampil di website pengunjung.","success");
+          await loadNews();
+        } catch(error) {
+          showMessage("Gagal mengubah status berita: " + (error.message || error),"error");
+          draftBtn.disabled = false;
+        }
+        return;
+      }
+    });
 
     newsList.addEventListener(
       "click",
