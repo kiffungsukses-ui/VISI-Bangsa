@@ -55,11 +55,9 @@
       height: 42px;
       border-radius: 9px;
       background: white;
-      color: #b40000;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      font-size: 20px;
+      padding: 5px;
+      object-fit: contain;
+      display: block;
     }
 
     .brand-text strong {
@@ -388,7 +386,14 @@
     }
 
 
-    .submission-list { display: grid; gap: 12px; }
+    .submission-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .submission-empty {
+      background: #fafafa;
+    }
     .submission-item {
       border: 1px solid #e5e5e5;
       border-radius: 10px;
@@ -720,7 +725,11 @@
       <div class="topbar-inner">
 
         <div class="brand">
-          <div class="brand-mark">V</div>
+          <img
+            class="brand-mark"
+            src="/visi-bangsa-logo.svg"
+            alt="VISI Bangsa"
+          >
 
           <div class="brand-text">
             <strong>VISI Bangsa</strong>
@@ -758,7 +767,8 @@
       <section class="stats">
 
         <div class="stat">
-          <div class="stat-label">Total Berita</div>          <div id="statTotal" class="stat-value">0</div>
+          <div class="stat-label">Total Berita</div>
+          <div id="statTotal" class="stat-value">0</div>
         </div>
 
         <div class="stat">
@@ -1199,7 +1209,7 @@
     function renderSubmissions() {
       if (!kirimanData.length) {
         submissionList.innerHTML =
-          '<div class="empty">Belum ada kiriman pengunjung yang menunggu pemeriksaan.</div>';
+          '<div class="empty submission-empty">Belum ada kiriman pengunjung yang menunggu pemeriksaan.</div>';
         return;
       }
 
@@ -2154,7 +2164,8 @@
             "error"
           );
 
-          gambarFile.value = "";          return;
+          gambarFile.value = "";
+          return;
         }
 
         if (
