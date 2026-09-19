@@ -2595,10 +2595,18 @@
               await supabaseClient
                 .from("berita")
                 .update(updateData)
-                .eq("id", id);
+                .eq("id", id)
+                .select("id,judul,kategori,penulis,isi,tanggal,gambar")
+                .maybeSingle();
 
             if (result.error) {
               throw result.error;
+            }
+
+            if (!result.data) {
+              throw new Error(
+                "Perubahan tidak diterapkan ke data berita. Periksa izin Supabase (RLS) atau ID berita."
+              );
             }
 
             if (
