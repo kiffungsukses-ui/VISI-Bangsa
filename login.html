@@ -367,7 +367,9 @@
           // Akun lama tanpa role tetap diperlakukan sebagai Admin
           // agar fungsi login yang sudah berjalan tidak terputus.
           const actualRole =
-            appRole || userRole || (user && user.email && user.email.toLowerCase() === "redaksivisbangsa@gmail.com" ? "redaksi" : "admin");
+            (user && user.email && user.email.toLowerCase() === "redaksivisbangsa@gmail.com")
+              ? "redaksi"
+              : (appRole || userRole || "admin");
 
           if (selectedLoginRole !== actualRole) {
             await supabaseClient.auth.signOut();
