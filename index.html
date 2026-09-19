@@ -493,6 +493,9 @@
           alt="VISI Bangsa — Media Elektronik Indonesia"
         >
       </a>
+      <div id="siteTagline" class="tagline">
+        MEDIA ELEKTRONIK INDONESIA
+      </div>
     </div>
 
     <a
@@ -726,6 +729,8 @@ async function loadSiteSettings() {
   if(s.site_name)document.title=s.site_name+" — Media Elektronik Indonesia";
   const profile=document.getElementById("siteProfile");
   if(profile&&s.profile)profile.textContent=s.profile;
+  const tagline=document.getElementById("siteTagline");
+  if(tagline&&s.tagline)tagline.textContent=s.tagline;
 }
 
 
