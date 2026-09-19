@@ -482,174 +482,87 @@
         grid-template-columns: 1fr;
       }
     }
-  </style>
+  
+/* VISI Bangsa modern portal layout */
+body{background:#f5f7fa;color:#182433}
+.topbar{background:#064b8f;color:#fff;font-size:14px}
+.topbar-inner{max-width:1280px;margin:auto;padding:10px 22px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.topbar-links{display:flex;gap:18px;align-items:center;white-space:nowrap}
+.brand-header{background:#fff;border-bottom:1px solid #e4e8ed}
+.brand-inner{max-width:1280px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:28px}
+.brand-logo{width:470px;max-width:52vw;height:145px;object-fit:contain;object-position:left center}
+.brand-search{display:flex;gap:10px;flex:1;max-width:690px}
+.brand-search input{width:100%;height:52px;border:1px solid #cbd4de;border-radius:8px;padding:0 18px;font-size:17px}
+.brand-search button{height:52px;background:#c40000;color:#fff;border:0;border-radius:8px;padding:0 28px;font-weight:800;font-size:16px;cursor:pointer}
+.login{border:0;background:#c40000;color:#fff!important;border-radius:7px;padding:13px 18px;font-size:15px}
+nav{position:relative;background:#07539c;border:0;box-shadow:none;top:0}
+.nav-inner{max-width:1280px;padding:0 22px;gap:0;overflow-x:auto}
+nav a{color:#fff;padding:16px 18px;font-size:16px}
+nav a:hover{background:#064786;color:#fff}
+nav a:first-child{border-bottom:4px solid #e31b23}
+main{max-width:1280px;margin:22px auto;padding:0 22px}
+.search-box{display:none}
+.headline-title{display:none}
+.hero-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(340px,.95fr);gap:22px;align-items:stretch}
+.headline-card{margin:0;border-radius:8px;position:relative;min-height:480px;background:#111;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.headline-link{display:block;height:100%;position:relative}
+.headline-image{width:100%;height:480px;object-fit:cover;display:block}
+.headline-card:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.82));pointer-events:none}
+.headline-content{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:28px;color:#fff}
+.headline-category{display:inline-block;background:#d00000;color:#fff;padding:7px 12px;border-radius:4px;margin-bottom:10px}
+.headline-content h2{font-size:34px;line-height:1.12;margin:0 0 10px;color:#fff}
+.headline-content p{color:#f1f4f7;margin:0 0 10px;line-height:1.5;font-size:15px}
+.headline-meta{color:#fff;font-size:13px}
+.latest-panel{background:#fff;border-radius:8px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.latest-head{display:flex;justify-content:space-between;align-items:center;border-left:5px solid #c40000;padding-left:10px;margin-bottom:10px}
+.latest-head h2{margin:0;font-size:23px}.latest-head a{color:#c40000;font-weight:700;text-decoration:none;font-size:13px}
+.latest-item{display:grid;grid-template-columns:125px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #e8ebee;text-decoration:none}
+.latest-item:last-child{border-bottom:0}.latest-item img{width:125px;height:80px;object-fit:cover;border-radius:6px;background:#ddd}
+.latest-cat{font-size:12px;font-weight:800;color:#c40000;text-transform:uppercase;margin-bottom:4px}
+.latest-title{font-size:15px;font-weight:700;line-height:1.25;color:#263445}
+.latest-time{font-size:12px;color:#8a939d;margin-top:5px}
+.category-tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin:22px 0 34px}
+.category-tile{height:145px;border-radius:7px;overflow:hidden;text-decoration:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:relative}
+.category-tile img{width:100%;height:100%;object-fit:cover;display:block}
+.category-tile span{position:absolute;left:0;right:0;bottom:0;padding:12px 14px;color:#fff;font-size:16px;font-weight:800;background:linear-gradient(transparent,rgba(0,0,0,.82))}
+#berita{background:transparent}.section-header{margin:0 0 12px;border-left:5px solid #c40000;padding-left:10px}.section-header h2{font-size:25px}
+.filter-wrap{margin-bottom:18px}.filter-btn{border-radius:4px}.filter-btn.active{background:#c40000;border-color:#c40000}
+.berita-grid{grid-template-columns:repeat(3,1fr);gap:20px}.berita{border-radius:8px}.kategori{color:#c40000}
+footer{margin-top:50px;background:#082c52}
+@media(max-width:950px){.brand-logo{width:360px;height:125px}.hero-layout{grid-template-columns:1fr}.latest-panel{margin-top:0}.category-tiles{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.topbar-inner{padding:8px 12px}.topbar-links{display:none}.brand-inner{padding:8px 12px;gap:8px;align-items:center}.brand-logo{width:210px;height:105px;max-width:52vw}.brand-search{display:none}.login{padding:9px 10px;font-size:12px}.nav-inner{padding:0 8px}.nav-inner a{font-size:14px;padding:13px 12px}main{margin:14px auto;padding:0 10px}.headline-card,.headline-image{min-height:330px;height:330px}.headline-content{padding:17px}.headline-content h2{font-size:23px}.headline-content p{font-size:13px}.latest-item{grid-template-columns:95px 1fr}.latest-item img{width:95px;height:70px}.category-tiles{grid-template-columns:repeat(2,1fr);gap:10px}.category-tile{height:120px}.berita-grid{grid-template-columns:1fr}}
+</style>
 </head>
 
 <body>
 
-<header>
-
-  <div class="header-inner">
-
-    <div>
-      <a href="/" aria-label="VISI Bangsa">
-        <img
-          id="siteLogo"
-          class="brand-logo"
-          src="/visi-bangsa-logo.svg"
-          alt="VISI Bangsa — Media Elektronik Indonesia"
-        >
-      </a>
-      <div id="siteTagline" class="tagline">
-        MEDIA ELEKTRONIK INDONESIA
-      </div>
-    </div>
-
-    <a
-      class="login"
-      href="/login.html"
-    >
-      Login Admin
-    </a>
-
-  </div>
-
-</header>
+<div class="topbar"><div class="topbar-inner"><div>VISI Bangsa — Media Elektronik Indonesia</div><div class="topbar-links"><span>Senin, 22 September 2025</span><span>|</span><span>19:08 WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
+<header class="brand-header"><div class="brand-inner">
+<a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
+<div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
+<a class="login" href="/login.html">Login Admin</a>
+</div></header>
 
 <div id="topAdSlot" class="ad-slot" aria-label="Iklan"></div>
 
-<nav>
-
-  <div class="nav-inner">
-
-    <a href="/">Beranda</a>
-    <a href="#berita">Berita</a>
-    <a href="#nasional">Nasional</a>
-    <a href="#daerah">Daerah</a>
-    <a href="#ekonomi">Ekonomi</a>
-    <a href="#pendidikan">Pendidikan</a>
-    <a href="#olahraga">Olahraga</a>
-    <a href="#pesona-budaya">Pesona &amp; Budaya</a>
-    <a href="#opini">Opini</a>
-    <a href="/hubungi.html">Hubungi Kami</a>
-
-  </div>
-
-</nav>
+<nav><div class="nav-inner">
+<a href="/">⌂ &nbsp;Beranda</a><a href="#berita">Berita</a><a href="#nasional">Nasional</a><a href="#daerah">Daerah</a><a href="#ekonomi">Ekonomi</a><a href="#pendidikan">Pendidikan</a><a href="#olahraga">Olahraga</a><a href="#pesona-budaya">Pesona &amp; Budaya</a><a href="#opini">Opini</a><a href="/hubungi.html">Hubungi Kami</a>
+</div></nav>
 
 
 <main>
-
-  <div class="search-box">
-
-    <input
-      id="searchInput"
-      type="search"
-      placeholder="Cari berita..."
-      autocomplete="off"
-    >
-
-    <button
-      class="search-button"
-      id="searchButton"
-      type="button"
-    >
-      Cari
-    </button>
-
-  </div>
-
-
-  <div class="headline-title">
-    <h1>Headline</h1>
-  </div>
-
-  <div id="headline">
-
-    <div id="status">
-      Memuat berita utama...
-    </div>
-
-  </div>
-
-
-  <section id="berita">
-
-    <div class="section-header">
-
-      <h2>Berita Terkini</h2>
-
-    </div>
-
-
-    <div class="filter-wrap">
-
-      <button
-        class="filter-btn active"
-        data-category="Semua"
-      >
-        Semua
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Nasional"
-      >
-        Nasional
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Daerah"
-      >
-        Daerah
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Ekonomi"
-      >
-        Ekonomi
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Pendidikan"
-      >
-        Pendidikan
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Olahraga"
-      >
-        Olahraga
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Pesona &amp; Budaya"
-      >
-        Pesona &amp; Budaya
-      </button>
-
-      <button
-        class="filter-btn"
-        data-category="Opini"
-      >
-        Opini
-      </button>
-
-    </div>
-
-
-    <div
-      id="beritaGrid"
-      class="berita-grid"
-    ></div>
-
-  </section>
-
+<div class="hero-layout">
+  <div id="headline"><div id="status">Memuat berita utama...</div></div>
+  <aside class="latest-panel"><div class="latest-head"><h2>Berita Terbaru</h2><a href="#berita">Lihat Semua ›</a></div><div id="latestList"><div class="empty">Memuat...</div></div></aside>
+</div>
+<div id="categoryTiles" class="category-tiles"></div>
+<section id="berita">
+<div class="section-header"><h2>Berita Pilihan</h2></div>
+<div class="filter-wrap">
+<button class="filter-btn active" data-category="Semua">Semua</button><button class="filter-btn" data-category="Nasional">Nasional</button><button class="filter-btn" data-category="Daerah">Daerah</button><button class="filter-btn" data-category="Ekonomi">Ekonomi</button><button class="filter-btn" data-category="Pendidikan">Pendidikan</button><button class="filter-btn" data-category="Olahraga">Olahraga</button><button class="filter-btn" data-category="Pesona &amp; Budaya">Pesona &amp; Budaya</button><button class="filter-btn" data-category="Opini">Opini</button>
+</div>
+<div id="beritaGrid" class="berita-grid"></div>
+</section>
 </main>
 
 
@@ -872,12 +785,15 @@ async function loadBerita() {
 
 
   renderHeadline();
-
+  renderLatest();
+  renderCategoryTiles();
   renderBerita();
 
 }
 
 
+function renderLatest(){const el=document.getElementById("latestList");if(!el)return;const items=semuaBerita.slice(0,5);if(!items.length){el.innerHTML='<div class="empty">Belum ada berita.</div>';return;}el.innerHTML=items.map(item=>{const img=item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">':'<div class="latest-item" style="background:#eee"></div>';return '<a class="latest-item" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+img+'<div><div class="latest-cat">'+escapeHtml(item.kategori||"Berita")+'</div><div class="latest-title">'+escapeHtml(item.judul)+'</div><div class="latest-time">'+escapeHtml(formatTanggal(item.tanggal))+'</div></div></a>';}).join("");}
+function renderCategoryTiles(){const el=document.getElementById("categoryTiles");if(!el)return;const cats=["Nasional","Daerah","Ekonomi","Pendidikan","Olahraga","Pesona & Budaya"];el.innerHTML=cats.map((cat,i)=>{const item=semuaBerita.find(x=>String(x.kategori||"").toLowerCase()===cat.toLowerCase())||semuaBerita[i];const img=item&&item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="">':'';return '<a class="category-tile" href="#berita" data-cat="'+escapeAttribute(cat)+'">'+img+'<span>'+escapeHtml(cat)+'</span></a>';}).join("");el.querySelectorAll(".category-tile").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();kategoriAktif=a.dataset.cat;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.category===kategoriAktif));renderBerita();document.getElementById("berita").scrollIntoView({behavior:"smooth"});}));}
 function renderHeadline() {
 
   if (!semuaBerita.length) {
