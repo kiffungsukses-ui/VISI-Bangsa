@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="id">
 <head>
@@ -464,6 +463,132 @@
       font-weight: 700;
     }
 
+    .review-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(0,0,0,.62);
+    }
+
+    .review-modal.open { display: flex; }
+
+    .review-dialog {
+      width: min(900px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+
+    .review-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      background: white;
+      border-bottom: 1px solid #eee;
+    }
+
+    .review-header h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .review-close {
+      border: 1px solid #ccc;
+      background: white;
+      color: #222;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-weight: 800;
+    }
+
+    .review-content { padding: 18px; }
+
+    .review-label {
+      color: #777;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .review-value {
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .review-title {
+      font-size: 25px;
+      font-weight: 850;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .review-body {
+      white-space: pre-wrap;
+      line-height: 1.75;
+      color: #222;
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+    }
+
+    .review-photo {
+      display: block;
+      width: 100%;
+      max-height: 430px;
+      object-fit: contain;
+      background: #f3f3f3;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      margin: 8px 0 18px;
+    }
+
+    .review-actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      padding: 16px 18px;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+    }
+
+    .review-publish {
+      border: 0;
+      background: #19733a;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
+    .review-reject {
+      border: 0;
+      background: #666;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
+    .review-cancel {
+      border: 1px solid #ccc;
+      background: white;
+      color: #222;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
     .hidden { display: none !important; }
 
     .user-email {
@@ -597,8 +722,7 @@
       <section class="stats">
 
         <div class="stat">
-          <div class="stat-label">Total Berita</div>
-          <div id="statTotal" class="stat-value">0</div>
+          <div class="stat-label">Total Berita</div>          <div id="statTotal" class="stat-value">0</div>
         </div>
 
         <div class="stat">
@@ -771,6 +895,22 @@
           </button>
         </div>
         <div id="submissionMessage" class="message"></div>
+
+        <div id="reviewModal" class="review-modal" aria-hidden="true">
+          <div class="review-dialog" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+            <div class="review-header">
+              <h3 id="reviewModalTitle">Periksa Kiriman</h3>
+              <button id="reviewCloseButton" type="button" class="review-close">Tutup</button>
+            </div>
+            <div id="reviewContent" class="review-content"></div>
+            <div class="review-actions">
+              <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
+              <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
+              <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
+            </div>
+          </div>
+        </div>
+
         <div id="submissionList" class="submission-list">
           <div class="loading">Memuat kiriman pengunjung...</div>
         </div>
@@ -892,11 +1032,19 @@
     const refreshSubmissionsButton = document.getElementById("refreshSubmissionsButton");
     const submissionMessage = document.getElementById("submissionMessage");
 
+    const reviewModal = document.getElementById("reviewModal");
+    const reviewContent = document.getElementById("reviewContent");
+    const reviewCloseButton = document.getElementById("reviewCloseButton");
+    const reviewCancelButton = document.getElementById("reviewCancelButton");
+    const reviewPublishButton = document.getElementById("reviewPublishButton");
+    const reviewRejectButton = document.getElementById("reviewRejectButton");
+
 
     let beritaData = [];
     let currentUser = null;
     let currentImageUrl = null;
     let kirimanData = [];
+    let currentReviewId = null;
 
     function showMessage(text, type = "success") {
       message.textContent = text;
@@ -1052,16 +1200,83 @@
             ${photo}
 
             <div class="submission-actions">
-              <button type="button" class="approve-btn" data-approve-submission-id="${item.id}">
-                Terbitkan
-              </button>
-              <button type="button" class="reject-btn" data-reject-submission-id="${item.id}">
-                Tolak
+              <button type="button" class="secondary" data-review-submission-id="${item.id}">
+                Periksa
               </button>
             </div>
           </article>
         `;
       }).join("");
+    }
+
+    function openReviewModal(id) {
+      const item = kirimanData.find(
+        submission => String(submission.id) === String(id)
+      );
+
+      if (!item) {
+        showSubmissionMessage("Kiriman tidak ditemukan.", "error");
+        return;
+      }
+
+      currentReviewId = item.id;
+
+      const typeLabel = item.jenis === "artikel" ? "ARTIKEL" : "BERITA";
+      const photo = item.gambar
+        ? `<img class="review-photo" src="${escapeHtml(item.gambar)}" alt="Foto kiriman">`
+        : '<div class="review-value">Tidak ada foto yang dilampirkan.</div>';
+
+      reviewContent.innerHTML = `
+        <div class="submission-type">${typeLabel}</div>
+        <div class="review-title">${escapeHtml(item.judul || "-")}</div>
+
+        <div class="review-label">Pengirim</div>
+        <div class="review-value">${escapeHtml(item.nama || "-")}</div>
+
+        <div class="review-label">Email</div>
+        <div class="review-value">${escapeHtml(item.email || "-")}</div>
+
+        <div class="review-label">WhatsApp / Telepon</div>
+        <div class="review-value">${escapeHtml(item.telepon || "-")}</div>
+
+        <div class="review-label">Kategori</div>
+        <div class="review-value">${escapeHtml(item.kategori || "-")}</div>
+
+        <div class="review-label">Tanggal Kirim</div>
+        <div class="review-value">${formatDate(item.created_at)}</div>
+
+        <div class="review-label">Foto</div>
+        ${photo}
+
+        <div class="review-label">Isi Kiriman</div>
+        <div class="review-body">${escapeHtml(item.isi || "-")}</div>
+      `;
+
+      reviewModal.classList.add("open");
+      reviewModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeReviewModal() {
+      currentReviewId = null;
+      reviewModal.classList.remove("open");
+      reviewModal.setAttribute("aria-hidden", "true");
+      reviewContent.innerHTML = "";
+      document.body.style.overflow = "";
+    }
+
+    async function reviewPublish() {
+      if (!currentReviewId) return;
+      const id = currentReviewId;
+      closeReviewModal();
+      await publishSubmission(id);
+    }
+
+    async function reviewReject() {
+      if (!currentReviewId) return;
+      const id = currentReviewId;
+      closeReviewModal();
+      await rejectSubmission(id);
     }
 
     async function publishSubmission(id) {
@@ -1197,8 +1412,7 @@
         if (result.error) {
           console.warn(
             "Gagal menghapus gambar Storage:",
-            result.error
-          );
+            result.error          );
         }
 
       } catch (error) {
@@ -1797,8 +2011,7 @@
             "error"
           );
 
-          gambarFile.value = "";
-          return;
+          gambarFile.value = "";          return;
         }
 
         if (
@@ -1839,28 +2052,34 @@
     submissionList.addEventListener(
       "click",
       event => {
-        const approveButton = event.target.closest(
-          "[data-approve-submission-id]"
+        const reviewButton = event.target.closest(
+          "[data-review-submission-id]"
         );
 
-        if (approveButton) {
-          publishSubmission(
-            approveButton.dataset.approveSubmissionId
-          );
-          return;
-        }
-
-        const rejectButton = event.target.closest(
-          "[data-reject-submission-id]"
-        );
-
-        if (rejectButton) {
-          rejectSubmission(
-            rejectButton.dataset.rejectSubmissionId
+        if (reviewButton) {
+          openReviewModal(
+            reviewButton.dataset.reviewSubmissionId
           );
         }
       }
     );
+
+    reviewCloseButton.addEventListener("click", closeReviewModal);
+    reviewCancelButton.addEventListener("click", closeReviewModal);
+    reviewPublishButton.addEventListener("click", reviewPublish);
+    reviewRejectButton.addEventListener("click", reviewReject);
+
+    reviewModal.addEventListener("click", event => {
+      if (event.target === reviewModal) {
+        closeReviewModal();
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && reviewModal.classList.contains("open")) {
+        closeReviewModal();
+      }
+    });
 
     refreshSubmissionsButton.addEventListener(
       "click",
@@ -2055,4 +2274,3 @@
 
 </body>
 </html>
-```
