@@ -49,3 +49,59 @@ drop policy if exists "kiriman_storage_delete_admin" on storage.objects;
 create policy "kiriman_storage_delete_admin" on storage.objects
 for delete to authenticated
 using (bucket_id='kiriman');
+-- Pengaturan website VISI Bangsa
+create table if not exists public.site_settings (
+  id integer primary key check (id = 1),
+  site_name text not null default 'VISI Bangsa',
+  tagline text not null default 'MEDIA ELEKTRONIK INDONESIA',
+  profile text not null default '',
+  email text not null default '',
+  phone text not null default '',
+  logo_url text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_settings enable row level security;
+
+drop policy if exists "site_settings_public_select" on public.site_settings;
+create policy "site_settings_public_select" on public.site_settings
+for select to anon, authenticated using (true);
+
+drop policy if exists "site_settings_admin_insert" on public.site_settings;
+create policy "site_settings_admin_insert" on public.site_settings
+for insert to authenticated
+with check ((auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com');
+
+drop policy if exists "site_settings_admin_update" on public.site_settings;
+create policy "site_settings_admin_update" on public.site_settings
+for update to authenticated
+using ((auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com')
+with check ((auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com');
+
+insert into public.site_settings (id,site_name,tagline,profile)
+values (1,'VISI Bangsa','MEDIA ELEKTRONIK INDONESIA','VISI Bangsa adalah media elektronik yang menyajikan informasi dan berita terkini untuk masyarakat Indonesia.')
+on conflict (id) do nothing;
+
+insert into storage.buckets (id,name,public)
+values ('site-assets','site-assets',true)
+on conflict (id) do update set public=true;
+
+drop policy if exists "site_assets_admin_insert" on storage.objects;
+create policy "site_assets_admin_insert" on storage.objects
+for insert to authenticated
+with check (bucket_id='site-assets' and (auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com');
+
+drop policy if exists "site_assets_admin_update" on storage.objects;
+create policy "site_assets_admin_update" on storage.objects
+for update to authenticated
+using (bucket_id='site-assets' and (auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com')
+with check (bucket_id='site-assets' and (auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com');
+
+drop policy if exists "site_assets_public_read" on storage.objects;
+create policy "site_assets_public_read" on storage.objects
+for select to anon, authenticated using (bucket_id='site-assets');
+
+drop policy if exists "site_assets_admin_delete" on storage.objects;
+create policy "site_assets_admin_delete" on storage.objects
+for delete to authenticated
+using (bucket_id='site-assets' and (auth.jwt() ->> 'email') = 'kiffungsukses@gmail.com');
