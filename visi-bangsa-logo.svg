@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">VISI Bangsa</title>
+  <desc id="desc">Logo VISI Bangsa Media Elektronik Indonesia</desc>
+  <defs>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff1b1b"/>
+      <stop offset="1" stop-color="#9d0000"/>
+    </linearGradient>
+    <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15202b"/>
+      <stop offset="1" stop-color="#07111b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="420" fill="white"/>
+  <g transform="translate(35 35)">
+    <path d="M18 115 C85 18 215 10 285 104" fill="none" stroke="#d00000" stroke-width="12"/>
+    <path d="M42 95 C92 55 145 45 205 55 C188 70 174 85 166 102 C132 82 97 82 65 98 Z" fill="#c9ced2" opacity=".85"/>
+    <path d="M72 112 L8 112 L72 270 L145 205 Z" fill="url(#red)"/>
+    <path d="M68 270 C155 205 203 142 270 115 C232 170 190 220 118 302 Z" fill="url(#red)"/>
+    <path d="M78 235 C155 190 191 145 247 126 C205 171 163 214 104 268 Z" fill="white" opacity=".98"/>
+    <path d="M154 116 C188 83 244 76 279 104 C252 105 234 114 220 128 C235 125 250 126 263 133 C242 151 215 159 190 151 C177 143 165 132 154 116 Z" fill="url(#red)"/>
+    <path d="M204 108 C224 94 250 94 268 106 C251 107 238 113 229 123 Z" fill="#fff"/>
+    <circle cx="251" cy="111" r="4" fill="#111"/>
+  </g>
+  <text x="335" y="178" font-family="Arial, Helvetica, sans-serif" font-size="112" font-weight="900" fill="url(#navy)" letter-spacing="-5">VISI</text>
+  <text x="335" y="285" font-family="Arial, Helvetica, sans-serif" font-size="105" font-weight="900" fill="url(#red)" letter-spacing="-4">Bangsa</text>
+  <line x1="335" y1="325" x2="375" y2="325" stroke="#d00000" stroke-width="5"/>
+  <text x="390" y="335" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#17212b" letter-spacing="5">MEDIA ELEKTRONIK INDONESIA</text>
+  <line x1="1035" y1="325" x2="1170" y2="325" stroke="#d00000" stroke-width="5"/>
+  <text x="335" y="378" font-family="Arial, Helvetica, sans-serif" font-size="25" font-style="italic" fill="#17212b" letter-spacing="1.2">Menyajikan Fakta, Menginspirasi Bangsa</text>
+</svg>
