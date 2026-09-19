@@ -795,9 +795,10 @@
         await supabaseClient
           .from("berita")
           .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,updated_at"
+            "id,judul,isi,gambar,kategori,penulis,tanggal,status,updated_at"
           )
           .eq("id", articleId)
+          .eq("status","terbit")
           .single();
 
       if (error || !data) {
@@ -897,8 +898,9 @@
         supabaseClient
           .from("berita")
           .select(
-            "id,judul,gambar,kategori,tanggal"
+            "id,judul,gambar,kategori,tanggal,status"
           )
+          .eq("status","terbit")
           .neq(
             "id",
             currentId
