@@ -1008,7 +1008,19 @@ body.vb-menu-open{overflow:hidden}
     line-height:1.25!important;
   }
 }
-</style></head>
+<style id="berita-card-match-latest-spacing">
+/* Samakan jarak vertikal Berita Pilihan dengan Berita Terbaru tanpa mengubah fungsi. */
+.berita .kategori{margin-bottom:4px!important;}
+.berita .judul{margin-bottom:0!important;min-height:0!important;}
+.berita .ringkasan{margin-top:4px!important;margin-bottom:0!important;min-height:0!important;line-height:1.25!important;}
+.berita .meta{margin-top:5px!important;min-height:0!important;}
+@media(max-width:600px){
+  .berita .kategori{margin-bottom:4px!important;}
+  .berita .judul{margin-bottom:0!important;}
+  .berita .ringkasan{margin-top:3px!important;margin-bottom:0!important;}
+  .berita .meta{margin-top:4px!important;}
+}
+</style></style></head>
 
 <body>
 
