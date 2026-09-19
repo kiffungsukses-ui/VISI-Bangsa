@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Hubungi VISI Bangsa, profil redaksi, kirim berita dan kirim artikel.">
+<title>Hubungi Kami — VISI Bangsa</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f5f7;color:#202124}
+header{background:#b40000;color:#fff}.head{max-width:1100px;margin:auto;padding:18px 16px;display:flex;justify-content:space-between;align-items:center;gap:15px}.logo{font-size:28px;font-weight:900}.logo span{color:#ffd400}.back{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.7);padding:9px 13px;border-radius:6px;font-weight:700}
+main{max-width:1100px;margin:25px auto;padding:0 15px}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:18px}.tab{border:1px solid #ccc;background:#fff;padding:11px 16px;border-radius:22px;font-weight:800;white-space:nowrap;cursor:pointer}.tab.active{background:#b40000;color:#fff;border-color:#b40000}
+.card{background:#fff;border-radius:10px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:18px}.card h1,.card h2{margin-top:0}.muted{color:#666;line-height:1.7}.form{display:none}.form.active{display:block}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin-bottom:14px}.field label{display:block;font-weight:700;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:7px;font:inherit}.field textarea{min-height:220px;resize:vertical}.btn{background:#b40000;color:#fff;border:0;border-radius:7px;padding:12px 18px;font-weight:800;cursor:pointer}.note{font-size:12px;color:#777;line-height:1.5}.msg{display:none;padding:12px;border-radius:7px;margin-bottom:15px}.msg.ok{display:block;background:#e9f8ee;color:#146c2e}.msg.err{display:block;background:#fff0f0;color:#9a0000}
+footer{background:#20252b;color:#fff;padding:25px 15px;margin-top:40px}footer .inner{max-width:1100px;margin:auto}footer p{color:#c7c9cc;line-height:1.6}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.head{padding:14px}.logo{font-size:23px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="logo">VISI <span>Bangsa</span></div><a class="back" href="/">Beranda</a></div></header>
+<main>
+<div class="tabs">
+<button class="tab active" data-tab="profil">Profil</button>
+<button class="tab" data-tab="berita">Kirim Berita</button>
+<button class="tab" data-tab="artikel">Kirim Artikel</button>
+</div>
+<section id="profil" class="card panel"><h1>Profil VISI Bangsa</h1><p class="muted">VISI Bangsa adalah media elektronik Indonesia yang menyajikan informasi dan berita dari berbagai daerah serta bidang kehidupan masyarakat. Kami membuka ruang bagi masyarakat untuk mengirimkan berita dan artikel untuk dipertimbangkan oleh redaksi.</p><p class="muted"><strong>Catatan redaksi:</strong> setiap kiriman akan diperiksa terlebih dahulu. Pengiriman tidak otomatis berarti diterbitkan. Redaksi berhak melakukan penyuntingan seperlunya dan menentukan kelayakan publikasi.</p></section>
+
+<section id="berita" class="card panel form"><h2>Kirim Berita</h2><p class="muted">Kirim informasi berita beserta foto kepada redaksi VISI Bangsa.</p><div id="msgBerita" class="msg"></div>
+<form id="formBerita"><div class="grid"><div class="field"><label>Nama Pengirim *</label><input id="bNama" required maxlength="100"></div><div class="field"><label>Email *</label><input id="bEmail" type="email" required maxlength="150"></div><div class="field"><label>No. WhatsApp/Telepon</label><input id="bTelepon" maxlength="30"></div><div class="field"><label>Kategori *</label><select id="bKategori" required><option value="">Pilih kategori</option><option>Nasional</option><option>Daerah</option><option>Ekonomi</option><option>Pendidikan</option><option>Olahraga</option><option>Pesona & Budaya</option><option>Opini</option></select></div></div><div class="field"><label>Judul Berita *</label><input id="bJudul" required maxlength="180"></div><div class="field"><label>Isi Berita *</label><textarea id="bIsi" required></textarea></div><div class="field"><label>Foto Berita</label><input id="bFoto" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="note">JPG, PNG, WEBP atau GIF. Maksimal 5 MB.</div></div><button class="btn" type="submit">Kirim Berita ke Redaksi</button></form></section>
+
+<section id="artikel" class="card panel form"><h2>Kirim Artikel</h2><p class="muted">Kirim tulisan/opini beserta foto pendukung jika ada.</p><div id="msgArtikel" class="msg"></div>
+<form id="formArtikel"><div class="grid"><div class="field"><label>Nama Penulis *</label><input id="aNama" required maxlength="100"></div><div class="field"><label>Email *</label><input id="aEmail" type="email" required maxlength="150"></div><div class="field"><label>No. WhatsApp/Telepon</label><input id="aTelepon" maxlength="30"></div><div class="field"><label>Kategori *</label><select id="aKategori" required><option value="">Pilih kategori</option><option>Nasional</option><option>Daerah</option><option>Ekonomi</option><option>Pendidikan</option><option>Olahraga</option><option>Pesona & Budaya</option><option>Opini</option></select></div></div><div class="field"><label>Judul Artikel *</label><input id="aJudul" required maxlength="180"></div><div class="field"><label>Isi Artikel *</label><textarea id="aIsi" required></textarea></div><div class="field"><label>Foto Pendukung</label><input id="aFoto" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="note">JPG, PNG, WEBP atau GIF. Maksimal 5 MB.</div></div><button class="btn" type="submit">Kirim Artikel ke Redaksi</button></form></section>
+</main>
+<footer><div class="inner"><strong>VISI Bangsa</strong><p>Informasi, berita, dan ruang tulisan masyarakat Indonesia.</p></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const sb=window.supabase.createClient("https://vupvgdfdnpqactlqufbu.supabase.co","sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV");
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));t.classList.add("active");document.getElementById(t.dataset.tab).classList.add("active")});
+function msg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"err")}
+async function upload(file){
+ if(!file)return null;
+ if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type))throw new Error("Format foto tidak didukung.");
+ if(file.size>5*1024*1024)throw new Error("Ukuran foto maksimal 5 MB.");
+ const ext=file.name.split(".").pop().toLowerCase().replace("jpeg","jpg");
+ const path="public/"+Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext;
+ const u=await sb.storage.from("kiriman").upload(path,file,{upsert:false,contentType:file.type});
+ if(u.error)throw u.error;
+ return sb.storage.from("kiriman").getPublicUrl(path).data.publicUrl;
+}
+async function submitForm(type){
+ const p=type==="berita"?{nama:bNama.value,email:bEmail.value,telepon:bTelepon.value,judul:bJudul.value,kategori:bKategori.value,isi:bIsi.value,file:bFoto.files[0],box:msgBerita,form:formBerita}: {nama:aNama.value,email:aEmail.value,telepon:aTelepon.value,judul:aJudul.value,kategori:aKategori.value,isi:aIsi.value,file:aFoto.files[0],box:msgArtikel,form:formArtikel};
+ const btn=p.form.querySelector("button");btn.disabled=true;btn.textContent="Mengirim...";
+ try{const gambar=await upload(p.file);const r=await sb.from("kiriman").insert({jenis:type,nama:p.nama.trim(),email:p.email.trim(),telepon:p.telepon.trim(),judul:p.judul.trim(),kategori:p.kategori,isi:p.isi.trim(),gambar,status:"pending"});if(r.error)throw r.error;p.form.reset();msg(p.box,"Kiriman berhasil diterima. Redaksi akan memeriksa sebelum menentukan penerbitan.",true)}catch(e){console.error(e);msg(p.box,"Kiriman gagal dikirim: "+(e.message||e),false)}finally{btn.disabled=false;btn.textContent=type==="berita"?"Kirim Berita ke Redaksi":"Kirim Artikel ke Redaksi"}}
+formBerita.onsubmit=e=>{e.preventDefault();submitForm("berita")};formArtikel.onsubmit=e=>{e.preventDefault();submitForm("artikel")};
+</script>
+</body>
+</html>
