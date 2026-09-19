@@ -849,20 +849,91 @@ nav{height:84px!important;overflow:hidden;background:#b40000;border-bottom:0;box
     position:relative;
   }
 }
+</style><style id="hamburger-navigation">
+/* ===== VISI BANGSA HAMBURGER NAVIGATION ===== */
+.legacy-nav{display:none!important}
+.brand-inner{position:relative;justify-content:flex-start;gap:16px}
+.menu-toggle{
+  width:46px;height:46px;flex:0 0 46px;border:1px solid #d7e0e8;border-radius:10px;
+  background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  cursor:pointer;box-shadow:0 2px 8px rgba(0,45,90,.08);transition:.18s ease;z-index:2
+}
+.menu-toggle:hover{background:#f2f7fc;border-color:#b9cfe2}
+.menu-toggle span{display:block;width:22px;height:2.5px;border-radius:4px;background:#07539c;transition:.18s ease}
+.menu-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+.header-search-toggle{display:none}
+.vb-menu-overlay{
+  position:fixed;inset:0;background:rgba(3,20,38,.56);backdrop-filter:blur(2px);
+  opacity:0;visibility:hidden;transition:opacity .22s ease;z-index:1000
+}
+.vb-menu-overlay.open{opacity:1;visibility:visible}
+.vb-menu-drawer{
+  position:fixed;top:0;left:0;bottom:0;width:min(360px,88vw);background:#fff;
+  box-shadow:8px 0 30px rgba(0,0,0,.22);transform:translateX(-105%);transition:transform .24s ease;
+  z-index:1001;overflow-y:auto;padding-bottom:20px
+}
+.vb-menu-drawer.open{transform:translateX(0)}
+.vb-menu-head{
+  min-height:86px;padding:14px 16px;border-bottom:1px solid #e5ebf1;
+  display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.vb-menu-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.vb-menu-brand img{width:58px;height:58px;object-fit:contain}
+.vb-menu-brand strong{display:block;color:#0a4378;font-size:18px;line-height:1.1}
+.vb-menu-brand small{display:block;margin-top:4px;color:#778493;font-size:10px;letter-spacing:.6px;text-transform:uppercase}
+.menu-close{
+  width:38px;height:38px;border:0;border-radius:9px;background:#eef4f9;color:#07539c;
+  font-size:28px;line-height:1;cursor:pointer
+}
+.vb-menu-list,.vb-menu-secondary{padding:10px 12px}
+.vb-menu-link{
+  display:flex;align-items:center;gap:12px;min-height:46px;padding:8px 12px;border-radius:9px;
+  color:#18324d;text-decoration:none;font-size:14px;font-weight:800;transition:.16s ease
+}
+.vb-menu-link:hover{background:#edf5fc;color:#07539c}
+.vb-menu-link.active{background:#0b5aa6;color:#fff}
+.vb-menu-icon{width:26px;text-align:center;font-size:17px;line-height:1;flex:0 0 26px}
+.vb-menu-divider{height:1px;background:#e5ebf1;margin:3px 20px}
+.vb-menu-secondary .vb-menu-link{font-weight:700;color:#44576b}
+.vb-menu-secondary .vb-menu-link:last-child{margin-top:6px;background:#d20b16;color:#fff;justify-content:center}
+.vb-menu-secondary .vb-menu-link:last-child .vb-menu-icon{display:none}
+body.vb-menu-open{overflow:hidden}
+@media(max-width:600px){
+  .brand-inner{justify-content:flex-start;gap:7px}
+  .menu-toggle{width:40px;height:40px;flex-basis:40px;border-radius:9px}
+  .menu-toggle span{width:20px}
+  .brand-logo{width:calc(100vw - 132px);max-width:245px;height:68px}
+  .header-search-toggle{
+    display:flex;width:38px;height:38px;flex:0 0 38px;border:1px solid #d7e0e8;border-radius:9px;
+    background:#fff;color:#07539c;align-items:center;justify-content:center;font-size:23px;cursor:pointer
+  }
+  .brand-search{display:none}
+  .login{margin-left:auto}
+  .vb-menu-drawer{width:min(340px,88vw)}
+  .vb-menu-head{min-height:80px}
+  .vb-menu-brand img{width:52px;height:52px}
+  .vb-menu-brand strong{font-size:16px}
+}
 </style></head>
 
 <body>
 
 <div class="topbar"><div class="topbar-inner"><div class="running-tagline"><span class="running-tagline-track"><span id="siteTagline"></span><span id="siteTaglineDuplicate" aria-hidden="true"></span></span></div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
 <header class="brand-header"><div class="brand-inner">
+<button type="button" id="menuToggle" class="menu-toggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="vbMenuDrawer">
+  <span></span><span></span><span></span>
+</button>
 <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
+<button type="button" id="headerSearchToggle" class="header-search-toggle" aria-label="Buka pencarian">⌕</button>
 <div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
 <a class="login" href="/login.html">Login Admin</a>
 </div></header>
 
 <div id="topAdSlot" class="ad-slot" aria-label="Iklan"></div>
 
-<nav><div class="nav-inner">
+<nav class="legacy-nav" aria-hidden="true"><div class="nav-inner">
 <a href="/"><span class="nav-icon">⌂</span><span>Beranda</span></a>
 <a href="#berita"><span class="nav-icon">▤</span><span>Berita</span></a>
 <a href="#nasional"><span class="nav-icon">🇮🇩</span><span>Nasional</span></a>
@@ -874,6 +945,37 @@ nav{height:84px!important;overflow:hidden;background:#b40000;border-bottom:0;box
 <a href="#opini"><span class="nav-icon">◉</span><span>Opini</span></a>
 <button type="button" id="navSearchButton" class="nav-search" aria-label="Buka pencarian"><span class="nav-icon">⌕</span><span>Pencarian</span></button>
 </div></nav>
+
+<div id="vbMenuOverlay" class="vb-menu-overlay" aria-hidden="true"></div>
+<aside id="vbMenuDrawer" class="vb-menu-drawer" aria-hidden="true" aria-label="Menu navigasi VISI Bangsa">
+  <div class="vb-menu-head">
+    <div class="vb-menu-brand">
+      <img src="/visi-bangsa-logo.svg" alt="VISI Bangsa">
+      <div><strong>VISI Bangsa</strong><small>Media Elektronik</small></div>
+    </div>
+    <button type="button" id="menuClose" class="menu-close" aria-label="Tutup menu">×</button>
+  </div>
+  <div class="vb-menu-list">
+    <a class="vb-menu-link active" href="/"><span class="vb-menu-icon">⌂</span><span>Beranda</span></a>
+    <a class="vb-menu-link" href="#berita"><span class="vb-menu-icon">▤</span><span>Berita</span></a>
+    <a class="vb-menu-link" href="#nasional" data-category="Nasional"><span class="vb-menu-icon">🇮🇩</span><span>Nasional</span></a>
+    <a class="vb-menu-link" href="#daerah" data-category="Daerah"><span class="vb-menu-icon">⌖</span><span>Daerah</span></a>
+    <a class="vb-menu-link" href="#ekonomi" data-category="Ekonomi"><span class="vb-menu-icon">↗</span><span>Ekonomi</span></a>
+    <a class="vb-menu-link" href="#pendidikan" data-category="Pendidikan"><span class="vb-menu-icon">🎓</span><span>Pendidikan</span></a>
+    <a class="vb-menu-link" href="#olahraga" data-category="Olahraga"><span class="vb-menu-icon">⚽</span><span>Olahraga</span></a>
+    <a class="vb-menu-link" href="#pesona-budaya" data-category="Pesona &amp; Budaya"><span class="vb-menu-icon">✦</span><span>Pesona &amp; Budaya</span></a>
+    <a class="vb-menu-link" href="#opini" data-category="Opini"><span class="vb-menu-icon">◉</span><span>Opini</span></a>
+  </div>
+  <div class="vb-menu-divider"></div>
+  <div class="vb-menu-secondary">
+    <a class="vb-menu-link" href="/tentang.html"><span class="vb-menu-icon">ⓘ</span><span>Tentang Kami</span></a>
+    <a class="vb-menu-link" href="/hubungi.html"><span class="vb-menu-icon">✉</span><span>Hubungi Kami</span></a>
+    <a class="vb-menu-link" href="/hubungi.html"><span class="vb-menu-icon">📰</span><span>Kirim Berita</span></a>
+    <a class="vb-menu-link" href="/hubungi.html"><span class="vb-menu-icon">✎</span><span>Kirim Artikel</span></a>
+    <a class="vb-menu-link" href="/login.html"><span class="vb-menu-icon">🔐</span><span>Login Admin</span></a>
+  </div>
+</aside>
+
 <div id="mobileSearchPanel" class="mobile-search-panel" aria-hidden="true">
   <form id="mobileSearchForm">
     <input id="mobileSearchInput" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Ketik pencarian..." aria-label="Cari berita">
@@ -1529,6 +1631,56 @@ async function loadAds(){
   slot.innerHTML=content;slot.classList.add("active");
 }
 
+
+
+// ===== VISI BANGSA HAMBURGER MENU =====
+const menuToggle=document.getElementById("menuToggle");
+const menuClose=document.getElementById("menuClose");
+const menuDrawer=document.getElementById("vbMenuDrawer");
+const menuOverlay=document.getElementById("vbMenuOverlay");
+const headerSearchToggle=document.getElementById("headerSearchToggle");
+
+function bukaMenu(){
+  if(!menuDrawer||!menuOverlay||!menuToggle)return;
+  menuDrawer.classList.add("open");
+  menuOverlay.classList.add("open");
+  menuDrawer.setAttribute("aria-hidden","false");
+  menuOverlay.setAttribute("aria-hidden","false");
+  menuToggle.setAttribute("aria-expanded","true");
+  document.body.classList.add("vb-menu-open");
+}
+function tutupMenu(){
+  if(!menuDrawer||!menuOverlay||!menuToggle)return;
+  menuDrawer.classList.remove("open");
+  menuOverlay.classList.remove("open");
+  menuDrawer.setAttribute("aria-hidden","true");
+  menuOverlay.setAttribute("aria-hidden","true");
+  menuToggle.setAttribute("aria-expanded","false");
+  document.body.classList.remove("vb-menu-open");
+}
+if(menuToggle)menuToggle.addEventListener("click",bukaMenu);
+if(menuClose)menuClose.addEventListener("click",tutupMenu);
+if(menuOverlay)menuOverlay.addEventListener("click",tutupMenu);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")tutupMenu();});
+
+document.querySelectorAll(".vb-menu-link").forEach(link=>{
+  link.addEventListener("click",event=>{
+    const kategori=link.dataset.category;
+    const href=link.getAttribute("href")||"";
+    tutupMenu();
+    if(kategori && typeof pilihKategoriMenu==="function"){
+      event.preventDefault();
+      pilihKategoriMenu(kategori);
+    }else if(href==="#berita" && typeof pilihKategoriMenu==="function"){
+      event.preventDefault();
+      pilihKategoriMenu("Semua");
+    }
+  });
+});
+
+if(headerSearchToggle)headerSearchToggle.addEventListener("click",()=>{
+  if(typeof bukaPencarianMobile==="function")bukaPencarianMobile();
+});
 
 </script>
 
