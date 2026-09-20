@@ -91,6 +91,14 @@
   >
 
   <style>
+    .article-update-note {
+      margin-top: 6px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -447,6 +455,12 @@
           id="meta"
         ></div>
 
+        <div
+          class="article-update-note"
+          id="updateNote"
+          style="display:none;"
+        ></div>
+
         <img
           id="hero"
           class="hero"
@@ -576,6 +590,9 @@
     const metaElement =
       document.getElementById("meta");
 
+    const updateNoteElement =
+      document.getElementById("updateNote");
+
     const heroElement =
       document.getElementById("hero");
 
@@ -625,7 +642,8 @@
         "id-ID",
         {
           dateStyle: "long",
-          timeStyle: "short"
+          timeStyle: "short",
+          timeZone: "Asia/Jakarta"
         }
       ).format(
         new Date(value)
@@ -912,9 +930,26 @@
         "Oleh " +
         author +
         " • " +
-        formatDate(
-          article.tanggal
-        );
+        formatDate(article.tanggal);
+
+      if (updateNoteElement) {
+        const published = new Date(article.tanggal);
+        const updated = article.updated_at ? new Date(article.updated_at) : null;
+        const hasUpdate =
+          updated &&
+          !Number.isNaN(updated.getTime()) &&
+          !Number.isNaN(published.getTime()) &&
+          updated.getTime() > published.getTime() + 1000;
+
+        if (hasUpdate) {
+          updateNoteElement.textContent =
+            "Diperbarui " + formatDate(article.updated_at);
+          updateNoteElement.style.display = "block";
+        } else {
+          updateNoteElement.textContent = "";
+          updateNoteElement.style.display = "none";
+        }
+      }
 
       contentElement
         .textContent =
