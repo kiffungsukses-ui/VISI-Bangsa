@@ -2545,10 +2545,14 @@ main.container{padding-bottom:36px}
       // Saat Edit dipilih dari folder "Daftar Berita", buka otomatis
       // folder formulir agar pengguna langsung melihat berita yang diedit.
       if (newsEditorFolder) {
+        // Buka formulir editor dan fokuskan langsung ke judul berita.
         newsEditorFolder.open = true;
-        requestAnimationFrame(() => {
-          newsEditorFolder.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+        setTimeout(() => {
+          if (judul) judul.focus({ preventScroll: true });
+          if (formTitle) {
+            formTitle.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 50);
       } else {
         window.scrollTo({
           top: 0,
@@ -2892,10 +2896,18 @@ main.container{padding-bottom:36px}
           );
 
         if (editButton) {
-          editNews(
-            editButton.dataset.editId
-          );
+          // Tombol Edit harus selalu ditangani sebagai aksi JavaScript,
+          // bukan sebagai navigasi browser/form.
+          event.preventDefault();
+          event.stopPropagation();
 
+          const newsId = editButton.getAttribute("data-edit-id");
+          if (!newsId) {
+            showMessage("ID berita tidak ditemukan.", "error");
+            return;
+          }
+
+          editNews(newsId);
           return;
         }
 
