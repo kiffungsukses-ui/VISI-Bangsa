@@ -3071,6 +3071,143 @@ main.container{padding-bottom:36px}
       closeAdPreview();
     });
 
+    async function loadSiteSettingsAdmin() {
+      if (!settingsForm) return;
+      try {
+        const { data, error } = await supabaseClient
+          .from("site_settings")
+          .select("site_name,tagline,profile,email,phone,logo_url")
+          .eq("id", 1)
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) return;
+        siteNameInput.value = data.site_name || "";
+        siteTaglineInput.value = data.tagline || "";
+        siteProfileInput.value = data.profile || "";
+        siteEmailInput.value = data.email || "";
+        sitePhoneInput.value = data.phone || "";
+        const logoUrl = String(data.logo_url || "").trim();
+        if (logoUrl) {
+          siteLogoPreview.src = logoUrl;
+          siteLogoPreview.style.visibility = "hidden";
+          siteLogoPreview.onload = () => { siteLogoPreview.style.visibility = "visible"; };
+        }
+      } catch (error) {
+        settingsMessage.textContent = "Gagal memuat pengaturan: " + (error.message || error);
+        settingsMessage.className = "message error";
+      }
+    }
+
+    async function uploadSiteLogo(file) {
+      if (!file) return null;
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"];
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error("Format logo harus JPG, PNG, WEBP, atau SVG.");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Ukuran logo maksimal 5 MB.");
+      }
+
+      const extMap = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp",
+        "image/svg+xml": "svg"
+      };
+      const path = "logos/" + Date.now() + "-" + Math.random().toString(36).slice(2, 10) + "." + extMap[file.type];
+
+      const upload = await supabaseClient.storage
+        .from("site-assets")
+        .upload(path, file, {
+          cacheControl: "31536000",
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (upload.error) throw upload.error;
+      return supabaseClient.storage.from("site-assets").getPublicUrl(path).data.publicUrl;
+    }
+
+    if (siteLogoFile) {
+      siteLogoFile.addEventListener("change", () => {
+        const file = siteLogoFile.files?.[0];
+        if (!file) return;
+        const objectUrl = URL.createObjectURL(file);
+        siteLogoPreview.src = objectUrl;
+        siteLogoPreview.style.visibility = "hidden";
+        siteLogoPreview.onload = () => {
+          siteLogoPreview.style.visibility = "visible";
+          URL.revokeObjectURL(objectUrl);
+        };
+        siteLogoNote.textContent = file.name + " siap diunggah.";
+      });
+    }
+
+    if (settingsForm) {
+      settingsForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (currentUserRole !== "admin") {
+          settingsMessage.textContent = "Hanya admin yang dapat mengubah pengaturan situs.";
+          settingsMessage.className = "message error";
+          return;
+        }
+
+        saveSettingsButton.disabled = true;
+        saveSettingsButton.textContent = "Menyimpan...";
+        settingsMessage.textContent = "";
+        settingsMessage.className = "message";
+
+        try {
+          let logoUrl = String(siteLogoPreview?.src || "").trim();
+          const selectedLogo = siteLogoFile?.files?.[0];
+          if (selectedLogo) {
+            logoUrl = await uploadSiteLogo(selectedLogo);
+          }
+
+          const payload = {
+            site_name: siteNameInput.value.trim() || "VISI Bangsa",
+            tagline: siteTaglineInput.value.trim() || "MEDIA ELEKTRONIK INDONESIA",
+            profile: siteProfileInput.value.trim(),
+            email: siteEmailInput.value.trim(),
+            phone: sitePhoneInput.value.trim(),
+            updated_at: new Date().toISOString()
+          };
+          if (logoUrl && !logoUrl.startsWith("blob:")) payload.logo_url = logoUrl;
+
+          const result = await supabaseClient
+            .from("site_settings")
+            .update(payload)
+            .eq("id", 1);
+
+          if (result.error) throw result.error;
+
+          if (logoUrl && !logoUrl.startsWith("blob:")) {
+            siteLogoPreview.src = logoUrl;
+            siteLogoPreview.style.visibility = "hidden";
+            siteLogoPreview.onload = () => { siteLogoPreview.style.visibility = "visible"; };
+            const dashboardLogo = document.getElementById("dashboardLogo");
+            if (dashboardLogo) {
+              dashboardLogo.src = logoUrl;
+              dashboardLogo.style.visibility = "hidden";
+              dashboardLogo.onload = () => { dashboardLogo.style.visibility = "visible"; };
+            }
+          }
+
+          siteLogoFile.value = "";
+          siteLogoNote.textContent = "Logo tersimpan dan siap digunakan di seluruh website.";
+          settingsMessage.textContent = "Pengaturan berhasil disimpan.";
+          settingsMessage.className = "message success";
+        } catch (error) {
+          console.error("Gagal menyimpan pengaturan situs:", error);
+          settingsMessage.textContent = "Gagal menyimpan pengaturan: " + (error.message || error);
+          settingsMessage.className = "message error";
+        } finally {
+          saveSettingsButton.disabled = false;
+          saveSettingsButton.textContent = "Simpan Pengaturan";
+        }
+      });
+    }
+
     // Tagline/settings controls are optional so older deployments remain compatible.
     if (editTaglineButton && saveTaglineButton && siteTaglineInput) {
       editTaglineButton.addEventListener("click", () => {
