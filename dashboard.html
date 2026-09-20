@@ -2613,27 +2613,8 @@ main.container{padding-bottom:36px}
           "Belum ada gambar.";
       }
 
-      if (item.tanggal) {
-
-        const date =
-          new Date(item.tanggal);
-
-        const offset =
-          date.getTimezoneOffset();
-
-        const local =
-          new Date(
-            date.getTime() -
-            offset * 60000
-          );
-
-        tanggal.value =
-          local.toISOString().slice(0, 16);
-
-      } else {
-
-        setDefaultDate();
-      }
+      // Waktu edit selalu mengikuti saat aksi Edit dilakukan.
+      setDefaultDate();
 
       formTitle.textContent = "Edit Berita";
       saveButton.textContent = "Simpan Perubahan";
@@ -2769,7 +2750,10 @@ main.container{padding-bottom:36px}
         const category = kategori.value;
         const author = penulis.value.trim();
         const content = isi.value.trim();
-        const dateValue = tanggal.value;
+        // Tanggal/waktu tidak diambil dari input manual.
+        // Setiap aksi Simpan menggunakan waktu saat tombol Simpan ditekan.
+        const actionNow = new Date();
+        const isoDate = actionNow.toISOString();
 
         if (
           !title ||
@@ -2802,11 +2786,6 @@ main.container{padding-bottom:36px}
               await uploadImage(file);
           }
 
-          const isoDate =
-            new Date(
-              dateValue
-            ).toISOString();
-
           const id =
             editingId.value;
 
@@ -2821,14 +2800,22 @@ main.container{padding-bottom:36px}
               gambar: imageUrl
             };
 
+            updateData.updated_at = isoDate;
+
             const result =
               await supabaseClient
                 .from("berita")
                 .update(updateData)
-                .eq("id", id);
+                .eq("id", id)
+                .select("id,judul,isi,gambar,kategori,penulis,tanggal,updated_at,status,views")
+                .single();
 
             if (result.error) {
               throw result.error;
+            }
+
+            if (!result.data) {
+              throw new Error("Perubahan tidak tersimpan. Berita tidak ditemukan atau sesi tidak memiliki izin mengubah berita.");
             }
 
             if (
@@ -2854,6 +2841,7 @@ main.container{padding-bottom:36px}
               penulis: author,
               isi: content,
               tanggal: isoDate,
+              updated_at: isoDate,
               gambar: imageUrl
             };
 
@@ -2872,8 +2860,10 @@ main.container{padding-bottom:36px}
             );
           }
 
-          resetForm();
+          // Muat ulang dari database setelah penyimpanan agar daftar berita
+          // langsung menggunakan data terbaru, bukan data lama di memori.
           await loadNews();
+          resetForm();
 
         } catch (error) {
 
