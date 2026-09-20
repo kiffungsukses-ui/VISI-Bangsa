@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>VISI Bangsa</title>
+  <link rel="preload" as="image" href="/visi-bangsa-logo.svg?v=20260920">
 
   <meta
     name="description"
@@ -377,7 +378,7 @@
   <header class="header">
     <div class="header-inner">
 
-      <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
+      <a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="/visi-bangsa-logo.svg?v=20260920" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 
       <a
         class="back"
@@ -550,7 +551,7 @@
           .maybeSingle();
         if (error) throw error;
         const logo = document.getElementById("siteLogo");
-        if (logo) logo.src = String(data?.logo_url || "/visi-bangsa-logo.svg").trim();
+        if (logo) logo.src = String(data?.logo_url || "/visi-bangsa-logo.svg?v=20260920").trim();
       } catch (error) {
         console.warn("Logo situs menggunakan logo bawaan:", error);
       }
