@@ -2452,6 +2452,7 @@ main.container{padding-bottom:36px}
                   type="button"
                   class="edit-btn"
                   data-edit-id="${item.id}"
+                  onclick="window.openNewsEditor && window.openNewsEditor(this.getAttribute('data-edit-id')); return false;"
                 >
                   Edit
                 </button>
@@ -2470,6 +2471,17 @@ main.container{padding-bottom:36px}
           `;
         }).join("");
     }
+
+    // Jalur langsung tombol Edit: independen dari event delegation.
+    window.openNewsEditor = function(id) {
+      try {
+        editNews(id);
+      } catch (error) {
+        console.error("Gagal membuka editor berita:", error);
+        showMessage("Editor berita gagal dibuka. Silakan muat ulang halaman.", "error");
+      }
+      return false;
+    };
 
     function editNews(id) {
       const item =
