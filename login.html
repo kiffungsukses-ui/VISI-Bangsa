@@ -331,9 +331,21 @@
         );
 
         if (error) {
-          console.error(error);
-          message.textContent =
-            "Email pemulihan gagal dikirim. Periksa alamat email atau coba lagi.";
+          console.error("Password recovery error:", error);
+          const code = error.code || "";
+          const status = error.status || "";
+          const detail = error.message || "";
+
+          if (status === 429 || code === "over_email_send_rate_limit" || /rate limit|too many requests|email.*limit/i.test(detail)) {
+            message.textContent =
+              "Pengiriman email pemulihan sedang dibatasi Supabase. Tunggu beberapa saat lalu coba sekali lagi.";
+          } else if (/redirect|url/i.test(detail)) {
+            message.textContent =
+              "Alamat pemulihan belum diizinkan. Periksa Redirect URL Supabase.";
+          } else {
+            message.textContent =
+              "Pemulihan gagal: " + detail;
+          }
         } else {
           message.textContent =
             "Email pemulihan password sudah dikirim. Periksa Inbox atau Spam.";
@@ -341,7 +353,8 @@
       } catch (error) {
         console.error(error);
         message.textContent =
-          "Terjadi kesalahan saat mengirim email pemulihan.";
+          "Terjadi kesalahan saat mengirim email pemulihan: " +
+          (error.message || "kesalahan tidak diketahui.");
       } finally {
         forgotPasswordButton.disabled = false;
       }
