@@ -2753,17 +2753,9 @@ main.container{padding-bottom:36px}
         const category = kategori.value;
         const author = penulis.value.trim();
         const content = isi.value.trim();
-        // Tanggal/waktu tidak diambil dari input manual.
-        // Setiap aksi Simpan menggunakan waktu saat tombol Simpan ditekan.
-        const actionNow = new Date();
-        const pad = value => String(value).padStart(2, "0");
-        const isoDate =
-          actionNow.getFullYear() +
-          "-" + pad(actionNow.getMonth() + 1) +
-          "-" + pad(actionNow.getDate()) +
-          "T" + pad(actionNow.getHours()) +
-          ":" + pad(actionNow.getMinutes()) +
-          ":" + pad(actionNow.getSeconds());
+        // Supabase menggunakan timestamp with time zone.
+        // Simpan waktu aksi sebagai ISO UTC agar tidak bergeser zona waktu.
+        const isoDate = new Date().toISOString();
 
         if (
           !title ||
@@ -2782,6 +2774,9 @@ main.container{padding-bottom:36px}
         saveButton.disabled = true;
         saveButton.textContent = "Menyimpan...";
 
+        // Dipakai juga setelah blok try untuk menentukan pesan sukses.
+        const id = editingId.value;
+
         try {
 
           const file =
@@ -2795,11 +2790,16 @@ main.container{padding-bottom:36px}
               await uploadImage(file);
           }
 
-          const id =
-            editingId.value;
-
-          // Kolom tanggal langsung menampilkan waktu saat tombol Simpan ditekan.
-          tanggal.value = isoDate.slice(0, 16);
+          // Pada EDIT, tanggal publikasi asli tidak boleh berubah.
+          // Waktu aksi edit dicatat terpisah pada updated_at.
+          tanggal.value = new Date(isoDate).toLocaleString("sv-SE", {
+            timeZone: "Asia/Jakarta",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+          }).replace(" ", "T");
 
           if (id) {
 
@@ -2808,11 +2808,9 @@ main.container{padding-bottom:36px}
               kategori: category,
               penulis: author,
               isi: content,
-              tanggal: isoDate,
-              gambar: imageUrl
+              gambar: imageUrl,
+              updated_at: isoDate
             };
-
-            updateData.updated_at = isoDate;
 
             const result =
               await supabaseClient
@@ -2888,8 +2886,8 @@ main.container{padding-bottom:36px}
           resetForm();
           showMessage(
             id
-              ? "Perubahan berita berhasil disimpan."
-              : "Berita berhasil diterbitkan.",
+              ? "✓ Perubahan berita berhasil disimpan."
+              : "✓ Berita berhasil diterbitkan.",
             "success"
           );
 
