@@ -953,6 +953,15 @@
           <div class="stat-label">Kategori</div>
           <div id="statCategories" class="stat-value">0</div>
         </div>
+        <div class="stat">
+          <div class="stat-label">Total Pembaca</div>
+          <div id="statViews" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Pembaca Hari Ini</div>
+          <div id="statViewsToday" class="stat-value">0</div>
+        </div>
 
       </section>
 
@@ -2263,7 +2272,7 @@
         await supabaseClient
           .from("berita")
           .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at"
+            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at,views"
           )
           .order(
             "tanggal",
@@ -2326,6 +2335,12 @@
       statToday.textContent = todayCount;
       statImages.textContent = imageCount;
       statCategories.textContent = categories.size;
+
+      const published = beritaData.filter(item => item.status === "terbit");
+      const totalViews = published.reduce((sum, item) => sum + Number(item.views || 0), 0);
+
+      statViews.textContent = totalViews.toLocaleString("id-ID");
+      statViewsToday.textContent = "—";
     }
 
     function renderNews() {
@@ -2425,6 +2440,8 @@
                   ${escapeHtml(item.penulis || "-")}
                   <br>
                   ${formatDate(item.tanggal)}
+                  <br>
+                  👁️ ${Number(item.views || 0).toLocaleString("id-ID")} pembaca
                 </div>
 
               </div>
