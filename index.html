@@ -1030,7 +1030,14 @@ body.vb-menu-open{overflow:hidden}
   .berita .ringkasan{margin-top:3px!important;margin-bottom:0!important;}
   .berita .meta{margin-top:4px!important;}
 }
-</style></style></head>
+</style></style><style id="berita-pilihan-top-alignment">
+/* Berita Pilihan: kategori dimulai tepat sejajar dengan sisi atas foto, seperti Berita Terbaru. */
+#berita .berita-link{align-items:start!important;}
+#berita .berita-link .isi{padding-top:0!important;margin-top:0!important;}
+#berita .berita-link .kategori{margin-top:0!important;padding-top:0!important;}
+@media(max-width:700px){#berita .berita-link{align-items:start!important;}#berita .berita-link .isi{padding-top:0!important;margin-top:0!important;}#berita .berita-link .kategori{margin-top:0!important;padding-top:0!important;}}
+</style>
+</head>
 
 <body>
 
