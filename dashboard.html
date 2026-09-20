@@ -2540,10 +2540,19 @@ main.container{padding-bottom:36px}
 
       hideMessage();
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      // Saat Edit dipilih dari folder "Daftar Berita", buka otomatis
+      // folder formulir agar pengguna langsung melihat berita yang diedit.
+      if (newsEditorFolder) {
+        newsEditorFolder.open = true;
+        requestAnimationFrame(() => {
+          newsEditorFolder.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
     }
 
     async function deleteNews(id) {
