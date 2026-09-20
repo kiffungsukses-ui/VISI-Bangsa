@@ -3261,12 +3261,44 @@ main.container{padding-bottom:36px}
       }
     }
 
-    // Tombol Back di perangkat mobile dari dashboard kembali ke website publik,
-    // bukan ke halaman login. Halaman login hanya dibuka melalui tombol Keluar.
+    // Navigasi tombol Back HP mengikuti folder dashboard yang sedang dibuka.
+    // Contoh: buka Ringkasan & Statistik -> Back = kembali ke tampilan dashboard
+    // sebelum folder dibuka. Halaman Login hanya dibuka melalui tombol Keluar.
+    const dashboardFolders = Array.from(document.querySelectorAll("details.admin-folder"));
+    let dashboardHistoryBusy = false;
+
+    function closeOpenDashboardFolders() {
+      let closed = false;
+      dashboardFolders.forEach(folder => {
+        if (folder.open) {
+          folder.open = false;
+          closed = true;
+        }
+      });
+      return closed;
+    }
+
+    // Buat dashboard menjadi halaman dasar di riwayat browser.
     try {
-      history.pushState({ visiDashboard: true }, "", window.location.href);
-      window.addEventListener("popstate", () => {
-        window.location.replace("./index.html");
+      history.replaceState({ visiDashboard: true, folder: null }, "", window.location.href);
+
+      dashboardFolders.forEach(folder => {
+        folder.addEventListener("toggle", () => {
+          if (dashboardHistoryBusy) return;
+          if (folder.open) {
+            history.pushState({ visiDashboard: true, folder: folder.id }, "", window.location.href);
+          }
+        });
+      });
+
+      window.addEventListener("popstate", (event) => {
+        dashboardHistoryBusy = true;
+        closeOpenDashboardFolders();
+        dashboardHistoryBusy = false;
+
+        // Jika masih berada di dashboard, jangan arahkan ke Login.
+        // Login hanya terjadi lewat tombol Keluar / SIGNED_OUT.
+        if (event.state?.visiDashboard) return;
       });
     } catch (historyError) {
       console.warn("Navigasi Back dashboard tidak dapat diatur:", historyError);
