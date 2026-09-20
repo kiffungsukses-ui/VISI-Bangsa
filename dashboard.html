@@ -902,6 +902,31 @@
       .news-title { font-size: 15px; }
     }
   
+<style id="dashboard-folder-polish">
+.admin-folder{overflow:hidden;border:1px solid rgba(13,35,58,.10);box-shadow:0 8px 26px rgba(13,35,58,.07);transition:transform .18s ease,box-shadow .18s ease}
+.admin-folder:hover{box-shadow:0 10px 30px rgba(13,35,58,.10)}
+.admin-folder>summary{min-height:96px;padding:20px 22px;display:flex;align-items:center;gap:14px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#fff 0%,#f7f9fb 100%)}
+.admin-folder>summary::-webkit-details-marker{display:none}
+.admin-folder>summary:focus-visible{outline:3px solid rgba(196,0,0,.20);outline-offset:-3px}
+.folder-summary-icon{width:46px;height:46px;flex:0 0 46px;border-radius:14px;display:grid;place-items:center;font-size:25px;font-weight:800;color:#fff;background:linear-gradient(135deg,#b90000,#e22b2b);box-shadow:0 7px 16px rgba(185,0,0,.22)}
+.folder-summary-icon.stats-icon{background:linear-gradient(135deg,#0b4d88,#1675be);box-shadow:0 7px 16px rgba(11,77,136,.22)}
+.admin-folder>summary .panel-header{flex:1;min-width:0}
+.folder-chevron{font-size:27px;line-height:1;color:#b30000;transition:transform .2s ease}
+.admin-folder[open]>summary{background:linear-gradient(135deg,#fff 0%,#f4f7fa 100%);border-bottom:1px solid #e4e8ed}
+.admin-folder[open]>summary .folder-chevron{transform:rotate(45deg)}
+.admin-folder-body{padding:20px;background:#f8fafc}
+.stats-body{background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
+.stats-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:15px 16px;background:#fff;border:1px solid #e3e8ee;border-radius:14px}
+.stats-toolbar strong{display:block;font-size:16px;color:#172033}.stats-toolbar span{display:block;margin-top:3px;font-size:12px;color:#6b7280}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat-card{background:#fff;border:1px solid #e4e8ed;border-radius:14px;padding:16px;min-height:116px;box-shadow:0 3px 12px rgba(20,35,55,.04)}
+.stat-label{display:block;font-size:12px;color:#667085;font-weight:700}.stat-card strong{display:block;margin:9px 0 4px;font-size:28px;line-height:1;color:#132238}.stat-card small{font-size:11px;color:#8a93a0}
+.top-articles{margin-top:16px;background:#fff;border:1px solid #e3e8ee;border-radius:14px;overflow:hidden}
+.top-articles-head{padding:16px;border-bottom:1px solid #e9edf2}.top-articles-head h3{margin:0;font-size:17px;color:#172033}.top-articles-head span{display:block;margin-top:4px;font-size:12px;color:#707887}
+.top-article{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:13px 16px;border-bottom:1px solid #edf0f3}.top-article:last-child{border-bottom:0}.top-rank{font-weight:800;color:#b30000;font-size:15px}.top-article-title{font-weight:700;color:#1c2738;font-size:14px;line-height:1.35}.top-article-meta{font-size:11px;color:#7a8491;margin-top:3px}.top-views{font-weight:800;color:#0b4d88;white-space:nowrap;font-size:13px}
+@media(max-width:760px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-folder>summary{padding:17px 16px;min-height:88px}.admin-folder-body{padding:14px}.stats-toolbar{align-items:flex-start}.stats-refresh{padding:9px 11px}.stat-card{min-height:105px;padding:13px}.stat-card strong{font-size:25px}}
+@media(max-width:430px){.folder-summary-icon{width:42px;height:42px;flex-basis:42px;border-radius:12px}.panel-title{font-size:20px}.panel-subtitle{font-size:12px}.stats-toolbar{flex-direction:column}.stats-refresh{width:100%}}
+</style>
 <style id="tagline-editor-style">
 .tagline-editor{margin:0 0 20px;padding:16px;border:1px solid #d9dee5;border-radius:10px;background:#fafbfc}
 .tagline-editor .field{margin:0}
@@ -964,17 +989,42 @@
         <p>Kelola berita VISI Bangsa langsung dari dashboard.</p>
       </section>
 
-      <details id="statisticsFolder" class="panel admin-folder">
+      <details id="statisticsFolder" class="panel admin-folder stats-folder">
         <summary>
+          <div class="folder-summary-icon stats-icon">▥</div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Ringkasan & Statistik</h2>
-              <div class="panel-subtitle">Klik untuk melihat statistik website dan berita paling banyak dibaca.</div>
+              <div class="panel-subtitle">Pantau pembaca website dan berita yang paling banyak dibaca.</div>
             </div>
           </div>
+          <span class="folder-chevron">＋</span>
         </summary>
-        <div class="admin-folder-body">
-
+        <div class="admin-folder-body stats-body">
+          <div class="stats-toolbar">
+            <div>
+              <strong>Statistik VISI Bangsa</strong>
+              <span>Data diperbarui dari aktivitas website.</span>
+            </div>
+            <button id="refreshStatsButton" type="button" class="secondary stats-refresh">↻ Muat Ulang</button>
+          </div>
+          <div id="statsMessage" class="message"></div>
+          <div class="stats-grid">
+            <div class="stat-card"><span class="stat-label">Total Berita</span><strong id="statTotal">—</strong><small>Semua berita tersimpan</small></div>
+            <div class="stat-card"><span class="stat-label">Berita Hari Ini</span><strong id="statToday">—</strong><small>Dibuat hari ini</small></div>
+            <div class="stat-card"><span class="stat-label">Total Pembaca</span><strong id="statViews">—</strong><small>Total kunjungan tercatat</small></div>
+            <div class="stat-card"><span class="stat-label">Kunjungan Hari Ini</span><strong id="statTodayVisits">—</strong><small>Sejak 00.00 WIB</small></div>
+            <div class="stat-card"><span class="stat-label">Pembaca Unik Hari Ini</span><strong id="statUniqueToday">—</strong><small>Visitor berbeda</small></div>
+            <div class="stat-card"><span class="stat-label">Sedang Online</span><strong id="statOnline">—</strong><small>Aktif ±5 menit terakhir</small></div>
+            <div class="stat-card"><span class="stat-label">Berita Bergambar</span><strong id="statImages">—</strong><small>Memiliki gambar</small></div>
+            <div class="stat-card"><span class="stat-label">Kategori Aktif</span><strong id="statCategories">—</strong><small>Kategori berita</small></div>
+          </div>
+          <div class="top-articles">
+            <div class="top-articles-head">
+              <div><h3>Berita Paling Banyak Dibaca</h3><span>Urutan berdasarkan jumlah pembaca.</span></div>
+            </div>
+            <div id="topArticlesList" class="top-articles-list"><div class="loading">Memuat statistik...</div></div>
+          </div>
         </div>
       </details>
 
@@ -2863,6 +2913,57 @@
       }
     );
 
+    async function loadStats() {
+      const msg = document.getElementById("statsMessage");
+      const set = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=value; };
+      try {
+        if (msg) { msg.textContent=""; msg.className="message"; }
+
+        const [{data: berita, error: beritaError}, {data: visits, error: visitsError}] = await Promise.all([
+          supabaseClient.from("berita").select("id,judul,kategori,gambar,tanggal,created_at,status,views").order("views",{ascending:false}),
+          supabaseClient.from("site_visits").select("visitor_id,path,news_id,created_at").order("created_at",{ascending:false}).limit(5000)
+        ]);
+        if (beritaError) throw beritaError;
+        if (visitsError) throw visitsError;
+
+        const rows=(berita||[]);
+        const allVisits=(visits||[]);
+        const now=new Date();
+        const startToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+        const startTodayIso=startToday.toISOString();
+        const onlineSince=new Date(Date.now()-5*60*1000);
+
+        const todayNews=rows.filter(n=>new Date(n.created_at||n.tanggal||0)>=startToday).length;
+        const images=rows.filter(n=>n.gambar).length;
+        const categories=new Set(rows.map(n=>String(n.kategori||"").trim()).filter(Boolean)).size;
+        const todayVisits=allVisits.filter(v=>new Date(v.created_at)>=startToday);
+        const uniqueToday=new Set(todayVisits.map(v=>v.visitor_id).filter(Boolean)).size;
+        const online=new Set(allVisits.filter(v=>new Date(v.created_at)>=onlineSince).map(v=>v.visitor_id).filter(Boolean)).size;
+        const totalVisits=allVisits.length;
+
+        set("statTotal",rows.length);
+        set("statToday",todayNews);
+        set("statImages",images);
+        set("statCategories",categories);
+        set("statViews",totalVisits);
+        set("statTodayVisits",todayVisits.length);
+        set("statUniqueToday",uniqueToday);
+        set("statOnline",online);
+
+        const top=(rows.filter(n=>n.status==="terbit").slice().sort((a,b)=>(Number(b.views)||0)-(Number(a.views)||0))).slice(0,10);
+        const list=document.getElementById("topArticlesList");
+        if(list){
+          list.innerHTML=top.length ? top.map((n,i)=>{
+            const views=Number(n.views)||0;
+            return '<div class="top-article"><span class="top-rank">'+(i+1)+'</span><div><div class="top-article-title">'+escapeHtml(n.judul||"Tanpa judul")+'</div><div class="top-article-meta">'+escapeHtml(n.kategori||"Berita")+'</div></div><span class="top-views">'+views.toLocaleString("id-ID")+' pembaca</span></div>';
+          }).join("") : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
+        }
+      } catch(error) {
+        console.error("Gagal memuat statistik:",error);
+        if(msg){msg.textContent="Statistik belum dapat dimuat: "+(error?.message||"kesalahan tidak diketahui");msg.className="message error";}
+      }
+    }
+
     // Additional controls introduced by the Admin/Redaksi folder redesign.
     if (refreshStatsButton) {
       refreshStatsButton.addEventListener("click", async () => {
@@ -2948,7 +3049,7 @@
         app.classList.remove("hidden");
         setDefaultDate();
 
-        const jobs = [loadNews(), loadSubmissions()];
+        const jobs = [loadNews(), loadSubmissions(), loadStats()];
         if (currentUserRole === "admin") jobs.push(loadAdsAdmin());
         await Promise.allSettled(jobs);
       } catch (error) {
