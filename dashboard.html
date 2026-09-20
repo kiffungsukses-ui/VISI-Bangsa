@@ -902,6 +902,14 @@
       .news-title { font-size: 15px; }
     }
   
+<style id="dashboard-title-polish">
+.dashboard-title-row{display:flex;align-items:flex-start;gap:17px}
+.dashboard-title-icon{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#1459c5,#2485ed);color:#fff;font-size:31px;font-weight:800;line-height:1;box-shadow:0 9px 20px rgba(20,89,197,.22);font-family:Arial,sans-serif;position:relative}
+.dashboard-title-icon:after{content:"";position:absolute;inset:1px;border-radius:16px;border:1px solid rgba(255,255,255,.28)}
+.dashboard-title-row h1{margin:0 0 7px}
+.dashboard-title-row p{margin:0}
+@media(max-width:600px){.dashboard-title-row{gap:13px}.dashboard-title-icon{width:48px;height:48px;flex-basis:48px;border-radius:14px;font-size:26px}.dashboard-title-icon:after{border-radius:13px}}
+</style>
 <style id="dashboard-folder-polish">
 /* VISI Bangsa professional admin/redaksi dashboard */
 .admin-folder{overflow:hidden;border:1px solid #dfe5ec;box-shadow:0 8px 26px rgba(13,35,58,.07);transition:transform .18s ease,box-shadow .18s ease}
@@ -1010,8 +1018,13 @@ main.container{padding-bottom:36px}
     <main class="container">
 
       <section class="welcome">
-        <h1>Dashboard Pengelola Berita</h1>
-        <p>Kelola berita VISI Bangsa langsung dari dashboard.</p>
+        <div class="dashboard-title-row">
+          <div class="dashboard-title-icon" aria-hidden="true">▦</div>
+          <div>
+            <h1>Dashboard Pengelola Berita</h1>
+            <p>Kelola berita VISI Bangsa langsung dari dashboard.</p>
+          </div>
+        </div>
       </section>
 
       <details id="statisticsFolder" class="panel admin-folder stats-folder">
