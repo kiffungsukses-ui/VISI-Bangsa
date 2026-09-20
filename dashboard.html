@@ -1496,6 +1496,20 @@ main.container{padding-bottom:36px}
     const clearFilterButton = document.getElementById("clearFilterButton");
     const refreshButton = document.getElementById("refreshButton");
 
+    // Pengaman Edit Berita: tangkap klik pada fase capture sebelum elemen <details>/<summary>
+    // atau handler lain memprosesnya. Edit harus selalu membuka formulir di dashboard,
+    // tanpa navigasi halaman.
+    document.addEventListener("click", event => {
+      const editButton = event.target.closest("[data-edit-id]");
+      if (!editButton) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const id = editButton.getAttribute("data-edit-id");
+      if (id) editNews(id);
+    }, true);
+
     const statTotal = document.getElementById("statTotal");
     const statToday = document.getElementById("statToday");
     const statImages = document.getElementById("statImages");
