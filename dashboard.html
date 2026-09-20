@@ -1701,34 +1701,31 @@ main.container{padding-bottom:36px}
 
 
     function showMessage(text, type = "success") {
-      // Notifikasi global agar tetap terlihat walaupun folder editor ditutup
-      // setelah penyimpanan berhasil.
       let toast = document.getElementById("globalToast");
       if (!toast) {
         toast = document.createElement("div");
         toast.id = "globalToast";
-        toast.setAttribute("role", "status");
+        toast.setAttribute("role", "alert");
         toast.style.cssText =
-          "position:fixed;top:18px;left:50%;transform:translateX(-50%);" +
-          "z-index:99999;max-width:calc(100vw - 32px);padding:12px 18px;" +
-          "border-radius:12px;font:600 14px/1.4 Arial,sans-serif;" +
-          "box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center;" +
-          "background:#167c3a;color:#fff;display:none;";
+          "position:fixed;top:16px;left:50%;transform:translateX(-50%);" +
+          "z-index:2147483647;width:max-content;max-width:calc(100vw - 24px);" +
+          "padding:13px 18px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22);" +
+          "font:700 14px/1.35 Arial,sans-serif;text-align:center;display:block;";
         document.body.appendChild(toast);
       }
-
       toast.textContent = text;
-      toast.style.background =
-        type === "error" ? "#b42318" : "#167c3a";
+      toast.style.background = type === "error" ? "#b42318" : "#15803d";
+      toast.style.color = "#fff";
       toast.style.display = "block";
-
       clearTimeout(window.__visiToastTimer);
       window.__visiToastTimer = setTimeout(() => {
-        toast.style.display = "none";
-      }, 3500);
+        if (toast) toast.style.display = "none";
+      }, 5000);
 
-      message.textContent = text;
-      message.className = "message " + type;
+      if (message) {
+        message.textContent = text;
+        message.className = "message " + type;
+      }
     }
 
     function hideMessage() {
@@ -1812,7 +1809,6 @@ main.container{padding-bottom:36px}
       }
 
       setDefaultDate();
-      hideMessage();
 
       window.scrollTo({
         top: 0,
@@ -2882,6 +2878,15 @@ main.container{padding-bottom:36px}
 
             if (verify.data.tanggal !== originalTanggal) {
               throw new Error("Waktu tayang asli berubah. Penyimpanan dibatalkan.");
+            }
+
+            const savedUpdatedAt = new Date(verify.data.updated_at).getTime();
+            const actionTime = new Date(isoDate).getTime();
+            if (
+              Number.isNaN(savedUpdatedAt) ||
+              Math.abs(savedUpdatedAt - actionTime) > 5000
+            ) {
+              throw new Error("Waktu edit belum tercatat dengan benar.");
             }
 
             if (
