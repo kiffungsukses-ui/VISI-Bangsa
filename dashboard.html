@@ -2759,8 +2759,7 @@ main.container{padding-bottom:36px}
           !title ||
           !category ||
           !author ||
-          !content ||
-          !dateValue
+          !content
         ) {
           showMessage(
             "Lengkapi semua kolom yang wajib diisi.",
@@ -2828,11 +2827,6 @@ main.container{padding-bottom:36px}
               );
             }
 
-            showMessage(
-              "Perubahan berita berhasil disimpan.",
-              "success"
-            );
-
           } else {
 
             const insertData = {
@@ -2854,16 +2848,20 @@ main.container{padding-bottom:36px}
               throw result.error;
             }
 
-            showMessage(
-              "Berita berhasil diterbitkan.",
-              "success"
-            );
           }
 
-          // Muat ulang dari database setelah penyimpanan agar daftar berita
-          // langsung menggunakan data terbaru, bukan data lama di memori.
+          // Muat ulang dari database agar daftar berita memakai data terbaru.
           await loadNews();
+
+          // Kembalikan dashboard setelah berhasil, lalu tampilkan notifikasi
+          // setelah reset agar pesan sukses tidak langsung terhapus.
           resetForm();
+          showMessage(
+            id
+              ? "Perubahan berita berhasil disimpan."
+              : "Berita berhasil diterbitkan.",
+            "success"
+          );
 
         } catch (error) {
 
