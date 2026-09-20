@@ -2264,41 +2264,61 @@
       newsList.innerHTML =
         '<div class="loading">Memuat berita...</div>';
 
-      const result =
+      let result =
         await supabaseClient
           .from("berita")
           .select(
             "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at,views"
           )
-          .order(
-            "tanggal",
-            {
-              ascending: false
-            }
-          );
+          .order("tanggal", { ascending: false });
+
+      let statisticsReady = true;
 
       if (result.error) {
-        console.error(result.error);
+        console.warn("Kolom views belum tersedia. Memuat berita tanpa statistik pembaca.", result.error);
 
-        newsList.innerHTML =
-          '<div class="empty">Gagal memuat berita.</div>';
+        const fallback = await supabaseClient
+          .from("berita")
+          .select(
+            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at"
+          )
+          .order("tanggal", { ascending: false });
 
-        showMessage(
-          "Gagal memuat daftar berita: " +
-          result.error.message,
-          "error"
-        );
+        if (fallback.error) {
+          console.error(fallback.error);
+          newsList.innerHTML =
+            '<div class="empty">Gagal memuat berita.</div>';
+          showMessage(
+            "Gagal memuat daftar berita: " +
+            fallback.error.message,
+            "error"
+          );
+          return;
+        }
 
-        return;
+        result = fallback;
+        statisticsReady = false;
       }
 
       beritaData = result.data || [];
+
+      updateStatistics(statisticsReady);
+
+      if (!statisticsReady) {
+        statViews.textContent = "—";
+        showMessage(
+          "Berita sudah dapat dimuat. Statistik pembaca menunggu kolom views di Supabase.",
+          "error"
+        );
+      }
+
+      renderNews();
 
       updateStatistics();
       renderNews();
     }
 
-    function updateStatistics() {
+    function updateStatistics(statisticsReady = true) {
       const total = beritaData.length;
 
       const today =
@@ -2335,7 +2355,7 @@
       const published = beritaData.filter(item => item.status === "terbit");
       const totalViews = published.reduce((sum, item) => sum + Number(item.views || 0), 0);
 
-      statViews.textContent = totalViews.toLocaleString("id-ID");
+      statViews.textContent = statisticsReady ? totalViews.toLocaleString("id-ID") : "—";
     }
 
     function renderNews() {
