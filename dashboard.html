@@ -924,6 +924,18 @@
 .top-articles{margin-top:16px;background:#fff;border:1px solid #e3e8ee;border-radius:14px;overflow:hidden}
 .top-articles-head{padding:16px;border-bottom:1px solid #e9edf2}.top-articles-head h3{margin:0;font-size:17px;color:#172033}.top-articles-head span{display:block;margin-top:4px;font-size:12px;color:#707887}
 .top-article{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:13px 16px;border-bottom:1px solid #edf0f3}.top-article:last-child{border-bottom:0}.top-rank{font-weight:800;color:#b30000;font-size:15px}.top-article-title{font-weight:700;color:#1c2738;font-size:14px;line-height:1.35}.top-article-meta{font-size:11px;color:#7a8491;margin-top:3px}.top-views{font-weight:800;color:#0b4d88;white-space:nowrap;font-size:13px}
+.admin-folder>summary{position:relative;min-height:94px;padding:18px 20px;background:linear-gradient(135deg,#ffffff 0%,#f7f9fc 100%);border-radius:18px}
+.admin-folder>summary .panel-title{margin:0 0 5px;font-size:20px;letter-spacing:-.2px}
+.admin-folder>summary .panel-subtitle{line-height:1.45}
+.folder-summary-icon{position:relative;display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;border-radius:15px;color:#fff;font-size:24px;font-weight:800;font-family:Arial,sans-serif;box-shadow:0 7px 16px rgba(0,0,0,.13)}
+.folder-summary-icon:after{content:"";position:absolute;inset:1px;border-radius:14px;border:1px solid rgba(255,255,255,.25)}
+.stats-icon{background:linear-gradient(135deg,#0b5ca8,#1685cf)}
+.news-icon{background:linear-gradient(135deg,#b50000,#e43a3a)}
+.settings-icon{background:linear-gradient(135deg,#475569,#64748b)}
+.ads-icon{background:linear-gradient(135deg,#087f5b,#16a37a)}
+.admin-folder[open]>summary{border-radius:18px 18px 0 0}
+.folder-chevron{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#fff;border:1px solid #e4e8ee;font-size:22px;box-shadow:0 3px 9px rgba(0,0,0,.06)}
+.admin-folder[open]>summary .folder-chevron{background:#f5f7fa}
 @media(max-width:760px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-folder>summary{padding:17px 16px;min-height:88px}.admin-folder-body{padding:14px}.stats-toolbar{align-items:flex-start}.stats-refresh{padding:9px 11px}.stat-card{min-height:105px;padding:13px}.stat-card strong{font-size:25px}}
 @media(max-width:430px){.folder-summary-icon{width:42px;height:42px;flex-basis:42px;border-radius:12px}.panel-title{font-size:20px}.panel-subtitle{font-size:12px}.stats-toolbar{flex-direction:column}.stats-refresh{width:100%}}
 </style>
@@ -991,7 +1003,7 @@
 
       <details id="statisticsFolder" class="panel admin-folder stats-folder">
         <summary>
-          <div class="folder-summary-icon stats-icon">▥</div>
+          <div class="folder-summary-icon stats-icon" aria-hidden="true">▥</div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Ringkasan & Statistik</h2>
@@ -1030,6 +1042,7 @@
 
       <details id="newsEditorFolder" class="panel admin-folder">
         <summary>
+          <div class="folder-summary-icon news-icon" aria-hidden="true">✎</div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Tambah / Edit Berita</h2>
@@ -1192,6 +1205,7 @@
 
       <details id="adminSettingsFolder" class="panel admin-folder">
         <summary>
+          <div class="folder-summary-icon settings-icon" aria-hidden="true">⚙</div>
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Pengaturan Website</h2>
