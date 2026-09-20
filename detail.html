@@ -514,6 +514,32 @@
         SUPABASE_URL,
         SUPABASE_KEY
       );
+    function getVisitorId() {
+      try {
+        const key = "visiBangsaVisitorId";
+        let id = localStorage.getItem(key);
+        if (!id) {
+          id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(36).slice(2));
+          localStorage.setItem(key, id);
+        }
+        return id;
+      } catch {
+        return "anonymous-" + Math.random().toString(36).slice(2);
+      }
+    }
+
+    async function registerSiteVisit(path, newsId = null) {
+      try {
+        await supabaseClient.rpc("track_site_visit", {
+          p_path: path,
+          p_news_id: newsId ? String(newsId) : null,
+          p_visitor_id: getVisitorId()
+        });
+      } catch (error) {
+        console.warn("Statistik kunjungan tidak tercatat:", error);
+      }
+    }
+
 
     async function loadSiteLogo() {
       try {
@@ -843,6 +869,7 @@
 
       renderArticle(data);
 
+      await registerSiteVisit(window.location.pathname, data.id);
       await registerArticleView(data.id);
 
       await loadRelated(
