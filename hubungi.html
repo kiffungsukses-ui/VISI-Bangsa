@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Hubungi VISI Bangsa, profil redaksi, kirim berita dan kirim artikel.">
 <title>Hubungi Kami — VISI Bangsa</title>
+  <link rel="preload" as="image" href="/visi-bangsa-logo.svg?v=20260920">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f5f7;color:#202124}
 header{background:#b40000;color:#fff}.site-logo{display:block;width:260px;max-width:68vw;height:auto}.head{max-width:1100px;margin:auto;padding:18px 16px;display:flex;justify-content:space-between;align-items:center;gap:15px}.logo{font-size:28px;font-weight:900}.logo span{color:#ffd400}.back{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.7);padding:9px 13px;border-radius:6px;font-weight:700}
@@ -15,7 +16,7 @@ footer{background:#20252b;color:#fff;padding:25px 15px;margin-top:40px}footer .i
 </style>
 </head>
 <body>
-<header><div class="head"><a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a><a class="back" href="/">Beranda</a></div></header>
+<header><div class="head"><a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="site-logo" src="/visi-bangsa-logo.svg?v=20260920" alt="VISI Bangsa — Media Elektronik Indonesia"></a><a class="back" href="/">Beranda</a></div></header>
 <main>
 <div class="tabs">
 <button class="tab active" data-tab="profil">Profil</button>
@@ -34,7 +35,7 @@ footer{background:#20252b;color:#fff;padding:25px 15px;margin-top:40px}footer .i
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const sb=window.supabase.createClient("https://vupvgdfdnpqactlqufbu.supabase.co","sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV");
-(async()=>{try{const r=await sb.from("site_settings").select("logo_url").eq("id",1).maybeSingle();if(r.error)throw r.error;const logo=document.getElementById("siteLogo");if(logo)logo.src=String(r.data?.logo_url||"visi-bangsa-logo.svg").trim();}catch(e){console.warn("Logo situs menggunakan logo bawaan:",e)}})();
+(async()=>{try{const r=await sb.from("site_settings").select("logo_url").eq("id",1).maybeSingle();if(r.error)throw r.error;const logo=document.getElementById("siteLogo");if(logo)logo.src=String(r.data?.logo_url||"/visi-bangsa-logo.svg?v=20260920").trim();}catch(e){console.warn("Logo situs menggunakan logo bawaan:",e)}})();
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));t.classList.add("active");const target=document.getElementById(t.dataset.tab);target.classList.add("active");requestAnimationFrame(()=>target.scrollIntoView({behavior:"smooth",block:"start"}));});
 function msg(el,text,ok){el.textContent=text;el.className="msg "+(ok?"ok":"err")}
 async function compressImage(file){
