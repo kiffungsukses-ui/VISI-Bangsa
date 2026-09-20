@@ -2334,7 +2334,8 @@
         statUniqueToday.textContent = "—";
         statOnline.textContent = "—";
         statTotalVisits.textContent = "—";
-        topArticlesList.innerHTML = '<div class="empty">Statistik belum dapat dimuat. Tekan Perbarui Statistik setelah SQL terbaru dijalankan di Supabase.</div>';
+        const detail = escapeHtml(error.message || "Kesalahan tidak diketahui.");
+        topArticlesList.innerHTML = '<div class="empty">Statistik belum dapat dimuat.<br><small style="display:block;margin-top:8px;color:#9a0000;">' + detail + '</small><button type="button" class="secondary" style="margin-top:12px;" onclick="loadDashboardStats()">↻ Coba Lagi</button></div>';
         return;
       }
       const stats = data || {};
