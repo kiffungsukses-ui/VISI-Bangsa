@@ -752,8 +752,11 @@
     .hidden { display: none !important; }
 
     /* Mode editor berita: saat Edit dipilih, pengguna hanya melihat formulir. */
+    /* Ketika mode edit aktif, sembunyikan seluruh elemen dashboard
+       selain formulir berita. Header tetap ada untuk identitas/logout. */
     body.news-editing-mode .dashboard-welcome,
-    body.news-editing-mode main.container > .admin-folder:not(#newsEditorFolder) {
+    body.news-editing-mode .stats,
+    body.news-editing-mode main.container > *:not(#newsEditorFolder) {
       display: none !important;
     }
     body.news-editing-mode main.container {
