@@ -27,7 +27,7 @@
   <link
     id="canonical"
     rel="canonical"
-    href="https://visi-bangsa.vercel.app/"
+    href="/"
   >
 
   <!-- Open Graph -->
@@ -56,13 +56,13 @@
   <meta
     id="ogUrl"
     property="og:url"
-    content="https://visi-bangsa.vercel.app/"
+    content="/"
   >
 
   <meta
     id="ogImage"
     property="og:image"
-    content="https://visi-bangsa.vercel.app/"
+    content="/"
   >
 
   <!-- Twitter -->
@@ -86,7 +86,7 @@
   <meta
     id="twitterImage"
     name="twitter:image"
-    content="https://visi-bangsa.vercel.app/"
+    content="/"
   >
 
   <style>
@@ -631,12 +631,11 @@
           "Berita terbaru dan informasi terkini dari VISI Bangsa."
         );
 
-      const url =
-        window.location.href;
+      const url = window.location.href;
 
-      const image =
-        article.gambar ||
-        "https://visi-bangsa.vercel.app/";
+      const image = article.gambar
+        ? new URL(article.gambar, window.location.origin).href
+        : "";
 
       document.title =
         title +
@@ -755,7 +754,7 @@
             "VISI Bangsa",
 
           "url":
-            "https://visi-bangsa.vercel.app/"
+            window.location.origin + "/"
         },
 
         "articleSection":
