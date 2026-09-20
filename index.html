@@ -6,6 +6,7 @@
   <meta name="google-site-verification" content="3C5Zv6_YRp13ptP_5vYRgH5U2FiYdi5ciuGIa1vmmvM">
 
   <title>VISI Bangsa — Media Elektronik</title>
+  <link rel="preload" as="image" href="/visi-bangsa-logo.svg?v=20260920">
 
   <meta
     name="description"
@@ -1046,7 +1047,7 @@ body.vb-menu-open{overflow:hidden}
 <button type="button" id="menuToggle" class="menu-toggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="vbMenuDrawer">
   <span></span><span></span><span></span>
 </button>
-<a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
+<a href="/" aria-label="VISI Bangsa"><img id="siteLogo" class="brand-logo" src="/visi-bangsa-logo.svg?v=20260920" alt="VISI Bangsa — Media Elektronik Indonesia"></a>
 <button type="button" id="headerSearchToggle" class="header-search-toggle" aria-label="Buka pencarian">⌕</button>
 <div class="brand-search"><input id="searchInput" type="search" placeholder="Cari berita, topik, atau kata kunci..." autocomplete="off"><button id="searchButton" type="button">Cari</button></div>
 
@@ -1071,7 +1072,7 @@ body.vb-menu-open{overflow:hidden}
 <aside id="vbMenuDrawer" class="vb-menu-drawer" aria-hidden="true" aria-label="Menu navigasi VISI Bangsa">
   <div class="vb-menu-head">
     <div class="vb-menu-brand">
-      <img src="/visi-bangsa-logo.svg" alt="VISI Bangsa">
+      <img src="/visi-bangsa-logo.svg?v=20260920" alt="VISI Bangsa">
       <div><strong>VISI Bangsa</strong><small>Media Elektronik</small></div>
     </div>
     <button type="button" id="menuClose" class="menu-close" aria-label="Tutup menu">×</button>
@@ -1215,7 +1216,7 @@ async function loadSiteSettings() {
 
   const s = result.data;
   const logo = document.getElementById("siteLogo");
-  if (logo) logo.src = String(s.logo_url || "/visi-bangsa-logo.svg").trim();
+  if (logo) logo.src = String(s.logo_url || "/visi-bangsa-logo.svg?v=20260920").trim();
 
   if (s.site_name) {
     document.title = s.site_name + " — Media Elektronik Indonesia";
