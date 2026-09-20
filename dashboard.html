@@ -1538,11 +1538,20 @@ main.container{padding-bottom:36px}
     const publishButton = document.getElementById("publishButton");
     const keepDraftButton = document.getElementById("keepDraftButton");
     let pendingPublishId = null;
+    let reviewingPendingDraft = false;
 
-    function hidePublishActions() {
+    function hidePublishActions(clearPending = true) {
       if (!publishActions) return;
       publishActions.classList.add("hidden");
-      pendingPublishId = null;
+      if (clearPending) pendingPublishId = null;
+    }
+
+    function showPendingPublishActions(id) {
+      if (!publishActions || !id) return;
+      pendingPublishId = id;
+      publishActionsText.textContent =
+        "✓ Berita tersimpan sebagai DRAFT. Periksa kembali sebelum diterbitkan.";
+      publishActions.classList.remove("hidden");
     }
 
     async function publishPendingNews() {
@@ -1598,8 +1607,10 @@ main.container{padding-bottom:36px}
       }
 
       const id = pendingPublishId;
-      hidePublishActions();
+      reviewingPendingDraft = true;
+      hidePublishActions(false);
       editNews(id);
+      pendingPublishId = id;
     }
 
     const saveButton = document.getElementById("saveButton");
@@ -2999,13 +3010,33 @@ main.container{padding-bottom:36px}
           await loadNews();
 
           if (isEditing) {
+            const wasPendingDraftReview =
+              reviewingPendingDraft &&
+              String(pendingPublishId || "") === String(id);
+
             resetForm();
-            showMessage("✓ Perubahan berita berhasil disimpan.", "success");
+
+            if (wasPendingDraftReview) {
+              reviewingPendingDraft = false;
+              const draftId = id;
+              showPendingPublishActions(draftId);
+              if (newsEditorFolder) {
+                newsEditorFolder.open = true;
+              }
+              showMessage(
+                "✓ Perubahan draft berhasil disimpan. Periksa kembali, lalu klik Terbitkan jika sudah siap.",
+                "success"
+              );
+            } else {
+              showMessage("✓ Perubahan berita berhasil disimpan.", "success");
+            }
           } else {
+            const draftId = pendingPublishId;
             resetForm();
-            publishActions.classList.remove("hidden");
-            publishActionsText.textContent =
-              "✓ Berita tersimpan sebagai DRAFT. Periksa kembali sebelum diterbitkan.";
+            showPendingPublishActions(draftId);
+            if (newsEditorFolder) {
+              newsEditorFolder.open = true;
+            }
             showMessage(
               "✓ Draft berita berhasil disimpan. Belum diterbitkan ke website.",
               "success"
@@ -3182,6 +3213,7 @@ main.container{padding-bottom:36px}
     newButton.addEventListener(
       "click",
       () => {
+        reviewingPendingDraft = false;
         hidePublishActions();
         resetForm();
       }
