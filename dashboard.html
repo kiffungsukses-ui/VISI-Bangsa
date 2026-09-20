@@ -1701,13 +1701,34 @@ main.container{padding-bottom:36px}
 
 
     function showMessage(text, type = "success") {
+      // Notifikasi global agar tetap terlihat walaupun folder editor ditutup
+      // setelah penyimpanan berhasil.
+      let toast = document.getElementById("globalToast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "globalToast";
+        toast.setAttribute("role", "status");
+        toast.style.cssText =
+          "position:fixed;top:18px;left:50%;transform:translateX(-50%);" +
+          "z-index:99999;max-width:calc(100vw - 32px);padding:12px 18px;" +
+          "border-radius:12px;font:600 14px/1.4 Arial,sans-serif;" +
+          "box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center;" +
+          "background:#167c3a;color:#fff;display:none;";
+        document.body.appendChild(toast);
+      }
+
+      toast.textContent = text;
+      toast.style.background =
+        type === "error" ? "#b42318" : "#167c3a";
+      toast.style.display = "block";
+
+      clearTimeout(window.__visiToastTimer);
+      window.__visiToastTimer = setTimeout(() => {
+        toast.style.display = "none";
+      }, 3500);
+
       message.textContent = text;
       message.className = "message " + type;
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
     }
 
     function hideMessage() {
@@ -2776,6 +2797,7 @@ main.container{padding-bottom:36px}
 
         // Dipakai juga setelah blok try untuk menentukan pesan sukses.
         const id = editingId.value;
+        const isEditing = Boolean(id);
 
         try {
 
@@ -2802,6 +2824,19 @@ main.container{padding-bottom:36px}
           }).replace(" ", "T");
 
           if (id) {
+
+            const originalRow =
+              await supabaseClient
+                .from("berita")
+                .select("tanggal")
+                .eq("id", id)
+                .maybeSingle();
+
+            if (originalRow.error || !originalRow.data) {
+              throw originalRow.error || new Error("Berita tidak ditemukan.");
+            }
+
+            const originalTanggal = originalRow.data.tanggal;
 
             const updateData = {
               judul: title,
@@ -2845,6 +2880,10 @@ main.container{padding-bottom:36px}
               throw new Error("Database belum menerima perubahan berita.");
             }
 
+            if (verify.data.tanggal !== originalTanggal) {
+              throw new Error("Waktu tayang asli berubah. Penyimpanan dibatalkan.");
+            }
+
             if (
               file &&
               currentImageUrl &&
@@ -2885,7 +2924,7 @@ main.container{padding-bottom:36px}
           // setelah reset agar pesan sukses tidak langsung terhapus.
           resetForm();
           showMessage(
-            id
+            isEditing
               ? "✓ Perubahan berita berhasil disimpan."
               : "✓ Berita berhasil diterbitkan.",
             "success"
@@ -2906,7 +2945,7 @@ main.container{padding-bottom:36px}
           saveButton.disabled = false;
 
           saveButton.textContent =
-            editingId.value
+            isEditing
               ? "Simpan Perubahan"
               : "Simpan Berita";
         }
