@@ -1156,10 +1156,10 @@ main.container{padding-bottom:36px}
 
             <div id="message" class="message"></div>
           <div id="publishActions" class="publish-actions hidden">
-            <div id="publishActionsText" class="publish-actions-text">Berita tersimpan sebagai draft.</div>
+            <div id="publishActionsText" class="publish-actions-text">Berita sudah disimpan sebagai draft. Periksa kembali sebelum diterbitkan.</div>
             <div class="publish-actions-buttons">
               <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
-              <button id="keepDraftButton" type="button" class="draft-button">Tetap Draft</button>
+              <button id="keepDraftButton" type="button" class="draft-button">Periksa Ulang</button>
             </div>
           </div>
 
@@ -1538,6 +1538,69 @@ main.container{padding-bottom:36px}
     const publishButton = document.getElementById("publishButton");
     const keepDraftButton = document.getElementById("keepDraftButton");
     let pendingPublishId = null;
+
+    function hidePublishActions() {
+      if (!publishActions) return;
+      publishActions.classList.add("hidden");
+      pendingPublishId = null;
+    }
+
+    async function publishPendingNews() {
+      if (!pendingPublishId) {
+        showMessage("Tidak ada berita draft yang siap diterbitkan.", "error");
+        return;
+      }
+
+      publishButton.disabled = true;
+      publishButton.textContent = "Menerbitkan...";
+
+      try {
+        const id = pendingPublishId;
+        const result = await supabaseClient
+          .from("berita")
+          .update({
+            status: "terbit",
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", id)
+          .eq("status", "draft");
+
+        if (result.error) throw result.error;
+
+        const verify = await supabaseClient
+          .from("berita")
+          .select("id,status")
+          .eq("id", id)
+          .maybeSingle();
+
+        if (verify.error) throw verify.error;
+        if (!verify.data || verify.data.status !== "terbit") {
+          throw new Error("Berita belum berhasil diterbitkan.");
+        }
+
+        hidePublishActions();
+        await loadNews();
+        showMessage("✓ Berita berhasil diterbitkan ke website.", "success");
+        resetForm();
+      } catch (error) {
+        console.error("Gagal menerbitkan draft:", error);
+        showMessage("Gagal menerbitkan berita: " + (error.message || error), "error");
+      } finally {
+        publishButton.disabled = false;
+        publishButton.textContent = "Terbitkan";
+      }
+    }
+
+    function reviewPendingNews() {
+      if (!pendingPublishId) {
+        showMessage("Draft berita tidak ditemukan.", "error");
+        return;
+      }
+
+      const id = pendingPublishId;
+      hidePublishActions();
+      editNews(id);
+    }
 
     const saveButton = document.getElementById("saveButton");
     const cancelButton = document.getElementById("cancelButton");
@@ -2908,32 +2971,46 @@ main.container{padding-bottom:36px}
               isi: content,
               tanggal: isoDate,
               updated_at: isoDate,
-              gambar: imageUrl
+              gambar: imageUrl,
+              status: "draft"
             };
 
             const result =
               await supabaseClient
                 .from("berita")
-                .insert(insertData);
+                .insert(insertData)
+                .select("id")
+                .single();
 
             if (result.error) {
               throw result.error;
             }
 
+            if (!result.data?.id) {
+              throw new Error("Draft berhasil disimpan tetapi ID berita tidak ditemukan.");
+            }
+
+            pendingPublishId = result.data.id;
           }
 
-          // Muat ulang dari database agar daftar berita memakai data terbaru.
+          // Edit berita tetap disimpan langsung pada berita yang sudah terbit.
+          // Berita baru selalu masuk sebagai DRAFT dan baru tampil publik setelah
+          // pengguna menekan tombol "Terbitkan".
           await loadNews();
 
-          // Kembalikan dashboard setelah berhasil, lalu tampilkan notifikasi
-          // setelah reset agar pesan sukses tidak langsung terhapus.
-          resetForm();
-          showMessage(
-            isEditing
-              ? "✓ Perubahan berita berhasil disimpan."
-              : "✓ Berita berhasil diterbitkan.",
-            "success"
-          );
+          if (isEditing) {
+            resetForm();
+            showMessage("✓ Perubahan berita berhasil disimpan.", "success");
+          } else {
+            resetForm();
+            publishActions.classList.remove("hidden");
+            publishActionsText.textContent =
+              "✓ Berita tersimpan sebagai DRAFT. Periksa kembali sebelum diterbitkan.";
+            showMessage(
+              "✓ Draft berita berhasil disimpan. Belum diterbitkan ke website.",
+              "success"
+            );
+          }
 
         } catch (error) {
 
@@ -3104,8 +3181,22 @@ main.container{padding-bottom:36px}
 
     newButton.addEventListener(
       "click",
-      resetForm
+      () => {
+        hidePublishActions();
+        resetForm();
+      }
     );
+
+    publishButton.addEventListener("click", publishPendingNews);
+
+    keepDraftButton.addEventListener("click", () => {
+      if (pendingPublishId) {
+        reviewPendingNews();
+      } else {
+        hidePublishActions();
+        resetForm();
+      }
+    });
 
     cancelButton.addEventListener(
       "click",
