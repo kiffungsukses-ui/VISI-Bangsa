@@ -333,12 +333,36 @@
     }
 
     .top-articles-list { display:grid; gap:10px; }
-    .top-article { display:grid; grid-template-columns:42px 1fr auto; gap:12px; align-items:center; padding:12px; border:1px solid #e5e5e5; border-radius:10px; background:#fff; }
+    .top-article {
+      display:grid;
+      grid-template-columns:42px 1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:12px;
+      border:1px solid #e5e5e5;
+      border-radius:10px;
+      background:#fff;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .top-article-link {
+      color:inherit;
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .top-article-link:hover .top-article {
+      transform:translateY(-1px);
+      border-color:#c9c9c9;
+      box-shadow:0 5px 16px rgba(0,0,0,.07);
+    }
     .top-article-rank { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#fff0f0; color:#b40000; font-weight:900; }
     .top-article-title { font-weight:800; line-height:1.35; }
     .top-article-meta { margin-top:4px; color:#777; font-size:12px; }
-    .top-article-views { font-weight:900; white-space:nowrap; }
-    @media (max-width:600px) { .top-article { grid-template-columns:36px 1fr; } .top-article-views { grid-column:2; } }
+    .top-article-views { font-weight:900; white-space:nowrap; text-align:right; }
+    .top-article-action { display:block; margin-top:5px; color:#b40000; font-size:11px; font-weight:800; }
+    @media (max-width:600px) {
+      .top-article { grid-template-columns:36px 1fr; }
+      .top-article-views { grid-column:2; text-align:left; }
+    }
 
     .news-list {
       display: grid;
@@ -2348,13 +2372,22 @@
         topArticlesList.innerHTML = '<div class="empty">Belum ada data pembaca berita.</div>';
         return;
       }
-      topArticlesList.innerHTML = articles.map((item, index) => `
-        <article class="top-article">
-          <div class="top-article-rank">${index + 1}</div>
-          <div><div class="top-article-title">${escapeHtml(item.judul || "Tanpa Judul")}</div><div class="top-article-meta">${escapeHtml(item.kategori || "Berita")}</div></div>
-          <div class="top-article-views">👁️ ${Number(item.visits || 0).toLocaleString("id-ID")}</div>
-        </article>
-      `).join("");
+      topArticlesList.innerHTML = articles.map((item, index) => {
+        const articleUrl = `detail.html?id=${encodeURIComponent(item.news_id || "")}`;
+        return `
+          <a class="top-article-link" href="${articleUrl}" target="_blank" rel="noopener" aria-label="Buka berita ${escapeHtml(item.judul || "Tanpa Judul")}">
+            <article class="top-article">
+              <div class="top-article-rank">${index + 1}</div>
+              <div>
+                <div class="top-article-title">${escapeHtml(item.judul || "Tanpa Judul")}</div>
+                <div class="top-article-meta">${escapeHtml(item.kategori || "Berita")}</div>
+                <span class="top-article-action">Lihat berita →</span>
+              </div>
+              <div class="top-article-views">👁️ ${Number(item.visits || 0).toLocaleString("id-ID")}<div style="font-size:11px;font-weight:600;color:#777;margin-top:3px;">dibaca</div></div>
+            </article>
+          </a>
+        `;
+      }).join("");
     }
 
     function updateStatistics(statisticsReady = true) {
