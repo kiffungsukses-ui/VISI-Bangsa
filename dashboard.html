@@ -1759,9 +1759,23 @@ main.container{padding-bottom:36px}
 
       cancelButton.classList.add("hidden");
 
-      // Keluar dari mode editor dan kembalikan dashboard ke keadaan normal.
+      // Kembalikan seluruh menu dashboard setelah Edit dibatalkan/disimpan.
       document.body.classList.remove("news-editing-mode");
-      if (newsEditorFolder) newsEditorFolder.open = false;
+      const dashboardMain = document.querySelector("main.container");
+      if (dashboardMain) {
+        Array.from(dashboardMain.children).forEach(child => {
+          if (child !== newsEditorFolder) {
+            child.style.display = child.dataset.preEditDisplay || "";
+            delete child.dataset.preEditDisplay;
+          }
+        });
+      }
+      if (newsEditorFolder) {
+        newsEditorFolder.open = false;
+        newsEditorFolder.style.display = "";
+        const editorSummary = newsEditorFolder.querySelector(":scope > summary");
+        if (editorSummary) editorSummary.style.display = "";
+      }
 
       setDefaultDate();
       hideMessage();
@@ -2621,12 +2635,29 @@ main.container{padding-bottom:36px}
       // Masuk ke mode editor penuh: semua folder dashboard disembunyikan
       // agar pengguna hanya melihat formulir berita yang sedang diedit.
       document.body.classList.add("news-editing-mode");
-      // Tutup semua folder dashboard sebelum menampilkan formulir edit.
+
+      // MODE EDIT ABSOLUT: setelah tombol Edit ditekan, sembunyikan
+      // seluruh menu/folder dashboard secara langsung. Jangan hanya
+      // mengandalkan CSS agar tidak ada menu Ringkasan/Tambah yang tersisa.
+      const dashboardMain = document.querySelector("main.container");
+      if (dashboardMain) {
+        Array.from(dashboardMain.children).forEach(child => {
+          if (child !== newsEditorFolder) {
+            child.dataset.preEditDisplay = child.style.display || "";
+            child.style.display = "none";
+          }
+        });
+      }
+
       document.querySelectorAll("details.admin-folder").forEach(folder => {
-        folder.open = folder.id === "newsEditorFolder";
+        folder.open = folder === newsEditorFolder;
       });
+
       if (newsEditorFolder) {
+        newsEditorFolder.style.display = "block";
         newsEditorFolder.open = true;
+        const editorSummary = newsEditorFolder.querySelector(":scope > summary");
+        if (editorSummary) editorSummary.style.display = "none";
         setTimeout(() => {
           if (judul) {
             judul.focus({ preventScroll: true });
