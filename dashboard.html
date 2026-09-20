@@ -397,8 +397,7 @@
       font-weight: 800;
       color: #b40000;
       background: #fff0f0;
-      padding: 4px 7px;
-      border-radius: 5px;
+      padding: 4px 7px;      border-radius: 5px;
       margin-bottom: 5px;
     }
 
@@ -797,8 +796,7 @@
       display: flex !important;
     }
     body.news-editing-mode #newsEditorFolder #formTitle {
-      display: block !important;
-    }
+      display: block !important;    }
     body.news-editing-mode #newsEditorFolder .panel-subtitle {
       display: block !important;
     }
@@ -1197,8 +1195,7 @@ main.container{padding-bottom:36px}
                 <div class="field">
                   <label for="kategori">Kategori *</label>
 
-                  <select id="kategori" required>
-                    <option value="">Pilih kategori</option>
+                  <select id="kategori" required>                    <option value="">Pilih kategori</option>
                     <option value="Nasional">Nasional</option>
                     <option value="Daerah">Daerah</option>
                     <option value="Ekonomi">Ekonomi</option>
@@ -1597,8 +1594,7 @@ main.container{padding-bottom:36px}
       } finally {
         publishButton.disabled = false;
         publishButton.textContent = "Terbitkan";
-      }
-    }
+      }    }
 
     function reviewPendingNews() {
       if (!pendingPublishId) {
@@ -1997,8 +1993,7 @@ main.container{padding-bottom:36px}
           : "";
 
         return `
-          <article class="submission-item">
-            <div class="submission-head">
+          <article class="submission-item">            <div class="submission-head">
               <div>
                 <div class="submission-type">${typeLabel}</div>
                 <div class="submission-title">${escapeHtml(item.judul)}</div>
@@ -2397,8 +2392,7 @@ main.container{padding-bottom:36px}
       if (file.size > 5 * 1024 * 1024) {
         throw new Error(
           "Ukuran gambar maksimal 5 MB."
-        );
-      }
+        );      }
 
       const extension =
         file.name
@@ -2797,7 +2791,6 @@ main.container{padding-bottom:36px}
             item.gambar
           );
         }
-
         if (
           String(editingId.value) ===
           String(id)
@@ -3197,7 +3190,6 @@ main.container{padding-bottom:36px}
     refreshButton.addEventListener(
       "click",
       async () => {
-
         refreshButton.disabled = true;
         refreshButton.textContent = "Memuat...";
 
@@ -3267,52 +3259,60 @@ main.container{padding-bottom:36px}
 
     async function loadStats() {
       const msg = document.getElementById("statsMessage");
-      const set = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=value; };
+      const set = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+
       try {
-        if (msg) { msg.textContent=""; msg.className="message"; }
-
-        const [{data: berita, error: beritaError}, {data: visits, error: visitsError}] = await Promise.all([
-          supabaseClient.from("berita").select("id,judul,kategori,gambar,tanggal,created_at,status,views").order("views",{ascending:false}),
-          supabaseClient.from("site_visits").select("visitor_id,path,news_id,created_at").order("created_at",{ascending:false}).limit(5000)
-        ]);
-        if (beritaError) throw beritaError;
-        if (visitsError) throw visitsError;
-
-        const rows=(berita||[]);
-        const allVisits=(visits||[]);
-        const now=new Date();
-        const startToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-        const startTodayIso=startToday.toISOString();
-        const onlineSince=new Date(Date.now()-5*60*1000);
-
-        const todayNews=rows.filter(n=>new Date(n.created_at||n.tanggal||0)>=startToday).length;
-        const images=rows.filter(n=>n.gambar).length;
-        const categories=new Set(rows.map(n=>String(n.kategori||"").trim()).filter(Boolean)).size;
-        const todayVisits=allVisits.filter(v=>new Date(v.created_at)>=startToday);
-        const uniqueToday=new Set(todayVisits.map(v=>v.visitor_id).filter(Boolean)).size;
-        const online=new Set(allVisits.filter(v=>new Date(v.created_at)>=onlineSince).map(v=>v.visitor_id).filter(Boolean)).size;
-        const totalVisits=allVisits.length;
-
-        set("statTotal",rows.length);
-        set("statToday",todayNews);
-        set("statImages",images);
-        set("statCategories",categories);
-        set("statViews",totalVisits);
-        set("statTodayVisits",todayVisits.length);
-        set("statUniqueToday",uniqueToday);
-        set("statOnline",online);
-
-        const top=(rows.filter(n=>n.status==="terbit").slice().sort((a,b)=>(Number(b.views)||0)-(Number(a.views)||0))).slice(0,10);
-        const list=document.getElementById("topArticlesList");
-        if(list){
-          list.innerHTML=top.length ? top.map((n,i)=>{
-            const views=Number(n.views)||0;
-            return '<div class="top-article"><span class="top-article-rank">'+(i+1)+'</span><div class="top-article-main"><div class="top-article-title">'+escapeHtml(n.judul||"Tanpa judul")+'</div><div class="top-article-meta">'+escapeHtml(n.kategori||"Berita")+'</div></div><div class="top-article-views"><strong>'+views.toLocaleString("id-ID")+'</strong><span>pembaca</span></div></div>';
-          }).join("") : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
+        if (msg) {
+          msg.textContent = "";
+          msg.className = "message";
         }
-      } catch(error) {
-        console.error("Gagal memuat statistik:",error);
-        if(msg){msg.textContent="Statistik belum dapat dimuat: "+(error?.message||"kesalahan tidak diketahui");msg.className="message error";}
+
+        // Statistik dihitung di PostgreSQL agar dashboard tidak perlu
+        // mengunduh ribuan baris site_visits ke browser.
+        const { data, error } = await supabaseClient.rpc("get_dashboard_stats");
+
+        if (error) throw error;
+
+        const stats = data || {};
+        set("statTotal", Number(stats.total_news) || 0);
+        set("statToday", Number(stats.today_news) || 0);
+        set("statImages", Number(stats.images) || 0);
+        set("statCategories", Number(stats.categories) || 0);
+        set("statViews", Number(stats.total_visits) || 0);
+        set("statTodayVisits", Number(stats.today_visits) || 0);
+        set("statUniqueToday", Number(stats.unique_today) || 0);
+        set("statOnline", Number(stats.online) || 0);
+
+        const top = Array.isArray(stats.top_articles) ? stats.top_articles : [];
+        const list = document.getElementById("topArticlesList");
+
+        if (list) {
+          list.innerHTML = top.length
+            ? top.map((n, i) => {
+                const views = Number(n.visits) || 0;
+                return '<div class="top-article"><span class="top-article-rank">' +
+                  (i + 1) +
+                  '</span><div class="top-article-main"><div class="top-article-title">' +
+                  escapeHtml(n.judul || "Tanpa judul") +
+                  '</div><div class="top-article-meta">' +
+                  escapeHtml(n.kategori || "Berita") +
+                  '</div></div><div class="top-article-views"><strong>' +
+                  views.toLocaleString("id-ID") +
+                  '</strong><span>pembaca</span></div></div>';
+              }).join("")
+            : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
+        }
+      } catch (error) {
+        console.error("Gagal memuat statistik:", error);
+        if (msg) {
+          msg.textContent =
+            "Statistik belum dapat dimuat: " +
+            (error?.message || "kesalahan tidak diketahui");
+          msg.className = "message error";
+        }
       }
     }
 
@@ -3598,6 +3598,3 @@ main.container{padding-bottom:36px}
     initializeVISIBangsaDashboard();
 
   </script>
-
-</body>
-</html>
