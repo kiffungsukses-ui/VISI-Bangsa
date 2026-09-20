@@ -112,7 +112,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 14px;
       margin-bottom: 22px;
     }
@@ -331,6 +331,14 @@
       border: 1px dashed #ccc;
       border-radius: 10px;
     }
+
+    .top-articles-list { display:grid; gap:10px; }
+    .top-article { display:grid; grid-template-columns:42px 1fr auto; gap:12px; align-items:center; padding:12px; border:1px solid #e5e5e5; border-radius:10px; background:#fff; }
+    .top-article-rank { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#fff0f0; color:#b40000; font-weight:900; }
+    .top-article-title { font-weight:800; line-height:1.35; }
+    .top-article-meta { margin-top:4px; color:#777; font-size:12px; }
+    .top-article-views { font-weight:900; white-space:nowrap; }
+    @media (max-width:600px) { .top-article { grid-template-columns:36px 1fr; } .top-article-views { grid-column:2; } }
 
     .news-list {
       display: grid;
@@ -933,32 +941,22 @@
       </section>
 
       <section class="stats">
-
-        <div class="stat">
-          <div class="stat-label">Total Berita</div>
-          <div id="statTotal" class="stat-value">0</div>
+        <div class="stat"><div class="stat-label">Total Berita</div><div id="statTotal" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Berita Hari Ini</div><div id="statToday" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Dengan Gambar</div><div id="statImages" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Kategori</div><div id="statCategories" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Total Pembaca Berita</div><div id="statViews" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Kunjungan Hari Ini</div><div id="statTodayVisits" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Pengunjung Unik Hari Ini</div><div id="statUniqueToday" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Sedang Online</div><div id="statOnline" class="stat-value">0</div></div>
+        <div class="stat"><div class="stat-label">Total Kunjungan Web</div><div id="statTotalVisits" class="stat-value">0</div></div>
+      </section>
+      <section class="panel">
+        <div class="panel-header">
+          <div><h2 class="panel-title">Berita Paling Banyak Dibaca</h2><div class="panel-subtitle">Diurutkan berdasarkan jumlah pembukaan berita.</div></div>
+          <button id="refreshStatsButton" type="button" class="secondary">↻ Perbarui Statistik</button>
         </div>
-
-        <div class="stat">
-          <div class="stat-label">Berita Hari Ini</div>
-          <div id="statToday" class="stat-value">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Dengan Gambar</div>
-          <div id="statImages" class="stat-value">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Kategori</div>
-          <div id="statCategories" class="stat-value">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Total Pembaca</div>
-          <div id="statViews" class="stat-value">0</div>
-        </div>
-
-
+        <div id="topArticlesList" class="top-articles-list"><div class="loading">Memuat statistik...</div></div>
       </section>
 
       <section class="panel">
@@ -1351,6 +1349,13 @@
     const statToday = document.getElementById("statToday");
     const statImages = document.getElementById("statImages");
     const statCategories = document.getElementById("statCategories");
+    const statViews = document.getElementById("statViews");
+    const statTodayVisits = document.getElementById("statTodayVisits");
+    const statUniqueToday = document.getElementById("statUniqueToday");
+    const statOnline = document.getElementById("statOnline");
+    const statTotalVisits = document.getElementById("statTotalVisits");
+    const topArticlesList = document.getElementById("topArticlesList");
+    const refreshStatsButton = document.getElementById("refreshStatsButton");
 
     const settingsForm = document.getElementById("settingsForm");
     const settingsMessage = document.getElementById("settingsMessage");
@@ -2242,6 +2247,8 @@
     });
 
 
+    refreshStatsButton.addEventListener("click", loadDashboardStats);
+
     adsEnabled.addEventListener("change",setAdsEnabled);
     refreshAdsButton.addEventListener("click",async()=>{refreshAdsButton.disabled=true;try{await loadAdsAdmin()}finally{refreshAdsButton.disabled=false}});
     adsList.addEventListener("click",e=>{
@@ -2312,10 +2319,41 @@
         );
       }
 
+      updateStatistics(statisticsReady);
       renderNews();
+      await loadDashboardStats();
+    }
 
-      updateStatistics();
-      renderNews();
+    async function loadDashboardStats() {
+      if (!topArticlesList) return;
+      topArticlesList.innerHTML = '<div class="loading">Memuat statistik...</div>';
+      const { data, error } = await supabaseClient.rpc("get_dashboard_stats");
+      if (error) {
+        console.error("Gagal memuat statistik pengunjung:", error);
+        statTodayVisits.textContent = "—";
+        statUniqueToday.textContent = "—";
+        statOnline.textContent = "—";
+        statTotalVisits.textContent = "—";
+        topArticlesList.innerHTML = '<div class="empty">Statistik pengunjung belum tersedia. Pastikan SQL statistik sudah dijalankan di Supabase.</div>';
+        return;
+      }
+      const stats = data || {};
+      statTodayVisits.textContent = Number(stats.today_visits || 0).toLocaleString("id-ID");
+      statUniqueToday.textContent = Number(stats.unique_today || 0).toLocaleString("id-ID");
+      statOnline.textContent = Number(stats.online || 0).toLocaleString("id-ID");
+      statTotalVisits.textContent = Number(stats.total_visits || 0).toLocaleString("id-ID");
+      const articles = Array.isArray(stats.top_articles) ? stats.top_articles : [];
+      if (!articles.length) {
+        topArticlesList.innerHTML = '<div class="empty">Belum ada data pembaca berita.</div>';
+        return;
+      }
+      topArticlesList.innerHTML = articles.map((item, index) => `
+        <article class="top-article">
+          <div class="top-article-rank">${index + 1}</div>
+          <div><div class="top-article-title">${escapeHtml(item.judul || "Tanpa Judul")}</div><div class="top-article-meta">${escapeHtml(item.kategori || "Berita")}</div></div>
+          <div class="top-article-views">👁️ ${Number(item.visits || 0).toLocaleString("id-ID")}</div>
+        </article>
+      `).join("");
     }
 
     function updateStatistics(statisticsReady = true) {
