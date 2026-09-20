@@ -73,7 +73,10 @@ declare
   result json;
   current_email text;
 begin
-  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
+  current_email := lower(coalesce(
+    (current_setting('request.jwt.claims', true)::jsonb ->> 'email'),
+    ''
+  ));
 
   if current_email <> 'redaksivisbangsa@gmail.com' then
     raise exception 'Unauthorized: akun dashboard bukan akun redaksi';
