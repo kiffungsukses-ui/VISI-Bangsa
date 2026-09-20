@@ -130,6 +130,11 @@
       border-color: #17212b;
     }
 
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 48px; }
+    .toggle-password { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:38px; height:38px; margin:0; padding:0; border:0; border-radius:6px; background:transparent; color:#667085; font-size:19px; line-height:1; cursor:pointer; }
+    .toggle-password:hover { background:#f2f4f7; color:#17212b; }
+
     button {
       width: 100%;
       margin-top: 20px;
@@ -225,13 +230,7 @@
         Password
       </label>
 
-      <input
-        id="password"
-        type="password"
-        placeholder="Masukkan password"
-        autocomplete="current-password"
-        required
-      >
+      <div class="password-wrap"><input id="password" type="password" placeholder="Masukkan password" autocomplete="current-password" required><button id="togglePassword" type="button" class="toggle-password" aria-label="Lihat password" title="Lihat password">👁</button></div>
 
       <button
         id="loginButton"
@@ -307,6 +306,17 @@
 
     const forgotPasswordButton =
       document.getElementById("forgotPasswordButton");
+
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    togglePassword.addEventListener("click", () => {
+      const showing = passwordInput.type === "text";
+      passwordInput.type = showing ? "password" : "text";
+      togglePassword.textContent = showing ? "👁" : "🙈";
+      togglePassword.setAttribute("aria-label", showing ? "Lihat password" : "Sembunyikan password");
+      togglePassword.setAttribute("title", showing ? "Lihat password" : "Sembunyikan password");
+      passwordInput.focus();
+    });
 
 
     forgotPasswordButton.addEventListener("click", async () => {
@@ -439,26 +449,16 @@
           const userRole =
             user && user.user_metadata && user.user_metadata.role;
 
-          // Akun lama tanpa role tetap diperlakukan sebagai Admin
-          // agar fungsi login yang sudah berjalan tidak terputus.
-          const normalizedLoginEmail =
-            String(email || "")
-              .trim()
-              .toLowerCase();
+          const normalizedLoginEmail = String(email || "").trim().toLowerCase();
+          const normalizedUserEmail = String((user && user.email) || "").trim().toLowerCase();
 
-          const normalizedUserEmail =
-            String((user && user.email) || "")
-              .trim()
-              .toLowerCase();
-
-          const isRedaksiAccount =
-            normalizedLoginEmail === "redaksivisibangsa@gmail.com" ||
-            normalizedUserEmail === "redaksivisibangsa@gmail.com";
-
+          // Dua akun pengelola VISI Bangsa yang ditetapkan.
           const actualRole =
-            isRedaksiAccount
-              ? "redaksi"
-              : (appRole || userRole || "admin");
+            normalizedLoginEmail === "kiffungsukses@gmail.com" && normalizedUserEmail === "kiffungsukses@gmail.com"
+              ? "admin"
+              : normalizedLoginEmail === "redaksivisibangsa@gmail.com" && normalizedUserEmail === "redaksivisibangsa@gmail.com"
+                ? "redaksi"
+                : (appRole || userRole || "unknown");
 
           if (selectedLoginRole !== actualRole) {
             await supabaseClient.auth.signOut();
