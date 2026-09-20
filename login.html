@@ -404,8 +404,9 @@
           message.textContent =
             "Login berhasil. Membuka dashboard...";
 
-          window.location.href =
-            "./dashboard.html";
+          window.location.replace(
+            "./dashboard.html"
+          );
 
 
         } catch (error) {
