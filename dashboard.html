@@ -2452,7 +2452,6 @@ main.container{padding-bottom:36px}
                   type="button"
                   class="edit-btn"
                   data-edit-id="${item.id}"
-                  onclick="window.openNewsEditor && window.openNewsEditor(this.getAttribute('data-edit-id')); return false;"
                 >
                   Edit
                 </button>
@@ -2470,18 +2469,23 @@ main.container{padding-bottom:36px}
             </article>
           `;
         }).join("");
-    }
 
-    // Jalur langsung tombol Edit: independen dari event delegation.
-    window.openNewsEditor = function(id) {
-      try {
-        editNews(id);
-      } catch (error) {
-        console.error("Gagal membuka editor berita:", error);
-        showMessage("Editor berita gagal dibuka. Silakan muat ulang halaman.", "error");
-      }
-      return false;
-    };
+      newsList.querySelectorAll("[data-edit-id]").forEach(button => {
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          editNews(button.getAttribute("data-edit-id"));
+        });
+      });
+
+      newsList.querySelectorAll("[data-delete-id]").forEach(button => {
+        button.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          deleteNews(button.getAttribute("data-delete-id"));
+        });
+      });
+    }
 
     function editNews(id) {
       const item =
@@ -2894,44 +2898,6 @@ main.container{padding-bottom:36px}
         } finally {
           refreshSubmissionsButton.disabled = false;
           refreshSubmissionsButton.textContent = "↻ Muat Ulang";
-        }
-      }
-    );
-
-    newsList.addEventListener(
-      "click",
-      event => {
-
-        const editButton =
-          event.target.closest(
-            "[data-edit-id]"
-          );
-
-        if (editButton) {
-          // Tombol Edit harus selalu ditangani sebagai aksi JavaScript,
-          // bukan sebagai navigasi browser/form.
-          event.preventDefault();
-          event.stopPropagation();
-
-          const newsId = editButton.getAttribute("data-edit-id");
-          if (!newsId) {
-            showMessage("ID berita tidak ditemukan.", "error");
-            return;
-          }
-
-          editNews(newsId);
-          return;
-        }
-
-        const deleteButton =
-          event.target.closest(
-            "[data-delete-id]"
-          );
-
-        if (deleteButton) {
-          deleteNews(
-            deleteButton.dataset.deleteId
-          );
         }
       }
     );
