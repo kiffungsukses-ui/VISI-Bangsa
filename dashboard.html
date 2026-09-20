@@ -2756,7 +2756,14 @@ main.container{padding-bottom:36px}
         // Tanggal/waktu tidak diambil dari input manual.
         // Setiap aksi Simpan menggunakan waktu saat tombol Simpan ditekan.
         const actionNow = new Date();
-        const isoDate = actionNow.toISOString();
+        const pad = value => String(value).padStart(2, "0");
+        const isoDate =
+          actionNow.getFullYear() +
+          "-" + pad(actionNow.getMonth() + 1) +
+          "-" + pad(actionNow.getDate()) +
+          "T" + pad(actionNow.getHours()) +
+          ":" + pad(actionNow.getMinutes()) +
+          ":" + pad(actionNow.getSeconds());
 
         if (
           !title ||
@@ -2790,6 +2797,9 @@ main.container{padding-bottom:36px}
 
           const id =
             editingId.value;
+
+          // Kolom tanggal langsung menampilkan waktu saat tombol Simpan ditekan.
+          tanggal.value = isoDate.slice(0, 16);
 
           if (id) {
 
