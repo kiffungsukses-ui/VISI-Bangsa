@@ -756,8 +756,17 @@
        selain formulir berita. Header tetap ada untuk identitas/logout. */
     body.news-editing-mode .dashboard-welcome,
     body.news-editing-mode .stats,
-    body.news-editing-mode main.container > *:not(#newsEditorFolder) {
+    body.news-editing-mode main.container > *:not(#newsEditorFolder),
+    body.news-editing-mode #newsEditorFolder > summary,
+    body.news-editing-mode #newsEditorFolder .folder-title-row,
+    body.news-editing-mode #newsEditorFolder .folder-icon,
+    body.news-editing-mode #newsEditorFolder .folder-description {
       display: none !important;
+    }
+    body.news-editing-mode main.container {
+      max-width: 1200px;
+      margin: auto;
+      padding-top: 18px;
     }
     body.news-editing-mode main.container {
       display: block !important;
@@ -2612,6 +2621,10 @@ main.container{padding-bottom:36px}
       // Masuk ke mode editor penuh: semua folder dashboard disembunyikan
       // agar pengguna hanya melihat formulir berita yang sedang diedit.
       document.body.classList.add("news-editing-mode");
+      // Tutup semua folder dashboard sebelum menampilkan formulir edit.
+      document.querySelectorAll("details.admin-folder").forEach(folder => {
+        folder.open = folder.id === "newsEditorFolder";
+      });
       if (newsEditorFolder) {
         newsEditorFolder.open = true;
         setTimeout(() => {
