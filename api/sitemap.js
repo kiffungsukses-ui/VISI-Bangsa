@@ -10,6 +10,7 @@ export default async function handler(req, res) {
       SUPABASE_URL +
         "/rest/v1/berita" +
         "?select=id,tanggal,updated_at" +
+        "&status=eq.terbit" +
         "&order=tanggal.desc",
       {
         headers: {
@@ -25,11 +26,25 @@ export default async function handler(req, res) {
 
     const berita = await response.json();
 
+    const forwardedHost =
+      req.headers["x-forwarded-host"] ||
+      req.headers.host ||
+      "visibangsa.id";
+
+    const host = String(forwardedHost)
+      .split(",")[0]
+      .trim();
+
+    const origin =
+      host === "localhost" || host.startsWith("127.0.0.1")
+        ? `http://${host}`
+        : `https://${host}`;
+
     const urls = [];
 
     urls.push(`
       <url>
-        <loc>https://visi-bangsa.vercel.app/</loc>
+        <loc>${origin}/</loc>
         <changefreq>hourly</changefreq>
         <priority>1.0</priority>
       </url>
@@ -37,10 +52,11 @@ export default async function handler(req, res) {
 
     for (const item of berita) {
       const lastmod = item.updated_at || item.tanggal;
+      if (!lastmod) continue;
 
       urls.push(`
         <url>
-          <loc>https://visi-bangsa.vercel.app/detail.html?id=${encodeURIComponent(
+          <loc>${origin}/detail.html?id=${encodeURIComponent(
             item.id
           )}</loc>
           <lastmod>${new Date(lastmod).toISOString()}</lastmod>
@@ -68,9 +84,6 @@ ${urls.join("")}
     res.status(200).send(xml);
   } catch (error) {
     console.error(error);
-
-    res.status(500).send(
-      "Gagal membuat sitemap."
-    );
+    res.status(500).send("Gagal membuat sitemap.");
   }
 }
