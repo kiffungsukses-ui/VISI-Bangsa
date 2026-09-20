@@ -67,37 +67,62 @@ create or replace function public.get_dashboard_stats()
 returns json
 language plpgsql
 security definer
-set search_path = ''
+set search_path = public, auth
 as $$
-declare result json;
+declare
+  result json;
+  current_email text;
 begin
-  if coalesce(auth.jwt() ->> 'email', '') <> 'redaksivisbangsa@gmail.com' then
-    raise exception 'Unauthorized';
+  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
+
+  if current_email <> 'redaksivisbangsa@gmail.com' then
+    raise exception 'Unauthorized: akun dashboard bukan akun redaksi';
   end if;
 
   select json_build_object(
-    'today_visits', count(*) filter (where created_at >= date_trunc('day', now())),
-    'unique_today', count(distinct visitor_id) filter (where created_at >= date_trunc('day', now())),
-    'online', count(distinct visitor_id) filter (where created_at >= now() - interval '5 minutes'),
-    'total_visits', count(*),
+    'today_visits',
+      count(*) filter (
+        where created_at >= date_trunc('day', now())
+      ),
+    'unique_today',
+      count(distinct visitor_id) filter (
+        where created_at >= date_trunc('day', now())
+      ),
+    'online',
+      count(distinct visitor_id) filter (
+        where created_at >= now() - interval '5 minutes'
+      ),
+    'total_visits',
+      count(*),
     'top_articles',
-      coalesce((
-        select json_agg(row_to_json(article_row))
-        from (
-          select v.news_id, b.judul, b.kategori, count(*) as visits
-          from public.site_visits v
-          join public.berita b on b.id::text = v.news_id
-          where v.news_id is not null and b.status = 'terbit'
-          group by v.news_id, b.judul, b.kategori
-          order by visits desc, b.judul asc
-          limit 10
-        ) article_row
-      ), '[]'::json)
-  ) into result
+      coalesce(
+        (
+          select json_agg(row_to_json(article_row))
+          from (
+            select
+              v.news_id,
+              b.judul,
+              b.kategori,
+              count(*) as visits
+            from public.site_visits v
+            join public.berita b
+              on b.id::text = v.news_id
+            where v.news_id is not null
+              and b.status = 'terbit'
+            group by v.news_id, b.judul, b.kategori
+            order by count(*) desc, b.judul asc
+            limit 10
+          ) article_row
+        ),
+        '[]'::json
+      )
+  )
+  into result
   from public.site_visits;
 
   return result;
 end;
 $$;
 
-grant execute on function public.get_dashboard_stats() to authenticated;
+grant execute on function public.get_dashboard_stats()
+to authenticated;
