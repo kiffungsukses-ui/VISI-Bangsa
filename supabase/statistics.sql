@@ -67,16 +67,23 @@ create or replace function public.get_dashboard_stats()
 returns json
 language plpgsql
 security definer
-set search_path = public, auth
-as $$
+set search_path = ''
+as $
 declare
   result json;
+  current_user_id uuid;
   current_email text;
 begin
-  current_email := lower(coalesce(
-    (current_setting('request.jwt.claims', true)::jsonb ->> 'email'),
-    ''
-  ));
+  current_user_id := auth.uid();
+
+  if current_user_id is null then
+    raise exception 'Unauthorized: sesi login dashboard tidak ditemukan';
+  end if;
+
+  select lower(coalesce(u.email, ''))
+    into current_email
+  from auth.users u
+  where u.id = current_user_id;
 
   if current_email <> 'redaksivisbangsa@gmail.com' then
     raise exception 'Unauthorized: akun dashboard bukan akun redaksi';
@@ -129,3 +136,7 @@ $$;
 
 grant execute on function public.get_dashboard_stats()
 to authenticated;
+
+
+revoke execute on function public.get_dashboard_stats() from public, anon;
+grant execute on function public.get_dashboard_stats() to authenticated;
