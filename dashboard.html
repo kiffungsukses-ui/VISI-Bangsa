@@ -964,170 +964,180 @@
         <p>Kelola berita VISI Bangsa langsung dari dashboard.</p>
       </section>
 
-      <section class="stats">
-        <div class="stat"><div class="stat-label">Total Berita</div><div id="statTotal" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Berita Hari Ini</div><div id="statToday" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Dengan Gambar</div><div id="statImages" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Kategori</div><div id="statCategories" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Total Pembaca Berita</div><div id="statViews" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Kunjungan Hari Ini</div><div id="statTodayVisits" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Pengunjung Unik Hari Ini</div><div id="statUniqueToday" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Sedang Online</div><div id="statOnline" class="stat-value">0</div></div>
-        <div class="stat"><div class="stat-label">Total Kunjungan Web</div><div id="statTotalVisits" class="stat-value">0</div></div>
-      </section>
-      <section class="panel">
-        <div class="panel-header">
-          <div><h2 class="panel-title">Berita Paling Banyak Dibaca</h2><div class="panel-subtitle">Diurutkan berdasarkan jumlah pembukaan berita.</div></div>
-          <button id="refreshStatsButton" type="button" class="secondary">↻ Perbarui Statistik</button>
+      <details id="statisticsFolder" class="panel admin-folder">
+        <summary>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Ringkasan & Statistik</h2>
+              <div class="panel-subtitle">Klik untuk melihat statistik website dan berita paling banyak dibaca.</div>
+            </div>
+          </div>
+        </summary>
+        <div class="admin-folder-body">
+
         </div>
-        <div id="topArticlesList" class="top-articles-list"><div class="loading">Memuat statistik...</div></div>
-      </section>
+      </details>
 
-      <section class="panel">
+      <details id="newsEditorFolder" class="panel admin-folder">
+        <summary>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Tambah / Edit Berita</h2>
+              <div class="panel-subtitle">Klik untuk membuka formulir penulisan dan pengeditan berita.</div>
+            </div>
+          </div>
+        </summary>
+        <div class="admin-folder-body">
+          <section class="panel">
 
-        <div id="message" class="message"></div>
-      <div id="publishActions" class="publish-actions hidden">
-        <div id="publishActionsText" class="publish-actions-text">Berita tersimpan sebagai draft.</div>
-        <div class="publish-actions-buttons">
-          <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
-          <button id="keepDraftButton" type="button" class="draft-button">Tetap Draft</button>
-        </div>
-      </div>
-
-        <div class="panel-header">
-          <div>
-            <h2 id="formTitle" class="panel-title">Tambah Berita</h2>
-            <div class="panel-subtitle">
-              Terbitkan berita baru ke website VISI Bangsa.
+            <div id="message" class="message"></div>
+          <div id="publishActions" class="publish-actions hidden">
+            <div id="publishActionsText" class="publish-actions-text">Berita tersimpan sebagai draft.</div>
+            <div class="publish-actions-buttons">
+              <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
+              <button id="keepDraftButton" type="button" class="draft-button">Tetap Draft</button>
             </div>
           </div>
 
-          <button id="newButton" type="button" class="secondary">
-            + Berita Baru
-          </button>
-        </div>
-
-        <form id="newsForm">
-
-          <input type="hidden" id="editingId" value="">
-
-          <div class="field">
-            <label for="judul">Judul Berita *</label>
-
-            <input
-              id="judul"
-              type="text"
-              maxlength="180"
-              required
-              placeholder="Masukkan judul berita"
-            >
-          </div>
-
-          <div class="grid-2">
-
-            <div class="field">
-              <label for="kategori">Kategori *</label>
-
-              <select id="kategori" required>
-                <option value="">Pilih kategori</option>
-                <option value="Nasional">Nasional</option>
-                <option value="Daerah">Daerah</option>
-                <option value="Ekonomi">Ekonomi</option>
-                <option value="Pendidikan">Pendidikan</option>
-                <option value="Olahraga">Olahraga</option>
-                <option value="Pesona &amp; Budaya">Pesona &amp; Budaya</option>
-                <option value="Opini">Opini</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="penulis">Penulis *</label>
-
-              <input
-                id="penulis"
-                type="text"
-                maxlength="100"
-                required
-                placeholder="Nama penulis"
-              >
-            </div>
-
-          </div>
-
-          <div class="field">
-            <label for="tanggal">Tanggal *</label>
-
-            <input
-              id="tanggal"
-              type="datetime-local"
-              required
-            >
-          </div>
-
-          <div class="field">
-
-            <label>Gambar Berita</label>
-
-            <div class="image-box">
-
-              <input
-                id="gambarFile"
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-              >
-
-              <div class="image-note">
-                Format JPG, PNG, WEBP atau GIF.
-                Maksimal 5 MB.
+            <div class="panel-header">
+              <div>
+                <h2 id="formTitle" class="panel-title">Tambah Berita</h2>
+                <div class="panel-subtitle">
+                  Terbitkan berita baru ke website VISI Bangsa.
+                </div>
               </div>
 
-              <img
-                id="preview"
-                class="preview"
-                alt="Preview gambar berita"
-              >
-
-              <div id="currentImageNote" class="image-note"></div>
-
+              <button id="newButton" type="button" class="secondary">
+                + Berita Baru
+              </button>
             </div>
 
-          </div>
+            <form id="newsForm">
 
-          <div class="field">
+              <input type="hidden" id="editingId" value="">
 
-            <label for="isi">Isi Berita *</label>
+              <div class="field">
+                <label for="judul">Judul Berita *</label>
 
-            <textarea
-              id="isi"
-              required
-              placeholder="Tulis isi berita di sini..."
-            ></textarea>
+                <input
+                  id="judul"
+                  type="text"
+                  maxlength="180"
+                  required
+                  placeholder="Masukkan judul berita"
+                >
+              </div>
 
-          </div>
+              <div class="grid-2">
 
-          <div class="form-actions">
+                <div class="field">
+                  <label for="kategori">Kategori *</label>
 
-            <button
-              id="saveButton"
-              type="submit"
-              class="primary"
-            >
-              Simpan Berita
-            </button>
+                  <select id="kategori" required>
+                    <option value="">Pilih kategori</option>
+                    <option value="Nasional">Nasional</option>
+                    <option value="Daerah">Daerah</option>
+                    <option value="Ekonomi">Ekonomi</option>
+                    <option value="Pendidikan">Pendidikan</option>
+                    <option value="Olahraga">Olahraga</option>
+                    <option value="Pesona &amp; Budaya">Pesona &amp; Budaya</option>
+                    <option value="Opini">Opini</option>
+                  </select>
+                </div>
 
-            <button
-              id="cancelButton"
-              type="button"
-              class="secondary hidden"
-            >
-              Batal Edit
-            </button>
+                <div class="field">
+                  <label for="penulis">Penulis *</label>
 
-          </div>
+                  <input
+                    id="penulis"
+                    type="text"
+                    maxlength="100"
+                    required
+                    placeholder="Nama penulis"
+                  >
+                </div>
 
-        </form>
+              </div>
 
-      </section>
+              <div class="field">
+                <label for="tanggal">Tanggal *</label>
+
+                <input
+                  id="tanggal"
+                  type="datetime-local"
+                  required
+                >
+              </div>
+
+              <div class="field">
+
+                <label>Gambar Berita</label>
+
+                <div class="image-box">
+
+                  <input
+                    id="gambarFile"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                  >
+
+                  <div class="image-note">
+                    Format JPG, PNG, WEBP atau GIF.
+                    Maksimal 5 MB.
+                  </div>
+
+                  <img
+                    id="preview"
+                    class="preview"
+                    alt="Preview gambar berita"
+                  >
+
+                  <div id="currentImageNote" class="image-note"></div>
+
+                </div>
+
+              </div>
+
+              <div class="field">
+
+                <label for="isi">Isi Berita *</label>
+
+                <textarea
+                  id="isi"
+                  required
+                  placeholder="Tulis isi berita di sini..."
+                ></textarea>
+
+              </div>
+
+              <div class="form-actions">
+
+                <button
+                  id="saveButton"
+                  type="submit"
+                  class="primary"
+                >
+                  Simpan Berita
+                </button>
+
+                <button
+                  id="cancelButton"
+                  type="button"
+                  class="secondary hidden"
+                >
+                  Batal Edit
+                </button>
+
+              </div>
+
+            </form>
+
+          </section>
+
+
+
+        </div>
+      </details>
 
 
       <details id="adminSettingsFolder" class="panel admin-folder">
@@ -1997,1140 +2007,3 @@
         showSubmissionMessage("Kiriman tidak ditemukan.", "error");
         return;
       }
-
-      const confirmed = window.confirm(
-        "Tolak kiriman ini?\n\n" + item.judul
-      );
-
-      if (!confirmed) return;
-
-      try {
-        const result = await supabaseClient
-          .from("kiriman")
-          .update({ status: "ditolak" })
-          .eq("id", id);
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        showSubmissionMessage(
-          "Kiriman berhasil ditolak.",
-          "success"
-        );
-
-        await loadSubmissions();
-
-      } catch (error) {
-        console.error(error);
-        showSubmissionMessage(
-          "Gagal menolak kiriman: " + (error.message || error),
-          "error"
-        );
-      }
-    }
-
-    function getStoragePathFromUrl(url) {
-      if (!url) return null;
-
-      const marker =
-        "/storage/v1/object/public/berita/";
-
-      const index = url.indexOf(marker);
-
-      if (index === -1) return null;
-
-      return decodeURIComponent(
-        url.substring(
-          index + marker.length
-        )
-      );
-    }
-
-    async function deleteStorageImage(url) {
-      const path = getStoragePathFromUrl(url);
-
-      if (!path) return;
-
-      try {
-        const result =
-          await supabaseClient
-            .storage
-            .from("berita")
-            .remove([path]);
-
-        if (result.error) {
-          console.warn(
-            "Gagal menghapus gambar Storage:",
-            result.error          );
-        }
-
-      } catch (error) {
-        console.warn(
-          "Storage cleanup error:",
-          error
-        );
-      }
-    }
-
-    async function uploadImage(file) {
-      if (!file) return null;
-
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-        "image/gif"
-      ];
-
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error(
-          "Format gambar tidak didukung."
-        );
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error(
-          "Ukuran gambar maksimal 5 MB."
-        );
-      }
-
-      const extension =
-        file.name
-          .split(".")
-          .pop()
-          .toLowerCase();
-
-      const safeExtension =
-        extension === "jpeg"
-          ? "jpg"
-          : extension;
-
-      const randomPart =
-        Math.random()
-          .toString(36)
-          .substring(2, 10);
-
-      const path =
-        currentUser.id +
-        "/" +
-        Date.now() +
-        "-" +
-        randomPart +
-        "." +
-        safeExtension;
-
-      const uploadResult =
-        await supabaseClient
-          .storage
-          .from("berita")
-          .upload(
-            path,
-            file,
-            {
-              cacheControl: "3600",
-              upsert: false,
-              contentType: file.type
-            }
-          );
-
-      if (uploadResult.error) {
-        throw uploadResult.error;
-      }
-
-      const publicResult =
-        supabaseClient
-          .storage
-          .from("berita")
-          .getPublicUrl(path);
-
-      return publicResult.data.publicUrl;
-    }
-
-    function showSettingsMessage(text, type) {
-      settingsMessage.textContent = text;
-      settingsMessage.className = "message " + type;
-    }
-    function clearSettingsMessage() {
-      settingsMessage.textContent = "";
-      settingsMessage.className = "message";
-    }
-    async function loadSiteSettings() {
-      clearSettingsMessage();
-      const result = await supabaseClient.from("site_settings")
-        .select("id,site_name,tagline,profile,email,phone,logo_url").eq("id",1).maybeSingle();
-      if (result.error) {
-        console.error(result.error);
-        showSettingsMessage("Gagal memuat pengaturan: " + result.error.message, "error");
-        return;
-      }
-      const item = result.data || {};
-      siteNameInput.value = item.site_name || "VISI Bangsa";
-      siteTaglineInput.value = item.tagline || "TERDEPAN DALAM MENCERAHKAN";
-      siteTaglineInput.disabled = true;
-      saveTaglineButton.disabled = true;
-      editTaglineButton.disabled = false;
-      siteProfileInput.value = item.profile || "";
-      siteEmailInput.value = item.email || "";
-      sitePhoneInput.value = item.phone || "";
-      siteLogoPreview.src = item.logo_url || "/visi-bangsa-logo.svg"; const dashboardLogo = document.getElementById("dashboardLogo"); if (dashboardLogo) dashboardLogo.src = item.logo_url || "/visi-bangsa-logo.svg";
-      siteLogoNote.textContent = item.logo_url ? "Logo aktif. Pilih file baru untuk menggantinya." : "Logo bawaan VISI Bangsa sedang digunakan.";
-    }
-    async function uploadSiteLogo(file) {
-      const allowed=["image/jpeg","image/png","image/webp","image/svg+xml"];
-      if (!file) return null;
-      if (!allowed.includes(file.type)) throw new Error("Format logo tidak didukung.");
-      if (file.size > 5*1024*1024) throw new Error("Ukuran logo maksimal 5 MB.");
-      const ext=file.name.split(".").pop().toLowerCase().replace("jpeg","jpg");
-      const path=currentUser.id+"/logo-"+Date.now()+"."+ext;
-      const upload=await supabaseClient.storage.from("site-assets").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
-      if (upload.error) throw upload.error;
-      return supabaseClient.storage.from("site-assets").getPublicUrl(path).data.publicUrl;
-    }
-    function getSiteAssetPath(url) {
-      if (!url) return null;
-      const marker="/storage/v1/object/public/site-assets/";
-      const p=url.indexOf(marker);
-      return p===-1 ? null : decodeURIComponent(url.substring(p+marker.length));
-    }
-    async function deleteSiteLogo(url) {
-      const path=getSiteAssetPath(url);
-      if (!path) return;
-      const r=await supabaseClient.storage.from("site-assets").remove([path]);
-      if (r.error) console.warn("Gagal menghapus logo lama:",r.error);
-    }
-    settingsForm.addEventListener("submit", async event => {
-      event.preventDefault();
-      clearSettingsMessage();
-      saveSettingsButton.disabled=true;
-      saveSettingsButton.textContent="Menyimpan...";
-      try {
-        const current=await supabaseClient.from("site_settings").select("logo_url").eq("id",1).maybeSingle();
-        if (current.error) throw current.error;
-        let logoUrl=current.data?.logo_url || null;
-        const file=siteLogoFile.files[0];
-        if (file) logoUrl=await uploadSiteLogo(file);
-        const payload={id:1,site_name:siteNameInput.value.trim()||"VISI Bangsa",tagline:siteTaglineInput.value.trim()||"TERDEPAN DALAM MENCERAHKAN",profile:siteProfileInput.value.trim(),email:siteEmailInput.value.trim(),phone:sitePhoneInput.value.trim(),logo_url:logoUrl,updated_at:new Date().toISOString()};
-        const result=await supabaseClient.from("site_settings").upsert(payload,{onConflict:"id"});
-        if (result.error) throw result.error;
-        if (file && current.data?.logo_url && current.data.logo_url!==logoUrl) await deleteSiteLogo(current.data.logo_url);
-        siteLogoFile.value="";
-        siteLogoPreview.src=logoUrl||"/visi-bangsa-logo.svg";
-        siteLogoNote.textContent="Pengaturan tersimpan. Logo baru sudah aktif di website publik.";
-        showSettingsMessage("Profil dan pengaturan logo berhasil disimpan.","success");
-      } catch(error) {
-        console.error(error);
-        showSettingsMessage("Gagal menyimpan pengaturan: "+(error.message||error),"error");
-      } finally {
-        saveSettingsButton.disabled=false;
-        saveSettingsButton.textContent="Simpan Pengaturan";
-      }
-    });
-
-    editTaglineButton.addEventListener("click",()=>{
-      siteTaglineInput.disabled=false;
-      siteTaglineInput.focus();
-      siteTaglineInput.select();
-      saveTaglineButton.disabled=false;
-      editTaglineButton.disabled=true;
-      showSettingsMessage("Tagline siap diubah. Setelah selesai, klik Simpan Tagline.","success");
-    });
-
-    saveTaglineButton.addEventListener("click",async()=>{
-      clearSettingsMessage();
-      saveTaglineButton.disabled=true;
-      saveTaglineButton.textContent="Menyimpan...";
-      try{
-        const value=siteTaglineInput.value.trim()||"TERDEPAN DALAM MENCERAHKAN";
-        const result=await supabaseClient.from("site_settings").update({tagline:value,updated_at:new Date().toISOString()}).eq("id",1);
-        if(result.error) throw result.error;
-        siteTaglineInput.value=value;
-        siteTaglineInput.disabled=true;
-        editTaglineButton.disabled=false;
-        showSettingsMessage("Tagline berhasil disimpan dan diterapkan.","success");
-      }catch(error){
-        console.error(error);
-        saveTaglineButton.disabled=false;
-        showSettingsMessage("Gagal menyimpan tagline: "+(error.message||error),"error");
-      }finally{
-        saveTaglineButton.textContent="Simpan Tagline";
-      }
-    });
-
-    siteLogoFile.addEventListener("change",()=>{
-      const file=siteLogoFile.files[0];
-      if(!file)return;
-      const allowed=["image/jpeg","image/png","image/webp","image/svg+xml"];
-      if(!allowed.includes(file.type)||file.size>5*1024*1024){
-        showSettingsMessage("Logo harus JPG, PNG, WEBP, atau SVG dan maksimal 5 MB.","error");
-        siteLogoFile.value=""; return;
-      }
-      const reader=new FileReader();
-      reader.onload=e=>{siteLogoPreview.src=e.target.result;siteLogoNote.textContent="Preview logo baru. Klik Simpan Pengaturan untuk menerapkannya.";};
-      reader.readAsDataURL(file);
-    });
-
-
-    refreshStatsButton.addEventListener("click", loadDashboardStats);
-
-    adsEnabled.addEventListener("change",setAdsEnabled);
-    refreshAdsButton.addEventListener("click",async()=>{refreshAdsButton.disabled=true;try{await loadAdsAdmin()}finally{refreshAdsButton.disabled=false}});
-    adsList.addEventListener("click",e=>{
-      const b=e.target.closest("[data-ad-action]");if(!b)return;
-      const action=b.dataset.adAction;
-      if(action==="preview"){openAdPreview(b.dataset.adId);return;}
-      if(action==="delete"){deleteAd(b.dataset.adId);return;}
-      const status=action==="approve"?"aktif":action==="reject"?"ditolak":"selesai";
-      updateAdStatus(b.dataset.adId,status);
-    });
-    adPreviewClose.addEventListener("click",closeAdPreview);
-    adPreviewCloseBottom.addEventListener("click",closeAdPreview);
-    adPreviewActivate.addEventListener("click",async()=>{
-      if(currentAdPreviewId){await updateAdStatus(currentAdPreviewId,"aktif");closeAdPreview();}
-    });
-    adPreviewModal.addEventListener("click",e=>{if(e.target===adPreviewModal)closeAdPreview();});
-    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&adPreviewModal.classList.contains("open"))closeAdPreview();});
-
-    async function loadNews() {
-      newsList.innerHTML =
-        '<div class="loading">Memuat berita...</div>';
-
-      let result =
-        await supabaseClient
-          .from("berita")
-          .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at,views"
-          )
-          .order("tanggal", { ascending: false });
-
-      let statisticsReady = true;
-
-      if (result.error) {
-        console.warn("Kolom views belum tersedia. Memuat berita tanpa statistik pembaca.", result.error);
-
-        const fallback = await supabaseClient
-          .from("berita")
-          .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,status,created_at,updated_at"
-          )
-          .order("tanggal", { ascending: false });
-
-        if (fallback.error) {
-          console.error(fallback.error);
-          newsList.innerHTML =
-            '<div class="empty">Gagal memuat berita.</div>';
-          showMessage(
-            "Gagal memuat daftar berita: " +
-            fallback.error.message,
-            "error"
-          );
-          return;
-        }
-
-        result = fallback;
-        statisticsReady = false;
-      }
-
-      beritaData = result.data || [];
-
-      updateStatistics(statisticsReady);
-
-      if (!statisticsReady) {
-        statViews.textContent = "—";
-        showMessage(
-          "Berita sudah dapat dimuat. Statistik pembaca menunggu kolom views di Supabase.",
-          "error"
-        );
-      }
-
-      updateStatistics(statisticsReady);
-      renderNews();
-      await loadDashboardStats();
-    }
-
-    async function loadDashboardStats() {
-      if (!topArticlesList) return;
-      topArticlesList.innerHTML = '<div class="loading">Memuat statistik...</div>';
-      const { data, error } = await supabaseClient.rpc("get_dashboard_stats");
-      if (error) {
-        console.error("Gagal memuat statistik pengunjung:", error);
-        statTodayVisits.textContent = "—";
-        statUniqueToday.textContent = "—";
-        statOnline.textContent = "—";
-        statTotalVisits.textContent = "—";
-        const detail = escapeHtml(error.message || "Kesalahan tidak diketahui.");
-        topArticlesList.innerHTML = '<div class="empty">Statistik belum dapat dimuat.<br><small style="display:block;margin-top:8px;color:#9a0000;">' + detail + '</small><button type="button" class="secondary" style="margin-top:12px;" onclick="loadDashboardStats()">↻ Coba Lagi</button></div>';
-        return;
-      }
-      const stats = data || {};
-      statTodayVisits.textContent = Number(stats.today_visits || 0).toLocaleString("id-ID");
-      statUniqueToday.textContent = Number(stats.unique_today || 0).toLocaleString("id-ID");
-      statOnline.textContent = Number(stats.online || 0).toLocaleString("id-ID");
-      statTotalVisits.textContent = Number(stats.total_visits || 0).toLocaleString("id-ID");
-      const articles = Array.isArray(stats.top_articles) ? stats.top_articles : [];
-      if (!articles.length) {
-        topArticlesList.innerHTML = '<div class="empty">Belum ada data pembaca berita.</div>';
-        return;
-      }
-      topArticlesList.innerHTML = articles.map((item, index) => {
-        const articleUrl = `detail.html?id=${encodeURIComponent(item.news_id || "")}`;
-        return `
-          <a class="top-article-link" href="${articleUrl}" target="_blank" rel="noopener" aria-label="Buka berita ${escapeHtml(item.judul || "Tanpa Judul")}">
-            <article class="top-article">
-              <div class="top-article-rank">${index + 1}</div>
-              <div>
-                <div class="top-article-title">${escapeHtml(item.judul || "Tanpa Judul")}</div>
-                <div class="top-article-meta">${escapeHtml(item.kategori || "Berita")}</div>
-                <span class="top-article-action">Lihat berita →</span>
-              </div>
-              <div class="top-article-views">👁️ ${Number(item.visits || 0).toLocaleString("id-ID")}<div style="font-size:11px;font-weight:600;color:#777;margin-top:3px;">dibaca</div></div>
-            </article>
-          </a>
-        `;
-      }).join("");
-    }
-
-    function updateStatistics(statisticsReady = true) {
-      const total = beritaData.length;
-
-      const today =
-        new Date()
-          .toISOString()
-          .slice(0, 10);
-
-      const todayCount =
-        beritaData.filter(item => {
-          if (!item.tanggal) return false;
-
-          return new Date(item.tanggal)
-            .toISOString()
-            .slice(0, 10) === today;
-        }).length;
-
-      const imageCount =
-        beritaData.filter(
-          item => !!item.gambar
-        ).length;
-
-      const categories =
-        new Set(
-          beritaData
-            .map(item => item.kategori)
-            .filter(Boolean)
-        );
-
-      statTotal.textContent = total;
-      statToday.textContent = todayCount;
-      statImages.textContent = imageCount;
-      statCategories.textContent = categories.size;
-
-      const published = beritaData.filter(item => item.status === "terbit");
-      const totalViews = published.reduce((sum, item) => sum + Number(item.views || 0), 0);
-
-      statViews.textContent = statisticsReady ? totalViews.toLocaleString("id-ID") : "—";
-    }
-
-    function renderNews() {
-      const search =
-        searchInput.value
-          .trim()
-          .toLowerCase();
-
-      const category =
-        filterCategory.value;
-
-      const filtered =
-        beritaData.filter(item => {
-
-          const haystack =
-            [
-              item.judul,
-              item.isi,
-              item.penulis,
-              item.kategori
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
-
-          const matchesSearch =
-            !search ||
-            haystack.includes(search);
-
-          const matchesCategory =
-            !category ||
-            item.kategori === category;
-
-          return (
-            matchesSearch &&
-            matchesCategory
-          );
-        });
-
-      if (!filtered.length) {
-        newsList.innerHTML =
-          '<div class="empty">Tidak ada berita yang sesuai dengan pencarian.</div>';
-
-        return;
-      }
-
-      newsList.innerHTML =
-        filtered.map(item => {
-
-          const image =
-            item.gambar
-              ? escapeHtml(item.gambar)
-              : "";
-
-          const imageHtml =
-            image
-              ? `
-                <img
-                  class="news-thumb"
-                  src="${image}"
-                  alt="${escapeHtml(item.judul)}"
-                  loading="lazy"
-                >
-              `
-              : `
-                <div
-                  class="news-thumb"
-                  aria-label="Tidak ada gambar"
-                ></div>
-              `;
-
-          return `
-            <article class="news-item">
-
-              ${imageHtml}
-
-              <div class="news-content">
-
-                ${
-                  item.kategori
-                    ? `
-                      <div class="news-category">
-                        ${escapeHtml(item.kategori)}
-                      </div>
-                    `
-                    : ""
-                }
-
-                <div class="status-badge ${item.status === "terbit" ? "status-published" : "status-draft"}">${item.status === "terbit" ? "TERBIT" : "DRAFT"}</div>
-
-                <div class="news-title">
-                  ${escapeHtml(item.judul)}
-                </div>
-
-                <div class="news-meta">
-                  Penulis:
-                  ${escapeHtml(item.penulis || "-")}
-                  <br>
-                  ${formatDate(item.tanggal)}
-                  <br>
-                  👁️ ${Number(item.views || 0).toLocaleString("id-ID")} pembaca
-                </div>
-
-              </div>
-
-              <div class="news-actions">
-
-${item.status === "draft" ? `
-                  <button type="button" class="publish-button" data-publish-id="${item.id}">Terbitkan</button>
-                ` : `
-                  <button type="button" class="draft-button" data-draft-id="${item.id}">Jadikan Draft</button>
-                `}
-
-                <button
-                  type="button"
-                  class="edit-btn"
-                  data-edit-id="${item.id}"
-                >
-                  Edit
-                </button>
-
-                <button
-                  type="button"
-                  class="danger"
-                  data-delete-id="${item.id}"
-                >
-                  Hapus
-                </button>
-
-              </div>
-
-            </article>
-          `;
-        }).join("");
-    }
-
-    function editNews(id) {
-      const item =
-        beritaData.find(
-          news =>
-            String(news.id) === String(id)
-        );
-
-      if (!item) {
-        showMessage(
-          "Berita tidak ditemukan.",
-          "error"
-        );
-
-        return;
-      }
-
-      editingId.value = item.id;
-      pendingPublishId = null;
-      publishActions.classList.add("hidden");
-      judul.value = item.judul || "";
-      kategori.value = item.kategori || "";
-      penulis.value = item.penulis || "";
-      isi.value = item.isi || "";
-
-      currentImageUrl =
-        item.gambar || null;
-
-      if (item.gambar) {
-
-        preview.src = item.gambar;
-        preview.style.display = "block";
-
-        currentImageNote.textContent =
-          "Gambar saat ini tersimpan. Pilih gambar baru jika ingin menggantinya.";
-
-      } else {
-
-        preview.src = "";
-        preview.style.display = "none";
-
-        currentImageNote.textContent =
-          "Belum ada gambar.";
-      }
-
-      if (item.tanggal) {
-
-        const date =
-          new Date(item.tanggal);
-
-        const offset =
-          date.getTimezoneOffset();
-
-        const local =
-          new Date(
-            date.getTime() -
-            offset * 60000
-          );
-
-        tanggal.value =
-          local.toISOString().slice(0, 16);
-
-      } else {
-
-        setDefaultDate();
-      }
-
-      formTitle.textContent = "Edit Berita";
-      saveButton.textContent = "Simpan Perubahan";
-
-      cancelButton.classList.remove("hidden");
-
-      hideMessage();
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-
-    async function deleteNews(id) {
-      const item =
-        beritaData.find(
-          news =>
-            String(news.id) === String(id)
-        );
-
-      if (!item) {
-        showMessage(
-          "Berita tidak ditemukan.",
-          "error"
-        );
-
-        return;
-      }
-
-      const confirmed =
-        window.confirm(
-          "Hapus berita ini?\n\n" +
-          item.judul +
-          "\n\nTindakan ini tidak dapat dibatalkan."
-        );
-
-      if (!confirmed) return;
-
-      try {
-
-        const result =
-          await supabaseClient
-            .from("berita")
-            .delete()
-            .eq("id", id);
-
-        if (result.error) {
-          throw result.error;
-        }
-
-        if (item.gambar) {
-          await deleteStorageImage(
-            item.gambar
-          );
-        }
-
-        if (
-          String(editingId.value) ===
-          String(id)
-        ) {
-          resetForm();
-        }
-
-        showMessage(
-          "Berita berhasil dihapus.",
-          "success"
-        );
-
-        await loadNews();
-
-      } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-          "Gagal menghapus berita: " +
-          (error.message || error),
-          "error"
-        );
-      }
-    }
-
-    newsForm.addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-        hideMessage();
-        publishActions.classList.add("hidden");
-        pendingPublishId = null;
-
-        if (!currentUser) {
-          showMessage("Sesi login tidak ditemukan.","error");
-          return;
-        }
-
-        const title = judul.value.trim();
-        const category = kategori.value;
-        const author = penulis.value.trim();
-        const content = isi.value.trim();
-        const dateValue = tanggal.value;
-
-        if (!title || !category || !author || !content || !dateValue) {
-          showMessage("Lengkapi semua kolom yang wajib diisi.","error");
-          return;
-        }
-
-        saveButton.disabled = true;
-        saveButton.textContent = "Menyimpan...";
-
-        try {
-          const file = gambarFile.files[0];
-          let imageUrl = currentImageUrl;
-          if (file) imageUrl = await uploadImage(file);
-
-          const isoDate = new Date(dateValue).toISOString();
-          const id = editingId.value;
-
-          if (id) {
-            const result = await supabaseClient
-              .from("berita")
-              .update({judul:title,kategori:category,penulis:author,isi:content,tanggal:isoDate,gambar:imageUrl,status:"draft"})
-              .eq("id",id)
-              .select("id,judul,kategori,penulis,isi,tanggal,gambar,status")
-              .maybeSingle();
-
-            if (result.error) throw result.error;
-            if (!result.data) throw new Error("Perubahan tidak diterapkan ke data berita. Periksa izin Supabase (RLS) atau ID berita.");
-            pendingPublishId = result.data.id;
-
-            if (file && currentImageUrl && currentImageUrl !== imageUrl) await deleteStorageImage(currentImageUrl);
-
-            showMessage("Perubahan berita berhasil disimpan. Berita sekarang berstatus DRAFT.","success");
-          } else {
-            const result = await supabaseClient
-              .from("berita")
-              .insert({judul:title,kategori:category,penulis:author,isi:content,tanggal:isoDate,gambar:imageUrl,status:"draft"})
-              .select("id,judul,kategori,penulis,isi,tanggal,gambar,status")
-              .maybeSingle();
-
-            if (result.error) throw result.error;
-            if (!result.data) throw new Error("Berita tidak berhasil disimpan.");
-            pendingPublishId = result.data.id;
-            showMessage("Berita berhasil disimpan sebagai DRAFT.","success");
-          }
-
-          publishActionsText.textContent = "Berita sudah tersimpan. Apakah ingin menerbitkannya ke website pengunjung?";
-          publishActions.classList.remove("hidden");
-          resetForm();
-          await loadNews();
-        } catch(error) {
-          console.error(error);
-          showMessage("Gagal menyimpan berita: " + (error.message || error),"error");
-        } finally {
-          saveButton.disabled = false;
-          saveButton.textContent = editingId.value ? "Simpan Perubahan" : "Simpan Berita";
-        }
-      }
-    );
-
-    gambarFile.addEventListener(
-      "change",
-      () => {
-
-        const file =
-          gambarFile.files[0];
-
-        if (!file) return;
-
-        const allowedTypes = [
-          "image/jpeg",
-          "image/png",
-          "image/webp",
-          "image/gif"
-        ];
-
-        if (!allowedTypes.includes(file.type)) {
-
-          showMessage(
-            "Format gambar tidak didukung.",
-            "error"
-          );
-
-          gambarFile.value = "";
-          return;
-        }
-
-        if (
-          file.size >
-          5 * 1024 * 1024
-        ) {
-
-          showMessage(
-            "Ukuran gambar maksimal 5 MB.",
-            "error"
-          );
-
-          gambarFile.value = "";
-          return;
-        }
-
-        const reader =
-          new FileReader();
-
-        reader.onload =
-          event => {
-
-            preview.src =
-              event.target.result;
-
-            preview.style.display =
-              "block";
-
-            currentImageNote.textContent =
-              "Preview gambar baru. Gambar lama baru akan diganti setelah Anda menyimpan perubahan.";
-          };
-
-        reader.readAsDataURL(file);
-      }
-    );
-
-
-    publishButton.addEventListener("click", async () => {
-      if (!pendingPublishId) return;
-      publishButton.disabled = true;
-      publishButton.textContent = "Menerbitkan...";
-      try {
-        const result = await supabaseClient.from("berita").update({status:"terbit"}).eq("id",pendingPublishId).select("id,status").maybeSingle();
-        if (result.error) throw result.error;
-        if (!result.data) throw new Error("Berita tidak berhasil diterbitkan.");
-        pendingPublishId = null;
-        publishActions.classList.add("hidden");
-        showMessage("Berita berhasil diterbitkan dan sekarang tampil di website pengunjung.","success");
-        await loadNews();
-      } catch(error) {
-        showMessage("Gagal menerbitkan berita: " + (error.message || error),"error");
-      } finally {
-        publishButton.disabled = false;
-        publishButton.textContent = "Terbitkan";
-      }
-    });
-
-    keepDraftButton.addEventListener("click", () => {
-      pendingPublishId = null;
-      publishActions.classList.add("hidden");
-      showMessage("Berita tetap tersimpan sebagai DRAFT dan belum tayang di website pengunjung.","success");
-      loadNews();
-    });
-
-    submissionList.addEventListener(
-      "click",
-      event => {
-        const reviewButton = event.target.closest(
-          "[data-review-submission-id]"
-        );
-        if (reviewButton) {
-          openReviewModal(
-            reviewButton.dataset.reviewSubmissionId
-          );
-        }
-      }
-    );
-
-    reviewCloseButton.addEventListener("click", closeReviewModal);
-    reviewCancelButton.addEventListener("click", closeReviewModal);
-    reviewSaveButton.addEventListener("click", reviewSave);
-    reviewPublishButton.addEventListener("click", reviewPublish);
-    reviewRejectButton.addEventListener("click", reviewReject);
-
-    reviewModal.addEventListener("click", event => {
-      if (event.target === reviewModal) {
-        closeReviewModal();
-      }
-    });
-
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && reviewModal.classList.contains("open")) {
-        closeReviewModal();
-      }
-    });
-
-    refreshSubmissionsButton.addEventListener(
-      "click",
-      async () => {
-        refreshSubmissionsButton.disabled = true;
-        refreshSubmissionsButton.textContent = "Memuat...";
-
-        try {
-          await loadSubmissions();
-        } finally {
-          refreshSubmissionsButton.disabled = false;
-          refreshSubmissionsButton.textContent = "↻ Muat Ulang";
-        }
-      }
-    );
-
-    newsList.addEventListener("click", async event => {
-      const publishBtn = event.target.closest("[data-publish-id]");
-      const draftBtn = event.target.closest("[data-draft-id]");
-      if (publishBtn) {
-        try {
-          publishBtn.disabled = true;
-          const result = await supabaseClient.from("berita").update({status:"terbit"}).eq("id",publishBtn.dataset.publishId).select("id,status").maybeSingle();
-          if (result.error) throw result.error;
-          if (!result.data) throw new Error("Status berita tidak berubah.");
-          showMessage("Berita berhasil diterbitkan.","success");
-          await loadNews();
-        } catch(error) {
-          showMessage("Gagal menerbitkan berita: " + (error.message || error),"error");
-          publishBtn.disabled = false;
-        }
-        return;
-      }
-      if (draftBtn) {
-        try {
-          draftBtn.disabled = true;
-          const result = await supabaseClient.from("berita").update({status:"draft"}).eq("id",draftBtn.dataset.draftId).select("id,status").maybeSingle();
-          if (result.error) throw result.error;
-          if (!result.data) throw new Error("Status berita tidak berubah.");
-          showMessage("Berita berhasil dijadikan DRAFT dan tidak tampil di website pengunjung.","success");
-          await loadNews();
-        } catch(error) {
-          showMessage("Gagal mengubah status berita: " + (error.message || error),"error");
-          draftBtn.disabled = false;
-        }
-        return;
-      }
-    });
-
-    newsList.addEventListener(
-      "click",
-      event => {
-
-        const editButton =
-          event.target.closest(
-            "[data-edit-id]"
-          );
-
-        if (editButton) {
-          editNews(
-            editButton.dataset.editId
-          );
-
-          return;
-        }
-
-        const deleteButton =
-          event.target.closest(
-            "[data-delete-id]"
-          );
-
-        if (deleteButton) {
-          deleteNews(
-            deleteButton.dataset.deleteId
-          );
-        }
-      }
-    );
-
-    searchInput.addEventListener(
-      "input",
-      renderNews
-    );
-
-    filterCategory.addEventListener(
-      "change",
-      renderNews
-    );
-
-    clearFilterButton.addEventListener(
-      "click",
-      () => {
-
-        searchInput.value = "";
-        filterCategory.value = "";
-
-        renderNews();
-      }
-    );
-
-    refreshButton.addEventListener(
-      "click",
-      async () => {
-
-        refreshButton.disabled = true;
-        refreshButton.textContent = "Memuat...";
-
-        try {
-          await loadNews();
-        } finally {
-          refreshButton.disabled = false;
-          refreshButton.textContent = "↻ Muat Ulang";
-        }
-      }
-    );
-
-    newButton.addEventListener(
-      "click",
-      resetForm
-    );
-
-    refreshSettingsButton.addEventListener("click", loadSiteSettings);
-
-    cancelButton.addEventListener(
-      "click",
-      resetForm
-    );
-
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-
-        logoutButton.disabled = true;
-        logoutButton.textContent = "Keluar...";
-
-        const result =
-          await supabaseClient
-            .auth
-            .signOut();
-
-        if (result.error) {
-
-          logoutButton.disabled = false;
-          logoutButton.textContent = "Keluar";
-
-          showMessage(
-            "Gagal keluar: " +
-            result.error.message,
-            "error"
-          );
-
-          return;
-        }
-        
-        window.location.href = "login.html";
-      }
-    );
-
-    async function initializeDashboard() {
-      try {
-        const { data, error } = await supabaseClient.auth.getSession();
-
-        if (error) {
-          console.error("Gagal memeriksa sesi:", error);
-          window.location.href = "login.html";
-          return;
-        }
-
-        const session = data && data.session;
-
-        if (!session || !session.user) {
-          window.location.href = "login.html";
-          return;
-        }
-
-        currentUser = session.user;
-        userEmail.textContent = currentUser.email || "";
-
-        const appRole =
-          currentUser.app_metadata && currentUser.app_metadata.role;
-        const userRole =
-          currentUser.user_metadata && currentUser.user_metadata.role;
-        currentUserRole =
-          (currentUser.email && currentUser.email.toLowerCase() === "redaksivisibangsa@gmail.com")
-            ? "redaksi"
-            : (appRole || userRole || "admin");
-        sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
-
-        if (currentUserRole !== "admin") {
-          if (adminSettingsFolder) adminSettingsFolder.classList.add("hidden");
-          if (adminAdsFolder) adminAdsFolder.classList.add("hidden");
-        }
-
-        loginCheck.style.display = "none";
-        app.classList.remove("hidden");
-
-        setDefaultDate();
-
-        await Promise.all([
-          loadNews(),
-          loadSubmissions(),
-          loadSiteSettings(),
-          loadAdsAdmin()
-        ]);
-      } catch (error) {
-        console.error("Kesalahan inisialisasi dashboard:", error);
-        loginCheck.textContent = "Sesi login tidak dapat diperiksa. Silakan login kembali.";
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1200);
-      }
-    }
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        window.location.href = "login.html";
-      }
-    });
-
-    initializeDashboard();
-
-  </script>
-
-</body>
-</html>
