@@ -1224,13 +1224,16 @@ main.container{padding-bottom:36px}
               </div>
 
               <div class="field">
-                <label for="tanggal">Tanggal *</label>
+                <label for="tanggal">Tanggal &amp; Waktu Aksi *</label>
 
                 <input
                   id="tanggal"
                   type="datetime-local"
                   required
+                  readonly
                 >
+
+                <div class="image-note">Diatur otomatis saat tombol Simpan ditekan.</div>
               </div>
 
               <div class="field">
@@ -2805,16 +2808,33 @@ main.container{padding-bottom:36px}
               await supabaseClient
                 .from("berita")
                 .update(updateData)
-                .eq("id", id)
-                .select("id,judul,isi,gambar,kategori,penulis,tanggal,updated_at,status,views")
-                .single();
+                .eq("id", id);
 
             if (result.error) {
               throw result.error;
             }
 
-            if (!result.data) {
-              throw new Error("Perubahan tidak tersimpan. Berita tidak ditemukan atau sesi tidak memiliki izin mengubah berita.");
+            // Verifikasi langsung dari database bahwa UPDATE benar-benar terjadi.
+            const verify =
+              await supabaseClient
+                .from("berita")
+                .select("id,judul,isi,kategori,penulis,tanggal,updated_at,gambar,status,views")
+                .eq("id", id)
+                .maybeSingle();
+
+            if (verify.error) {
+              throw verify.error;
+            }
+
+            if (!verify.data) {
+              throw new Error("Berita tidak ditemukan setelah penyimpanan.");
+            }
+
+            if (
+              verify.data.judul !== title ||
+              verify.data.isi !== content
+            ) {
+              throw new Error("Database belum menerima perubahan berita.");
             }
 
             if (
