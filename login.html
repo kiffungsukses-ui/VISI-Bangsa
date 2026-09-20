@@ -148,6 +148,18 @@
       cursor: wait;
     }
 
+    .forgot-password {
+      margin-top: 12px;
+      padding: 8px;
+      background: transparent;
+      color: #b40000;
+      font-size: 13px;
+    }
+
+    .forgot-password:hover {
+      background: #fff8f8;
+    }
+
     #message {
       margin-top: 15px;
       text-align: center;
@@ -228,6 +240,14 @@
         Login
       </button>
 
+      <button
+        id="forgotPasswordButton"
+        type="button"
+        class="forgot-password"
+      >
+        Lupa password?
+      </button>
+
       <div id="message"></div>
 
     </form>
@@ -285,6 +305,47 @@
     const loginButton =
       document.getElementById("loginButton");
 
+    const forgotPasswordButton =
+      document.getElementById("forgotPasswordButton");
+
+
+    forgotPasswordButton.addEventListener("click", async () => {
+      const emailInput = document.getElementById("email");
+      const email = emailInput.value.trim().toLowerCase();
+
+      if (!email) {
+        message.textContent = "Masukkan email terlebih dahulu.";
+        emailInput.focus();
+        return;
+      }
+
+      forgotPasswordButton.disabled = true;
+      message.textContent = "Mengirim email pemulihan password...";
+
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(
+          email,
+          {
+            redirectTo: "https://visibangsa.id/reset-password.html"
+          }
+        );
+
+        if (error) {
+          console.error(error);
+          message.textContent =
+            "Email pemulihan gagal dikirim. Periksa alamat email atau coba lagi.";
+        } else {
+          message.textContent =
+            "Email pemulihan password sudah dikirim. Periksa Inbox atau Spam.";
+        }
+      } catch (error) {
+        console.error(error);
+        message.textContent =
+          "Terjadi kesalahan saat mengirim email pemulihan.";
+      } finally {
+        forgotPasswordButton.disabled = false;
+      }
+    });
 
     document.querySelectorAll("[data-role]").forEach(button => {
       button.addEventListener("click", () => {
