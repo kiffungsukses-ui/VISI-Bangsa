@@ -3548,6 +3548,28 @@ main.container{padding-bottom:36px}
       }
     }
 
+    // Lindungi halaman dashboard dari browser Back/forward cache (bfcache).
+    // Setelah logout, browser dapat menampilkan snapshot lama; setiap kali
+    // halaman ditampilkan kembali, verifikasi ulang sesi Supabase sebelum UI dipakai.
+    async function enforceDashboardSession() {
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error || !data?.session?.user) {
+          window.location.replace("login.html");
+          return false;
+        }
+        return true;
+      } catch (error) {
+        console.error("Gagal memeriksa sesi dashboard:", error);
+        window.location.replace("login.html");
+        return false;
+      }
+    }
+
+    window.addEventListener("pageshow", async () => {
+      await enforceDashboardSession();
+    });
+
     // Navigasi tombol Back HP mengikuti folder dashboard yang sedang dibuka.
     // Contoh: buka Ringkasan & Statistik -> Back = kembali ke tampilan dashboard
     // sebelum folder dibuka. Halaman Login hanya dibuka melalui tombol Keluar.
