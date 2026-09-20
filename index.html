@@ -1161,6 +1161,35 @@ const supabaseClient =
     SUPABASE_ANON_KEY,
     { global: { fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }) } }
   );
+    
+    function getVisitorId() {
+      try {
+        const key = "visiBangsaVisitorId";
+        let id = localStorage.getItem(key);
+        if (!id) {
+          id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(36).slice(2));
+          localStorage.setItem(key, id);
+        }
+        return id;
+      } catch {
+        return "anonymous-" + Math.random().toString(36).slice(2);
+      }
+    }
+
+    async function registerSiteVisit() {
+      try {
+        await supabaseClient.rpc("track_site_visit", {
+          p_path: window.location.pathname || "/",
+          p_news_id: null,
+          p_visitor_id: getVisitorId()
+        });
+      } catch (error) {
+        console.warn("Statistik kunjungan tidak tercatat:", error);
+      }
+    }
+
+    registerSiteVisit();
+
 
 
 let semuaBerita = [];
