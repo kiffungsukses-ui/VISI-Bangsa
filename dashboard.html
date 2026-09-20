@@ -3261,6 +3261,17 @@ main.container{padding-bottom:36px}
       }
     }
 
+    // Tombol Back di perangkat mobile dari dashboard kembali ke website publik,
+    // bukan ke halaman login. Halaman login hanya dibuka melalui tombol Keluar.
+    try {
+      history.pushState({ visiDashboard: true }, "", window.location.href);
+      window.addEventListener("popstate", () => {
+        window.location.replace("./index.html");
+      });
+    } catch (historyError) {
+      console.warn("Navigasi Back dashboard tidak dapat diatur:", historyError);
+    }
+
     supabaseClient.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") window.location.replace("login.html");
     });
