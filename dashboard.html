@@ -985,6 +985,13 @@ main.container{padding-bottom:36px}
 @media(max-width:950px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.stats-body{padding:12px}.stats-toolbar{align-items:stretch;flex-direction:column;padding:14px}.stats-refresh{width:100%}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat-card{padding:13px 11px 12px}.stat-card strong{font-size:23px}.stat-card .stat-label{font-size:11px}.stat-card small{font-size:10px}.top-articles{padding:13px}.top-articles-head{margin-bottom:10px}.top-articles-head h3{font-size:15px}.top-article{grid-template-columns:32px minmax(0,1fr);gap:9px;padding:10px}.top-article-rank{width:30px;height:30px}.top-article-views{grid-column:2;text-align:left;font-size:12px}.top-article-action{display:none}}
 </style>
+
+<style id="top-articles-final-polish">
+.top-article{display:grid;grid-template-columns:40px minmax(0,1fr) 92px;align-items:center;gap:13px;min-height:58px}
+.top-article-rank{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:#eef5ff;color:#0b5ca8;font-weight:900;box-shadow:inset 0 0 0 1px #dbeafe}.top-article:nth-child(1) .top-article-rank{background:#fff5d6;color:#a16207}.top-article:nth-child(2) .top-article-rank{background:#f1f5f9;color:#475569}.top-article:nth-child(3) .top-article-rank{background:#fff0e5;color:#b45309}
+.top-article-main{min-width:0}.top-article-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.top-article-meta{margin-top:5px}.top-article-views{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;padding-left:10px;border-left:1px solid #edf1f5}.top-article-views strong{font-size:15px;line-height:1.1;font-weight:900}.top-article-views span{font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.35px}
+@media(max-width:600px){.top-article{grid-template-columns:32px minmax(0,1fr) 70px;gap:9px;min-height:54px}.top-article-rank{width:30px;height:30px;border-radius:8px}.top-article-title{-webkit-line-clamp:2}.top-article-views{grid-column:auto;text-align:right;align-items:flex-end;padding-left:7px}.top-article-views strong{font-size:12px}.top-article-views span{font-size:9px}}
+</style>
 </head>
 
 <body>
@@ -3013,7 +3020,7 @@ main.container{padding-bottom:36px}
         if(list){
           list.innerHTML=top.length ? top.map((n,i)=>{
             const views=Number(n.views)||0;
-            return '<div class="top-article"><span class="top-rank">'+(i+1)+'</span><div><div class="top-article-title">'+escapeHtml(n.judul||"Tanpa judul")+'</div><div class="top-article-meta">'+escapeHtml(n.kategori||"Berita")+'</div></div><span class="top-views">'+views.toLocaleString("id-ID")+' pembaca</span></div>';
+            return '<div class="top-article"><span class="top-article-rank">'+(i+1)+'</span><div class="top-article-main"><div class="top-article-title">'+escapeHtml(n.judul||"Tanpa judul")+'</div><div class="top-article-meta">'+escapeHtml(n.kategori||"Berita")+'</div></div><div class="top-article-views"><strong>'+views.toLocaleString("id-ID")+'</strong><span>pembaca</span></div></div>';
           }).join("") : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
         }
       } catch(error) {
