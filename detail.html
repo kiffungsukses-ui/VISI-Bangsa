@@ -793,6 +793,19 @@
       );
     }
 
+    async function registerArticleView(id) {
+      if (!id) return;
+      try {
+        const { error } = await supabaseClient.rpc(
+          "increment_news_view",
+          { p_news_id: String(id) }
+        );
+        if (error) console.error("Gagal mencatat view:", error);
+      } catch (error) {
+        console.error("Gagal mencatat view:", error);
+      }
+    }
+
     async function loadArticle() {
 
       if (!articleId) {
@@ -829,6 +842,8 @@
       }
 
       renderArticle(data);
+
+      await registerArticleView(data.id);
 
       await loadRelated(
         data.kategori,
