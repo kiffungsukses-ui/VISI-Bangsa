@@ -958,10 +958,6 @@
           <div id="statViews" class="stat-value">0</div>
         </div>
 
-        <div class="stat">
-          <div class="stat-label">Pembaca Hari Ini</div>
-          <div id="statViewsToday" class="stat-value">0</div>
-        </div>
 
       </section>
 
@@ -2340,7 +2336,6 @@
       const totalViews = published.reduce((sum, item) => sum + Number(item.views || 0), 0);
 
       statViews.textContent = totalViews.toLocaleString("id-ID");
-      statViewsToday.textContent = "—";
     }
 
     function renderNews() {
