@@ -752,45 +752,55 @@
     .hidden { display: none !important; }
 
     /* Mode editor berita: saat Edit dipilih, pengguna hanya melihat formulir. */
-    /* Ketika mode edit aktif, sembunyikan seluruh elemen dashboard
-       selain formulir berita. Header tetap ada untuk identitas/logout. */
-    body.news-editing-mode .dashboard-welcome,
-    body.news-editing-mode .stats,
-    body.news-editing-mode main.container > *:not(#newsEditorFolder),
-    body.news-editing-mode #newsEditorFolder > summary,
-    body.news-editing-mode #newsEditorFolder .folder-title-row,
-    body.news-editing-mode #newsEditorFolder .folder-icon,
-    body.news-editing-mode #newsEditorFolder .folder-description {
+    /* HALAMAN KHUSUS EDIT BERITA */
+    body.news-editing-mode .topbar {
       display: none !important;
     }
-    body.news-editing-mode main.container {
-      max-width: 1200px;
-      margin: auto;
-      padding-top: 18px;
+    body.news-editing-mode #app {
+      min-height: 100vh;
     }
     body.news-editing-mode main.container {
       display: block !important;
-      padding-top: 18px;
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
     }
-    body.news-editing-mode #newsEditorFolder {
+    body.news-editing-mode main.container > * {
+      display: none !important;
+    }
+    body.news-editing-mode main.container > #newsEditorFolder {
       display: block !important;
       margin: 0;
-      width: 100%;
-      border-radius: 14px;
-      box-shadow: 0 8px 26px rgba(13,35,58,.08);
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
     }
     body.news-editing-mode #newsEditorFolder > summary {
       display: none !important;
     }
     body.news-editing-mode #newsEditorFolder > .admin-folder-body {
+      display: block !important;
+      margin: 0;
       padding: 0;
-      background: transparent;
       border: 0;
     }
     body.news-editing-mode #newsEditorFolder > .admin-folder-body > .panel {
-      margin: 0;
-      border-radius: 14px;
-      box-shadow: 0 8px 26px rgba(13,35,58,.08);
+      display: block !important;
+      max-width: 900px;
+      min-height: 100vh;
+      margin: 0 auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body.news-editing-mode #newsEditorFolder .panel-header {
+      display: flex !important;
+    }
+    body.news-editing-mode #newsEditorFolder #formTitle {
+      display: block !important;
+    }
+    body.news-editing-mode #newsEditorFolder .panel-subtitle {
+      display: block !important;
     }
 
     .admin-folder {
@@ -2634,6 +2644,9 @@ main.container{padding-bottom:36px}
 
       // Masuk ke mode editor penuh: semua folder dashboard disembunyikan
       // agar pengguna hanya melihat formulir berita yang sedang diedit.
+      // Edit Berita menjadi halaman/form tersendiri.
+      // Form tetap berada di dashboard.html agar data dan autentikasi tidak berubah,
+      // tetapi mode edit mengganti tampilan utama secara penuh.
       document.body.classList.add("news-editing-mode");
 
       // MODE EDIT ABSOLUT: setelah tombol Edit ditekan, sembunyikan
