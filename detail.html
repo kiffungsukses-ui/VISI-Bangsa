@@ -929,7 +929,7 @@
         .textContent =
         "Oleh " +
         author +
-        " • " +
+        " • Diterbitkan: " +
         formatDate(article.tanggal);
 
       if (updateNoteElement) {
@@ -943,7 +943,7 @@
 
         if (hasUpdate) {
           updateNoteElement.textContent =
-            "Diperbarui " + formatDate(article.updated_at);
+            "Diperbarui: " + formatDate(article.updated_at);
           updateNoteElement.style.display = "block";
         } else {
           updateNoteElement.textContent = "";
