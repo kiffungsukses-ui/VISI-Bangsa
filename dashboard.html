@@ -1562,11 +1562,25 @@ main.container{padding-bottom:36px}
 
       try {
         const id = pendingPublishId;
+        // Saat DRAFT pertama kali diterbitkan, itu adalah waktu publikasi,
+        // bukan waktu EDIT. Samakan updated_at dengan tanggal publikasi agar
+        // halaman berita publik tidak menampilkan catatan "Diperbarui".
+        const draftRow = await supabaseClient
+          .from("berita")
+          .select("tanggal")
+          .eq("id", id)
+          .eq("status", "draft")
+          .maybeSingle();
+
+        if (draftRow.error || !draftRow.data) {
+          throw draftRow.error || new Error("Draft berita tidak ditemukan.");
+        }
+
         const result = await supabaseClient
           .from("berita")
           .update({
             status: "terbit",
-            updated_at: new Date().toISOString()
+            updated_at: draftRow.data.tanggal
           })
           .eq("id", id)
           .eq("status", "draft");
