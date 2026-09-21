@@ -7,3 +7,5 @@ PENTING:
 - Upload file ZIP ini ke Vercel Drop.
 - Setelah online, alamat vercel.app dapat diganti/custom domain.
 - Login/admin/database belum diaktifkan pada versi fondasi ini.
+
+Deployment sync marker: 2026-09-21
