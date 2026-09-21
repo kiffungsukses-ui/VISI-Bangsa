@@ -208,6 +208,9 @@
     }
 
     .ad-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
+    .stats-summary-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px}
+    .stats-summary-strip>div{padding:13px 15px;border:1px solid #dbe7f1;border-radius:12px;background:#f8fbfe;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .stats-summary-strip span{font-size:12px;font-weight:800;color:#64748b}.stats-summary-strip strong{font-size:20px;color:#173d60}
     .stats-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
     .stats-chart-card{border:1px solid #dbe7f1;border-radius:14px;background:#fff;padding:18px;box-shadow:0 4px 14px rgba(30,70,110,.05)}
     .stats-chart-head{margin-bottom:14px}.stats-chart-head h3{margin:0 0 4px;font-size:16px;color:#173d60}.stats-chart-head span{font-size:12px;color:#718096}
@@ -1175,18 +1178,11 @@ main.container{padding-bottom:36px}
             <button id="refreshStatsButton" type="button" class="secondary stats-refresh">↻ Muat Ulang</button>
           </div>
           <div id="statsMessage" class="message"></div>
-          <div class="stats-grid">
-            <div class="stat-card"><span class="stat-label">Total Berita</span><strong id="statTotal">—</strong><small>Semua berita tersimpan</small></div>
-            <div class="stat-card"><span class="stat-label">Berita Hari Ini</span><strong id="statToday">—</strong><small>Dibuat hari ini</small></div>
-            <div class="stat-card"><span class="stat-label">Total Pembaca</span><strong id="statViews">—</strong><small>Total kunjungan tercatat</small></div>
-            <div class="stat-card"><span class="stat-label">Kunjungan Hari Ini</span><strong id="statTodayVisits">—</strong><small>Sejak 00.00 WIB</small></div>
-            <div class="stat-card"><span class="stat-label">Pembaca Unik Hari Ini</span><strong id="statUniqueToday">—</strong><small>Visitor berbeda</small></div>
-            <div class="stat-card"><span class="stat-label">Sedang Online</span><strong id="statOnline">—</strong><small>Aktif ±5 menit terakhir</small></div>
-            <div class="stat-card"><span class="stat-label">Tayangan Iklan</span><strong id="statAdImpressions">—</strong><small>Total tayangan tercatat</small></div>
-            <div class="stat-card"><span class="stat-label">Tayangan Iklan Hari Ini</span><strong id="statAdToday">—</strong><small>Sejak 00.00 WIB</small></div>
-            <div class="stat-card"><span class="stat-label">Pengunjung Iklan Unik Hari Ini</span><strong id="statAdUniqueToday">—</strong><small>Visitor berbeda</small></div>
-            <div class="stat-card"><span class="stat-label">Berita Bergambar</span><strong id="statImages">—</strong><small>Memiliki gambar</small></div>
-            <div class="stat-card"><span class="stat-label">Kategori Aktif</span><strong id="statCategories">—</strong><small>Kategori berita</small></div>
+          <div class="stats-summary-strip">
+            <div><span>Total Berita</span><strong id="statTotal">—</strong></div>
+            <div><span>Total Pembaca</span><strong id="statViews">—</strong></div>
+            <div><span>Pembaca Hari Ini</span><strong id="statTodayVisits">—</strong></div>
+            <div><span>Tayangan Iklan</span><strong id="statAdImpressions">—</strong></div>
           </div>
           <div class="stats-charts">
             <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Aktivitas Pembaca</h3><span>Perbandingan angka utama website.</span></div></div><div id="readerChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
@@ -3854,7 +3850,7 @@ main.container{padding-bottom:36px}
         set("statAdToday", Number(stats.ad_impressions_today) || 0);
         set("statAdUniqueToday", Number(stats.ad_unique_today) || 0);
 
-        const top = Array.isArray(stats.top_articles) ? stats.top_articles : [];
+        const top = Array.isArray(stats.top_articles) ? stats.top_articles.slice(0, 3) : [];
         const renderBarChart = (id, rows) => {
           const el = document.getElementById(id);
           if (!el) return;
