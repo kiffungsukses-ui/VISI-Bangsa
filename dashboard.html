@@ -207,6 +207,7 @@
       font-weight: 700;
     }
 
+    .ad-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
     .news-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
     .edit-btn {
       border: 0;
@@ -1946,6 +1947,21 @@ main.container{padding-bottom:36px}
       const r=await supabaseClient.from("iklan").select("id,nama_pengiklan,perusahaan,email,telepon,judul,posisi,mulai,selesai,gambar,link_url,status,catatan,created_at").order("created_at",{ascending:false});
       if(r.error){showAdsMessage("Gagal memuat iklan: "+r.error.message,"error");adsList.innerHTML='<div class="empty">Gagal memuat iklan.</div>';return;}
       adsData=r.data||[];
+
+      // Ambil jumlah tayangan setiap iklan dari statistik PostgreSQL.
+      // Data ini hanya dipakai untuk menampilkan angka pembaca/tayangan
+      // pada folder Daftar Iklan Terbit.
+      try{
+        const statsResult=await supabaseClient.rpc("get_dashboard_stats");
+        if(!statsResult.error){
+          const topAds=Array.isArray(statsResult.data?.top_ads)?statsResult.data.top_ads:[];
+          const impressionMap=new Map(topAds.map(a=>[String(a.ad_id),Number(a.impressions)||0]));
+          adsData=adsData.map(a=>({...a,impressions:impressionMap.get(String(a.id))||0}));
+        }
+      }catch(statsError){
+        console.warn("Jumlah tayangan iklan tidak dapat dimuat:",statsError);
+      }
+
       renderPendingFolder();
       renderPublishedAds();
       const incoming=adsData.filter(a=>String(a.status||"").toLowerCase()==="masuk").length;
@@ -1983,7 +1999,7 @@ main.container{padding-bottom:36px}
           const toggle=isActive
             ? '<button type="button" class="reject-btn" data-published-ad-action="disable" data-ad-id="'+escapeHtml(a.id)+'">Nonaktifkan</button>'
             : '<button type="button" class="approve-btn" data-published-ad-action="activate" data-ad-id="'+escapeHtml(a.id)+'">Aktifkan Kembali</button>';
-          const actions='<div class="submission-actions"><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button>'+toggle+'<button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
+          const actions='<div class="submission-actions"><span class="ad-view-count" title="Jumlah tayangan iklan">👁 '+Number(a.impressions||0).toLocaleString("id-ID")+' tayangan</span><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button>'+toggle+'<button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
           return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+(isActive?"AKTIF / TERBIT":"NONAKTIF / SEMENTARA")+'</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+actions+'</article>';
         }).join("");
       };
