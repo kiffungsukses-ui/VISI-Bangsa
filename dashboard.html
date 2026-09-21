@@ -1409,7 +1409,7 @@ main.container{padding-bottom:36px}
 
 
       <details id="adminAdsFolder" class="panel admin-folder">
-        <summary><div class="folder-summary-icon ads-icon" aria-hidden="true">▣</div><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Iklan</h2><span id="adNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Terima permintaan pengiklan, atur periode, posisi, dan tampilkan atau sembunyikan iklan.</div></div></div></summary>
+        <summary><div class="folder-summary-icon ads-icon" aria-hidden="true">▣</div><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Kiriman Iklan</h2><span id="adNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Terima permintaan pengiklan, atur periode, posisi, dan tampilkan atau sembunyikan iklan.</div></div></div></summary>
         <div class="admin-folder-body">
           <div class="panel-header"><div><div class="panel-title">Pengelolaan Iklan</div><div class="panel-subtitle">Periksa materi iklan terlebih dahulu sebelum diterbitkan. Iklan dapat diaktifkan, dinonaktifkan, atau dihapus.</div></div><button id="refreshAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
           <div id="adsMessage" class="message"></div>
@@ -1425,13 +1425,22 @@ main.container{padding-bottom:36px}
             <div id="adPreviewBody" class="ad-preview-body"></div>
             <div class="ad-preview-actions">
               <button id="adPreviewActivate" type="button" class="approve-btn">Terbitkan</button>
-              <button id="adPreviewPending" type="button" class="draft-button">Simpan</button>
+              <button id="adPreviewPending" type="button" class="draft-button">Pending</button>
               <button id="adPreviewReject" type="button" class="review-reject">Tolak</button>
               <button id="adPreviewCloseBottom" type="button" class="secondary">Kembali</button>
             </div>
           </div>
         </div>
       </details>
+      <details id="publishedAdsFolder" class="panel admin-folder">
+        <summary><div class="folder-summary-icon ads-icon" aria-hidden="true">✓</div><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Daftar Iklan Terbit</h2><span id="publishedAdNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Daftar setiap iklan yang sedang aktif dan tampil di website publik.</div></div></div></summary>
+        <div class="admin-folder-body">
+          <div class="panel-header"><div><div class="panel-title">Iklan Aktif di Publik</div><div class="panel-subtitle">Iklan di daftar ini adalah iklan dengan status aktif.</div></div><button id="refreshPublishedAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
+          <div id="publishedAdsMessage" class="message"></div>
+          <div id="publishedAdsList" class="submission-list"><div class="loading">Memuat iklan terbit...</div></div>
+        </div>
+      </details>
+
       <details id="submissionsFolder" class="panel admin-folder">
         <summary>
           <div class="folder-summary-icon submissions-icon" aria-hidden="true">♙</div>
@@ -1469,7 +1478,7 @@ main.container{padding-bottom:36px}
             <div class="review-actions">
               <button id="reviewSaveButton" type="button" class="review-save">Simpan Perubahan</button>
               <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
-              <button id="reviewPendingButton" type="button" class="draft-button">Simpan</button>
+              <button id="reviewPendingButton" type="button" class="draft-button">Pending</button>
               <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
               <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
             </div>
@@ -1834,6 +1843,10 @@ main.container{padding-bottom:36px}
     const adsEnabled=document.getElementById("adsEnabled");
     const refreshAdsButton=document.getElementById("refreshAdsButton");
     const adNotificationBadge=document.getElementById("adNotificationBadge");
+    const publishedAdsList=document.getElementById("publishedAdsList");
+    const publishedAdsMessage=document.getElementById("publishedAdsMessage");
+    const publishedAdNotificationBadge=document.getElementById("publishedAdNotificationBadge");
+    const refreshPublishedAdsButton=document.getElementById("refreshPublishedAdsButton");
     const adPreviewModal=document.getElementById("adPreviewModal");
     const adPreviewBody=document.getElementById("adPreviewBody");
     const adPreviewClose=document.getElementById("adPreviewClose");
@@ -1854,15 +1867,33 @@ main.container{padding-bottom:36px}
       adsData=r.data||[];
       const pending=adsData.filter(a=>a.status==="pending").length;
       renderPendingFolder();
+      renderPublishedAds();
       adNotificationBadge.classList.remove("hidden");adNotificationBadge.textContent=pending>0?String(pending):"✓";if(!pending)adNotificationBadge.classList.add("checked");
       renderAds();
     }
+    function renderPublishedAds(){
+      if(!publishedAdsList) return;
+      const activeAds=(adsData||[]).filter(a=>String(a.status||"").toLowerCase()==="aktif");
+      if(publishedAdNotificationBadge){
+        publishedAdNotificationBadge.textContent=String(activeAds.length);
+        publishedAdNotificationBadge.classList.remove("hidden","checked");
+        if(!activeAds.length) publishedAdNotificationBadge.classList.add("checked");
+      }
+      if(!activeAds.length){ publishedAdsList.innerHTML='<div class="empty">Belum ada iklan yang sedang terbit di publik.</div>'; return; }
+      publishedAdsList.innerHTML=activeAds.map(a=>{
+        const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi||"-";
+        const image=a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Iklan '+escapeHtml(a.judul||"")+'">':"";
+        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">AKTIF / TERBIT</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+'</article>';
+      }).join("");
+    }
+
     function renderAds(){
       if(!adsData.length){adsList.innerHTML='<div class="empty">Belum ada permintaan iklan.</div>';return;}
       adsList.innerHTML=adsData.map(a=>{
         const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
         const status=a.status==="aktif"?"AKTIF":a.status==="pending"?"MENUNGGU":a.status==="ditolak"?"DITOLAK":"SELESAI";
         const actions='<button type="button" class="secondary" data-ad-action="preview" data-ad-id="'+a.id+'">Lihat sebelum diterbitkan</button>'+
+          (a.status!=="aktif"?'<button type="button" class="draft-button" data-ad-action="pending" data-ad-id="'+a.id+'">Pending</button>':"")+
           (a.link_url?'<a class="secondary" href="'+escapeHtml(a.link_url)+'" target="_blank" rel="noopener">Buka Link</a>':"")+
           (a.status==="pending"?'<button type="button" class="approve-btn" data-ad-action="approve" data-ad-id="'+a.id+'">Terbitkan</button><button type="button" class="reject-btn" data-ad-action="reject" data-ad-id="'+a.id+'">Tolak</button>':a.status==="aktif"?'<button type="button" class="reject-btn" data-ad-action="disable" data-ad-id="'+a.id+'">Nonaktifkan</button>':"")+
           '<button type="button" class="danger" data-ad-action="delete" data-ad-id="'+a.id+'">Hapus</button>';
@@ -3645,6 +3676,9 @@ main.container{padding-bottom:36px}
     if (refreshAdsButton) {
       refreshAdsButton.addEventListener("click", loadAdsAdmin);
     }
+    if (refreshPublishedAdsButton) {
+      refreshPublishedAdsButton.addEventListener("click", loadAdsAdmin);
+    }
     if (adsEnabled) {
       adsEnabled.addEventListener("change", setAdsEnabled);
     }
@@ -3656,6 +3690,7 @@ main.container{padding-bottom:36px}
         const action = button.dataset.adAction;
         if (action === "preview") openAdPreview(id);
         else if (action === "approve") await updateAdStatus(id, "aktif");
+        else if (action === "pending") await updateAdStatus(id, "pending");
         else if (action === "reject") await updateAdStatus(id, "ditolak");
         else if (action === "disable") await updateAdStatus(id, "nonaktif");
         else if (action === "delete") await deleteAd(id);
