@@ -11,12 +11,12 @@
   <style>
     * { box-sizing: border-box; }
 
-    .news-category-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 14px}
-    .news-category-tab{min-height:62px;border:1px solid #dfe5ec;border-radius:12px;background:#f8fafc;color:#334155;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;font-weight:900;cursor:pointer;transition:.18s ease;text-align:left}
+    .news-category-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 14px}
+    .news-category-tab{min-height:62px;border:1px solid #cfe1f3;border-radius:12px;background:linear-gradient(135deg,#f5fbff,#e7f2fc);color:#21466a;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;font-weight:900;cursor:pointer;transition:.18s ease;text-align:left}
     .news-category-tab span{font-size:14px;letter-spacing:.2px}
-    .news-category-tab b{min-width:30px;height:30px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:12px}
-    .news-category-tab:hover{border-color:#b8c4d1;background:#f1f5f9}
-    .news-category-tab.active{background:#eaf3ff;border-color:#0b5ca8;color:#0b5ca8;box-shadow:0 5px 16px rgba(11,92,168,.10)}
+    .news-category-tab b{min-width:30px;height:30px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#cfe6fa;color:#07539c;font-size:12px}
+    .news-category-tab:hover{border-color:#9fc5e6;background:linear-gradient(135deg,#ffffff,#dff0ff);box-shadow:0 5px 12px rgba(7,83,156,.10)}
+    .news-category-tab.active{background:linear-gradient(135deg,#dff0ff,#c9e5fb);border-color:#0b5ca8;color:#07539c;box-shadow:0 5px 16px rgba(11,92,168,.12)}
     .news-category-tab.active b{background:#0b5ca8;color:#fff}
     .news-category-panel{margin-top:4px;padding:14px;border:1px solid #e2e8f0;border-radius:12px;background:#fafcff}
     @media(max-width:900px){.news-category-tabs{grid-template-columns:repeat(2,1fr)}}
@@ -3003,7 +3003,7 @@ main.container{padding-bottom:36px}
         const category = String(item.kategori || "Tanpa Kategori").trim() || "Tanpa Kategori";
         counts[category] = (counts[category] || 0) + 1;
       });
-      const categories = Object.keys(counts).sort((a,b) => a.localeCompare(b, "id"));
+      const categories = ["Nasional","Daerah","Ekonomi","Pendidikan","Olahraga","Pesona & Budaya","Opini"];
       newsCategoryTabs.innerHTML = categories.map(category => {
         const active = selectedNewsCategory === category;
         return '<button type="button" class="news-category-tab' + (active ? ' active' : '') +
