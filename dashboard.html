@@ -4075,8 +4075,13 @@ main.container{padding-bottom:36px}
       }
     }
 
-    window.addEventListener("pageshow", async () => {
-      await enforceDashboardSession();
+    window.addEventListener("pageshow", async (event) => {
+      // Jangan menjalankan getSession bersamaan dengan initializeVISIBangsaDashboard
+      // pada pembukaan normal. Itu dapat berebut lock Auth Supabase di beberapa HP.
+      // Pemeriksaan tambahan hanya diperlukan ketika halaman dipulihkan dari bfcache.
+      if (event.persisted) {
+        await enforceDashboardSession();
+      }
     });
 
     // Navigasi tombol Back HP mengikuti folder dashboard yang sedang dibuka.
