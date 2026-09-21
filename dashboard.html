@@ -1856,6 +1856,10 @@ main.container{padding-bottom:36px}
     const refreshAdsButton=document.getElementById("refreshAdsButton");
     const adNotificationBadge=document.getElementById("adNotificationBadge");
     const publishedAdsList=document.getElementById("publishedAdsList");
+    const publishedActiveAdsList=document.getElementById("publishedActiveAdsList");
+    const publishedInactiveAdsList=document.getElementById("publishedInactiveAdsList");
+    const publishedAdsSearchInput=document.getElementById("publishedAdsSearchInput");
+    const clearPublishedAdsSearchButton=document.getElementById("clearPublishedAdsSearchButton");
     const publishedAdsMessage=document.getElementById("publishedAdsMessage");
     const publishedAdNotificationBadge=document.getElementById("publishedAdNotificationBadge");
     const refreshPublishedAdsButton=document.getElementById("refreshPublishedAdsButton");
@@ -3969,9 +3973,44 @@ main.container{padding-bottom:36px}
     // immediately reveals the dashboard instead of leaving "Memeriksa sesi login".
     async function initializeVISIBangsaDashboard() {
       try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error) throw error;
-        const session = data?.session;
+        // Jangan biarkan halaman berhenti selamanya di "Memeriksa sesi login".
+        // getSession() normalnya membaca sesi lokal dengan cepat; jika browser
+        // sedang menunggu lock/network, beri batas waktu lalu coba validasi user.
+        const withTimeout = (promise, ms, label) => Promise.race([
+          promise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error(label)), ms))
+        ]);
+
+        let session = null;
+        try {
+          const { data, error } = await withTimeout(
+            supabaseClient.auth.getSession(),
+            8000,
+            "Pemeriksaan sesi login terlalu lama."
+          );
+          if (error) throw error;
+          session = data?.session || null;
+        } catch (sessionError) {
+          console.warn("getSession gagal/timeout:", sessionError);
+          try {
+            const { data, error } = await withTimeout(
+              supabaseClient.auth.getUser(),
+              8000,
+              "Validasi akun terlalu lama."
+            );
+            if (error) throw error;
+            if (data?.user) {
+              session = { user: data.user };
+            }
+          } catch (userError) {
+            console.error("Validasi sesi login gagal:", userError);
+            loginCheck.innerHTML = 'Sesi login belum dapat diperiksa.<br><button type="button" id="retryLoginCheck" class="secondary" style="margin-top:10px">Coba Lagi</button>';
+            const retry = document.getElementById("retryLoginCheck");
+            if (retry) retry.addEventListener("click", () => window.location.reload());
+            return;
+          }
+        }
+
         if (!session?.user) {
           window.location.replace("login.html");
           return;
