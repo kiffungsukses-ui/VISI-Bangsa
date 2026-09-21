@@ -1877,18 +1877,30 @@ main.container{padding-bottom:36px}
     }
     function renderPublishedAds(){
       if(!publishedAdsList) return;
-      const activeAds=(adsData||[]).filter(a=>String(a.status||"").toLowerCase()==="aktif");
+      const allPublished=(adsData||[]).filter(a=>{
+        const s=String(a.status||"").toLowerCase();
+        return s==="aktif" || s==="nonaktif";
+      });
+      const activeAds=allPublished.filter(a=>String(a.status||"").toLowerCase()==="aktif");
       if(publishedAdNotificationBadge){
         publishedAdNotificationBadge.textContent=String(activeAds.length);
         publishedAdNotificationBadge.classList.remove("hidden","checked");
         if(!activeAds.length) publishedAdNotificationBadge.classList.add("checked");
       }
-      if(!activeAds.length){ publishedAdsList.innerHTML='<div class="empty">Belum ada iklan yang sedang terbit di publik.</div>'; return; }
-      publishedAdsList.innerHTML=activeAds.map(a=>{
+      if(!allPublished.length){
+        publishedAdsList.innerHTML='<div class="empty">Belum ada iklan yang pernah diterbitkan.</div>';
+        return;
+      }
+      publishedAdsList.innerHTML=allPublished.map(a=>{
+        const isActive=String(a.status||"").toLowerCase()==="aktif";
         const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi||"-";
         const image=a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Iklan '+escapeHtml(a.judul||"")+'">':"";
-        const actions='<div class="submission-actions"><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button><button type="button" class="reject-btn" data-published-ad-action="disable" data-ad-id="'+escapeHtml(a.id)+'">Nonaktifkan</button><button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
-        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">AKTIF / TERBIT</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+actions+'</article>';
+        const state=isActive?"AKTIF / TERBIT":"NONAKTIF / SEMENTARA";
+        const toggle=isActive
+          ? '<button type="button" class="reject-btn" data-published-ad-action="disable" data-ad-id="'+escapeHtml(a.id)+'">Nonaktifkan</button>'
+          : '<button type="button" class="approve-btn" data-published-ad-action="activate" data-ad-id="'+escapeHtml(a.id)+'">Aktifkan Kembali</button>';
+        const actions='<div class="submission-actions"><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button>'+toggle+'<button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
+        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+state+'</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+actions+'</article>';
       }).join("");
     }
 
@@ -3741,6 +3753,7 @@ main.container{padding-bottom:36px}
         const action = button.dataset.publishedAdAction;
         if (action === "edit") openAdPreview(id);
         else if (action === "disable") await updateAdStatus(id, "nonaktif");
+        else if (action === "activate") await updateAdStatus(id, "aktif");
         else if (action === "delete") await deleteAd(id);
       });
     }
