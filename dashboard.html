@@ -1887,7 +1887,8 @@ main.container{padding-bottom:36px}
     const siteTaglineInput = document.getElementById("siteTagline");
     const editTaglineButton = document.getElementById("editTaglineButton");
     const saveTaglineButton = document.getElementById("saveTaglineButton");
-    const siteEditorialNoteInput = document.getElementById("siteEditorialNote");\n    const siteProfileInput = document.getElementById("siteProfile");
+    const siteEditorialNoteInput = document.getElementById("siteEditorialNote");
+    const siteProfileInput = document.getElementById("siteProfile");
     const siteEmailInput = document.getElementById("siteEmail");
     const sitePhoneInput = document.getElementById("sitePhone");
     const siteLogoFile = document.getElementById("siteLogoFile");
@@ -4002,7 +4003,8 @@ main.container{padding-bottom:36px}
         if (!data) return;
         siteNameInput.value = data.site_name || "";
         siteTaglineInput.value = data.tagline || "";
-        siteProfileInput.value = data.profile || "";\n        if (siteEditorialNoteInput) siteEditorialNoteInput.value = data.editorial_note || "";
+        siteProfileInput.value = data.profile || "";
+        if (siteEditorialNoteInput) siteEditorialNoteInput.value = data.editorial_note || "";
         siteEmailInput.value = data.email || "";
         sitePhoneInput.value = data.phone || "";
         const logoUrl = String(data.logo_url || "").trim();
