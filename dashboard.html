@@ -1424,6 +1424,7 @@ main.container{padding-bottom:36px}
             </div>
             <div id="adPreviewBody" class="ad-preview-body"></div>
             <div class="ad-preview-actions">
+              <button id="adPreviewSave" type="button" class="review-save">Simpan Perubahan</button>
               <button id="adPreviewActivate" type="button" class="approve-btn">Terbitkan</button>
               <button id="adPreviewPending" type="button" class="draft-button">Pending</button>
               <button id="adPreviewReject" type="button" class="review-reject">Tolak</button>
@@ -1851,6 +1852,7 @@ main.container{padding-bottom:36px}
     const adPreviewBody=document.getElementById("adPreviewBody");
     const adPreviewClose=document.getElementById("adPreviewClose");
     const adPreviewCloseBottom=document.getElementById("adPreviewCloseBottom");
+    const adPreviewSave=document.getElementById("adPreviewSave");
     const adPreviewActivate=document.getElementById("adPreviewActivate");
     const adPreviewReject = document.getElementById("adPreviewReject");
     let adsData=[];
@@ -1907,11 +1909,24 @@ main.container{padding-bottom:36px}
       currentAdPreviewId=a.id;
       const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi;
       adPreviewBody.innerHTML=(a.gambar?'<img class="ad-preview-image" src="'+escapeHtml(a.gambar)+'" alt="Pratinjau materi iklan">':"")+
-        '<div class="ad-preview-meta"><strong>'+escapeHtml(a.judul)+'</strong><br>Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'<br>Catatan: '+escapeHtml(a.catatan||"-")+'</div>';
+        '<div class="ad-preview-meta"><strong>'+escapeHtml(a.judul||"Tanpa judul")+'</strong><br>Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'</div>'+
+        '<div class="grid-2" style="margin-top:16px">'+
+          '<div class="review-field"><label>Letak Iklan</label><select id="adEditPosition"><option value="bawah_logo">Bawah logo</option><option value="di_antara_berita">Di antara berita</option><option value="dalam_artikel">Dalam artikel</option></select></div>'+
+          '<div class="review-field"><label>Mulai Tayang</label><input id="adEditStart" type="date"></div>'+
+          '<div class="review-field"><label>Selesai Tayang / Durasi</label><input id="adEditEnd" type="date"><div class="review-original">Atur tanggal selesai untuk menentukan durasi penayangan.</div></div>'+
+          '<div class="review-field"><label>Status</label><div style="padding:10px 0;font-weight:800">'+escapeHtml(String(a.status||"").toUpperCase())+'</div></div>'+
+        '</div>';
+      const positionInput=document.getElementById("adEditPosition");
+      const startInput=document.getElementById("adEditStart");
+      const endInput=document.getElementById("adEditEnd");
+      if(positionInput) positionInput.value=a.posisi||"bawah_logo";
+      if(startInput) startInput.value=a.mulai?String(a.mulai).slice(0,10):"";
+      if(endInput) endInput.value=a.selesai?String(a.selesai).slice(0,10):"";
       adPreviewActivate.textContent="Terbitkan";
       adPreviewActivate.style.display=a.status==="pending"?"inline-block":"none";
-      adPreviewPending.style.display=a.status==="pending"?"inline-block":"none";
+      adPreviewPending.style.display=a.status==="pending"||a.status==="aktif"?"inline-block":"none";
       adPreviewReject.style.display=a.status==="pending"?"inline-block":"none";
+      if(adPreviewSave) adPreviewSave.style.display="inline-block";
       adPreviewModal.classList.add("open");
       adPreviewModal.setAttribute("aria-hidden","false");
     }
@@ -1955,6 +1970,33 @@ main.container{padding-bottom:36px}
       showAdsMessage("Iklan ditolak dan dihapus dari folder Pending.","success");
       await loadAdsAdmin();
     }
+    async function saveAdEdits(){
+      if(!currentAdPreviewId)return;
+      const position=document.getElementById("adEditPosition")?.value||"bawah_logo";
+      const mulai=document.getElementById("adEditStart")?.value||null;
+      const selesai=document.getElementById("adEditEnd")?.value||null;
+      if(mulai&&selesai&&selesai<mulai){
+        showAdsMessage("Tanggal selesai tidak boleh lebih awal dari tanggal mulai.","error"); return;
+      }
+      if(adPreviewSave){adPreviewSave.disabled=true;adPreviewSave.textContent="Menyimpan...";}
+      try{
+        const r=await supabaseClient.from("iklan").update({
+          posisi:position,
+          mulai:mulai,
+          selesai:selesai,
+          updated_at:new Date().toISOString()
+        }).eq("id",currentAdPreviewId);
+        if(r.error)throw r.error;
+        showAdsMessage("✓ Perubahan iklan berhasil disimpan.","success");
+        await loadAdsAdmin();
+        closeAdPreview();
+      }catch(error){
+        showAdsMessage("Gagal menyimpan perubahan iklan: "+(error.message||error),"error");
+      }finally{
+        if(adPreviewSave){adPreviewSave.disabled=false;adPreviewSave.textContent="Simpan Perubahan";}
+      }
+    }
+
     async function setAdPending(){
       if(!currentAdPreviewId)return;
       await updateAdStatus(currentAdPreviewId,"pending");
@@ -3696,6 +3738,7 @@ main.container{padding-bottom:36px}
         else if (action === "delete") await deleteAd(id);
       });
     }
+    if (adPreviewSave) adPreviewSave.addEventListener("click", saveAdEdits);
     if (adPreviewClose) adPreviewClose.addEventListener("click", closeAdPreview);
     if (adPreviewCloseBottom) adPreviewCloseBottom.addEventListener("click", closeAdPreview);
     if (adPreviewActivate) adPreviewActivate.addEventListener("click", async () => {
