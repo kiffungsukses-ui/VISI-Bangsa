@@ -1767,20 +1767,50 @@ searchInput.addEventListener(
 
 Promise.all([loadSiteSettings(),loadBerita(),loadAds()]);
 
-async function loadAds(){
+let activeAds = [];
+let activeAdIndex = 0;
+let activeAdTimer = null;
+
+function renderActiveAd(){
   const slot=document.getElementById("topAdSlot");
   if(!slot)return;
-  const settings=await supabaseClient.from("site_settings").select("ads_enabled").eq("id",1).maybeSingle();
-  if(settings.error||!settings.data?.ads_enabled){slot.classList.remove("active");slot.innerHTML="";return;}
-  const r=await supabaseClient.from("iklan").select("id,nama_pengiklan,judul,gambar,link_url").eq("status","aktif").eq("posisi","bawah_logo").order("created_at",{ascending:false}).limit(1);
-  if(r.error||!r.data?.length||!r.data[0].gambar){slot.classList.remove("active");slot.innerHTML="";return;}
-  const a=r.data[0];
+  if(!activeAds.length){
+    slot.classList.remove("active");
+    slot.innerHTML="";
+    return;
+  }
+  const a=activeAds[activeAdIndex % activeAds.length];
   let content='<div class="ad-card"><div class="ad-label">Iklan</div>';
   if(a.link_url)content+='<a href="'+escapeAttribute(a.link_url)+'" target="_blank" rel="noopener sponsored">';
   content+='<img src="'+escapeAttribute(a.gambar)+'" alt="'+escapeAttribute(a.judul||"Iklan")+'">';
   if(a.link_url)content+='</a>';
   content+='</div>';
-  slot.innerHTML=content;slot.classList.add("active");
+  slot.innerHTML=content;
+  slot.classList.add("active");
+}
+
+async function loadAds(){
+  const slot=document.getElementById("topAdSlot");
+  if(!slot)return;
+  if(activeAdTimer){clearInterval(activeAdTimer);activeAdTimer=null;}
+  const settings=await supabaseClient.from("site_settings").select("ads_enabled").eq("id",1).maybeSingle();
+  if(settings.error||!settings.data?.ads_enabled){activeAds=[];renderActiveAd();return;}
+  const r=await supabaseClient.from("iklan")
+    .select("id,nama_pengiklan,judul,gambar,link_url")
+    .eq("status","aktif")
+    .eq("posisi","bawah_logo")
+    .not("gambar","is",null)
+    .order("created_at",{ascending:false});
+  if(r.error){activeAds=[];renderActiveAd();return;}
+  activeAds=(r.data||[]).filter(a=>a.gambar);
+  activeAdIndex=0;
+  renderActiveAd();
+  if(activeAds.length>1){
+    activeAdTimer=setInterval(()=>{
+      activeAdIndex=(activeAdIndex+1)%activeAds.length;
+      renderActiveAd();
+    },30000);
+  }
 }
 
 
