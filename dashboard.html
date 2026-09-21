@@ -1160,6 +1160,9 @@ main.container{padding-bottom:36px}
             <div class="stat-card"><span class="stat-label">Kunjungan Hari Ini</span><strong id="statTodayVisits">—</strong><small>Sejak 00.00 WIB</small></div>
             <div class="stat-card"><span class="stat-label">Pembaca Unik Hari Ini</span><strong id="statUniqueToday">—</strong><small>Visitor berbeda</small></div>
             <div class="stat-card"><span class="stat-label">Sedang Online</span><strong id="statOnline">—</strong><small>Aktif ±5 menit terakhir</small></div>
+            <div class="stat-card"><span class="stat-label">Tayangan Iklan</span><strong id="statAdImpressions">—</strong><small>Total tayangan tercatat</small></div>
+            <div class="stat-card"><span class="stat-label">Tayangan Iklan Hari Ini</span><strong id="statAdToday">—</strong><small>Sejak 00.00 WIB</small></div>
+            <div class="stat-card"><span class="stat-label">Pengunjung Iklan Unik Hari Ini</span><strong id="statAdUniqueToday">—</strong><small>Visitor berbeda</small></div>
             <div class="stat-card"><span class="stat-label">Berita Bergambar</span><strong id="statImages">—</strong><small>Memiliki gambar</small></div>
             <div class="stat-card"><span class="stat-label">Kategori Aktif</span><strong id="statCategories">—</strong><small>Kategori berita</small></div>
           </div>
@@ -3752,6 +3755,9 @@ main.container{padding-bottom:36px}
         set("statTodayVisits", Number(stats.today_visits) || 0);
         set("statUniqueToday", Number(stats.unique_today) || 0);
         set("statOnline", Number(stats.online) || 0);
+        set("statAdImpressions", Number(stats.ad_impressions_total) || 0);
+        set("statAdToday", Number(stats.ad_impressions_today) || 0);
+        set("statAdUniqueToday", Number(stats.ad_unique_today) || 0);
 
         const top = Array.isArray(stats.top_articles) ? stats.top_articles : [];
         const list = document.getElementById("topArticlesList");
