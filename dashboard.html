@@ -208,6 +208,14 @@
     }
 
     .ad-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
+    .stats-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+    .stats-chart-card{border:1px solid #dbe7f1;border-radius:14px;background:#fff;padding:18px;box-shadow:0 4px 14px rgba(30,70,110,.05)}
+    .stats-chart-head{margin-bottom:14px}.stats-chart-head h3{margin:0 0 4px;font-size:16px;color:#173d60}.stats-chart-head span{font-size:12px;color:#718096}
+    .stats-bar-chart{display:flex;flex-direction:column;gap:13px}.stats-bar-row{display:grid;grid-template-columns:135px 1fr 58px;gap:9px;align-items:center}
+    .stats-bar-label{font-size:12px;font-weight:800;color:#526273}.stats-bar-track{height:12px;border-radius:999px;background:#edf3f8;overflow:hidden}
+    .stats-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#1671c8,#59a9ea)}.stats-bar-value{text-align:right;font-size:12px;font-weight:900;color:#173d60}
+    @media(max-width:900px){.stats-charts{grid-template-columns:1fr}.stats-bar-row{grid-template-columns:115px 1fr 52px}}
+    @media(max-width:520px){.stats-bar-row{grid-template-columns:105px 1fr 48px}.stats-bar-label{font-size:11px}}
     .news-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
     .edit-btn {
       border: 0;
@@ -1180,9 +1188,13 @@ main.container{padding-bottom:36px}
             <div class="stat-card"><span class="stat-label">Berita Bergambar</span><strong id="statImages">—</strong><small>Memiliki gambar</small></div>
             <div class="stat-card"><span class="stat-label">Kategori Aktif</span><strong id="statCategories">—</strong><small>Kategori berita</small></div>
           </div>
+          <div class="stats-charts">
+            <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Aktivitas Pembaca</h3><span>Perbandingan angka utama website.</span></div></div><div id="readerChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
+            <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Tayangan Iklan</h3><span>Total tayangan dan aktivitas hari ini.</span></div></div><div id="adChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
+          </div>
           <div class="top-articles">
             <div class="top-articles-head">
-              <div><h3>Berita Paling Banyak Dibaca</h3><span>Urutan berdasarkan jumlah pembaca.</span></div>
+              <div><h3>3 Berita Paling Banyak Dibaca</h3><span>Hanya tiga berita dengan jumlah pembaca tertinggi.</span></div>
             </div>
             <div id="topArticlesList" class="top-articles-list"><div class="loading">Memuat statistik...</div></div>
           </div>
@@ -3843,6 +3855,27 @@ main.container{padding-bottom:36px}
         set("statAdUniqueToday", Number(stats.ad_unique_today) || 0);
 
         const top = Array.isArray(stats.top_articles) ? stats.top_articles : [];
+        const renderBarChart = (id, rows) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const max = Math.max(...rows.map(x => Number(x.value)||0), 1);
+          el.innerHTML = rows.map(x => {
+            const value = Number(x.value)||0;
+            const width = value ? Math.max(3,(value/max)*100) : 0;
+            return '<div class="stats-bar-row"><span class="stats-bar-label">'+escapeHtml(x.label)+'</span><div class="stats-bar-track"><div class="stats-bar-fill" style="width:'+width+'%"></div></div><strong class="stats-bar-value">'+value.toLocaleString("id-ID")+'</strong></div>';
+          }).join("");
+        };
+        renderBarChart("readerChart",[
+          {label:"Total pembaca",value:Number(stats.total_visits)||0},
+          {label:"Hari ini",value:Number(stats.today_visits)||0},
+          {label:"Unik hari ini",value:Number(stats.unique_today)||0},
+          {label:"Sedang online",value:Number(stats.online)||0}
+        ]);
+        renderBarChart("adChart",[
+          {label:"Total tayangan",value:Number(stats.ad_impressions_total)||0},
+          {label:"Hari ini",value:Number(stats.ad_impressions_today)||0},
+          {label:"Unik hari ini",value:Number(stats.ad_unique_today)||0}
+        ]);
         const list = document.getElementById("topArticlesList");
 
         if (list) {
