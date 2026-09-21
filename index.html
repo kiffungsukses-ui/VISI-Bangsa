@@ -1343,19 +1343,8 @@ async function loadBerita() {
         }
       );
 
-  // Kompatibilitas berita lama: jika belum ada data berstatus terbit,
-  // tampilkan data lama kecuali yang secara eksplisit berstatus draft.
-  if (!error && (!data || data.length === 0)) {
-    const fallback = await supabaseClient
-      .from("berita")
-      .select("*")
-      .order("tanggal", { ascending: false });
-    if (!fallback.error) {
-      data = (fallback.data || []).filter(item =>
-        String(item.status || "").toLowerCase() !== "draft"
-      );
-    }
-  }
+  // Hanya berita berstatus terbit yang boleh tampil di halaman publik.
+  // Jangan pernah menampilkan pending/rejected/draft sebagai fallback.
 
   if (error) {
 
