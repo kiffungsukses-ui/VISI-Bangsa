@@ -1796,13 +1796,21 @@ async function loadAds(){
   const settings=await supabaseClient.from("site_settings").select("ads_enabled").eq("id",1).maybeSingle();
   if(settings.error||!settings.data?.ads_enabled){activeAds=[];renderActiveAd();return;}
   const r=await supabaseClient.from("iklan")
-    .select("id,nama_pengiklan,judul,gambar,link_url")
+    .select("id,nama_pengiklan,judul,gambar,link_url,mulai,selesai")
     .eq("status","aktif")
     .eq("posisi","bawah_logo")
     .not("gambar","is",null)
     .order("created_at",{ascending:false});
   if(r.error){activeAds=[];renderActiveAd();return;}
-  activeAds=(r.data||[]).filter(a=>a.gambar);
+  const today=new Date(); today.setHours(0,0,0,0);
+  activeAds=(r.data||[]).filter(a=>{
+    if(!a.gambar)return false;
+    const start=a.mulai?new Date(String(a.mulai).slice(0,10)+"T00:00:00"):null;
+    const end=a.selesai?new Date(String(a.selesai).slice(0,10)+"T23:59:59"):null;
+    if(start&&!Number.isNaN(start.getTime())&&today<start)return false;
+    if(end&&!Number.isNaN(end.getTime())&&today>end)return false;
+    return true;
+  });
   activeAdIndex=0;
   renderActiveAd();
   if(activeAds.length>1){
