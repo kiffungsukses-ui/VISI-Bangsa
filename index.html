@@ -1038,6 +1038,103 @@ body.vb-menu-open{overflow:hidden}
 #berita .berita-link .kategori{margin-top:0!important;padding-top:0!important;}
 @media(max-width:700px){#berita .berita-link{align-items:start!important;}#berita .berita-link .isi{padding-top:0!important;margin-top:0!important;}#berita .berita-link .kategori{margin-top:0!important;padding-top:0!important;}}
 </style>
+
+<!-- VISI Bangsa responsive hardening: phone, Z Fold closed/open, tablet, laptop and PC -->
+<style id="visi-responsive-hardening">
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%;font:inherit}
+.topbar-inner,.brand-inner,.nav-inner,main,.footer-inner{width:100%;min-width:0}
+.brand-inner>*{min-width:0}
+.brand-logo{flex:0 1 auto}
+.brand-search{min-width:0}
+.hero-layout>*{min-width:0}
+.headline-content,.latest-panel,.berita,.isi{min-width:0;overflow-wrap:anywhere}
+
+/* Z Fold/tablet/compact laptop: avoid a cramped two-column header. */
+@media (max-width:1100px){
+  .brand-inner{gap:16px;padding-left:18px;padding-right:18px}
+  .brand-logo{width:360px;height:112px;max-width:42vw}
+  .brand-search{max-width:none}
+  .hero-layout{grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);gap:16px}
+  .headline-card,.headline-image{min-height:420px;height:420px}
+  .headline-content{padding:22px}
+  .headline-content h2{font-size:30px}
+  main{padding-left:18px;padding-right:18px}
+}
+
+/* Fold opened / tablet portrait and below. */
+@media (max-width:850px){
+  .topbar-inner{padding:8px 14px}
+  .topbar-links{gap:10px;font-size:12px}
+  .topbar-links a{display:none}
+  .brand-inner{padding:10px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+  .menu-toggle{display:flex!important;flex:0 0 auto}
+  .brand-logo{width:100%;max-width:100%;height:82px;object-fit:contain;object-position:left center}
+  .brand-search{display:none}
+  .header-search-toggle{display:flex!important;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px}
+  nav.legacy-nav{display:none}
+  main{margin-top:16px;padding-left:14px;padding-right:14px}
+  .hero-layout{grid-template-columns:1fr;gap:14px}
+  .headline-card,.headline-image{min-height:390px;height:390px}
+  .headline-content{padding:20px}
+  .headline-content h2{font-size:27px}
+  .latest-panel{margin-top:0}
+  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .gambar,.tanpa-gambar{height:180px}
+  .footer-inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+}
+
+/* Z Fold closed / normal phone. */
+@media (max-width:600px){
+  .topbar-inner{padding:7px 10px;justify-content:center}
+  .running-tagline{max-width:100%;overflow:hidden}
+  .topbar-links{display:none}
+  .brand-inner{grid-template-columns:38px minmax(0,1fr) 38px;gap:7px;padding:8px 10px}
+  .brand-logo{height:64px;object-position:center}
+  .menu-toggle{width:38px!important;height:38px!important}
+  .header-search-toggle{width:38px!important;height:38px!important;flex-basis:38px}
+  main{padding:0 10px;margin-top:12px}
+  .hero-layout{gap:12px}
+  .headline-card,.headline-image{min-height:320px;height:320px}
+  .headline-content{padding:15px}
+  .headline-category{font-size:11px;padding:5px 8px;margin-bottom:7px}
+  .headline-content h2{font-size:21px;line-height:1.18}
+  .headline-content p{font-size:13px;line-height:1.4}
+  .latest-panel{padding:12px}
+  .latest-head h2{font-size:19px}
+  .latest-item{grid-template-columns:88px minmax(0,1fr);gap:9px}
+  .latest-item img{width:88px;height:62px}
+  .latest-title{font-size:13px}
+  .section-header{align-items:flex-start;flex-direction:column;gap:8px}
+  .berita-grid{grid-template-columns:1fr;gap:12px}
+  .gambar,.tanpa-gambar{height:200px}
+  .isi{padding:13px}
+  .judul{font-size:17px;min-height:0}
+  .ringkasan{min-height:0}
+  .footer-inner{grid-template-columns:1fr;gap:12px}
+  footer{padding:24px 14px}
+}
+
+/* Very narrow Fold closed screens: keep every control inside the viewport. */
+@media (max-width:380px){
+  .brand-logo{height:58px}
+  .brand-inner{grid-template-columns:34px minmax(0,1fr) 34px;padding-left:7px;padding-right:7px}
+  .menu-toggle,.header-search-toggle{width:34px!important;height:34px!important;flex-basis:34px}
+  .menu-toggle span{width:19px}
+  .headline-card,.headline-image{min-height:285px;height:285px}
+  .headline-content{padding:12px}
+  .headline-content h2{font-size:19px}
+  .headline-content p{font-size:12px}
+  .latest-item{grid-template-columns:76px minmax(0,1fr)}
+  .latest-item img{width:76px;height:56px}
+}
+
+/* Desktop / PC: use available width without forcing fixed content. */
+@media (min-width:1200px){
+  main,.topbar-inner,.brand-inner,.nav-inner,.footer-inner{max-width:1280px}
+}
+</style>
 </head>
 
 <body>
