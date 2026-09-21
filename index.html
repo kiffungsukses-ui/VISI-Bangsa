@@ -1263,55 +1263,89 @@ main,.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,.footer-inner,.copyrigh
 
 
 <style id="visi-bangsa-final-responsive-cleanup">
-/* Final responsive authority: one predictable layout system for PC, tablet and Z Fold. */
+/* VISI Bangsa — final responsive layout authority
+   One layout model for desktop, Z Fold/tablet and mobile.
+   Keep this block last so older legacy rules cannot fight the layout.
+*/
 html,body{width:100%;max-width:100%;overflow-x:hidden}
-main{width:100%;max-width:1320px;margin-left:auto;margin-right:auto}
-.hero-layout{display:block!important;width:100%;min-width:0}
-.headline-card,.headline-image{width:100%}
+*,*:before,*:after{box-sizing:border-box}
+body{min-width:0}
+main{width:100%;max-width:1320px;margin:0 auto;padding-left:24px;padding-right:24px;min-width:0}
+main>*{min-width:0}
 
-/* Desktop: headline + latest news form a balanced two-column newsroom. */
+/* Header: prevent oversized logo and accidental horizontal overflow. */
+.topbar-inner,.brand-inner,.nav-inner{width:100%;max-width:1320px;min-width:0}
+.brand-inner{min-height:118px}
+.brand-logo{width:340px;max-width:42vw;height:auto;max-height:105px}
+.brand-search{min-width:0}
+.brand-search input{min-width:0}
+.nav-inner{overflow-x:auto;overscroll-behavior-x:contain}
+
+/* Desktop newsroom: hero left, latest right, lower content full width. */
 @media (min-width:1024px){
-  main{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(300px,.9fr);gap:18px;align-items:start}
-  .hero-layout{grid-column:1;grid-row:1;display:block!important;margin-top:14px}
-  .latest-panel{grid-column:2;grid-row:1;width:100%;height:auto;max-height:440px;overflow:auto;margin-top:14px}
-  #berita,.join-card{grid-column:1/-1}
-  .headline-card,.headline-image{height:clamp(380px,34vw,440px);min-height:380px}
+  main{display:grid;grid-template-columns:minmax(0,1.68fr) minmax(310px,.88fr);column-gap:18px;row-gap:18px;align-items:start}
+  .hero-layout{grid-column:1;grid-row:1;display:block!important;width:100%;margin-top:18px}
+  .latest-panel{grid-column:2;grid-row:1;width:100%;margin-top:18px;max-height:455px;overflow:auto}
+  #berita,.join-card{grid-column:1/-1;width:100%}
+  .headline-card,.headline-image{width:100%;height:clamp(390px,34vw,455px);min-height:390px}
+  .headline-content{padding:24px 26px}
+  .headline-content h2{font-size:clamp(28px,2.5vw,34px)}
 }
 
-/* Z Fold unfolded / tablet landscape: keep two columns without wasting side space. */
+/* Z Fold unfolded / tablet: two useful columns, no giant empty side area. */
 @media (min-width:768px) and (max-width:1023px){
-  main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.85fr);gap:14px;padding-left:14px;padding-right:14px}
-  .hero-layout{grid-column:1;grid-row:1;display:block!important;margin-top:12px}
-  .latest-panel{grid-column:2;grid-row:1;width:100%;height:auto;max-height:390px;overflow:auto;margin-top:12px}
-  #berita,.join-card{grid-column:1/-1}
-  .headline-card,.headline-image{height:clamp(340px,45vw,390px);min-height:340px}
+  main{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(270px,.86fr);column-gap:14px;row-gap:14px;padding-left:14px;padding-right:14px}
+  .hero-layout{grid-column:1;grid-row:1;display:block!important;width:100%;margin-top:12px}
+  .latest-panel{grid-column:2;grid-row:1;width:100%;margin-top:12px;max-height:410px;overflow:auto}
+  #berita,.join-card{grid-column:1/-1;width:100%}
+  .headline-card,.headline-image{width:100%;height:clamp(340px,48vw,405px);min-height:340px}
   .headline-content{padding:18px}
-  .headline-content h2{font-size:clamp(24px,3.2vw,28px)}
+  .headline-content h2{font-size:clamp(23px,3.3vw,29px)}
+  .latest-item{grid-template-columns:96px minmax(0,1fr)}
+  .latest-item img{width:96px;height:66px}
+  .category-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 }
 
-/* Z Fold closed / normal phones: single column and compact spacing. */
+/* Z Fold closed / ordinary phones: single column, compact and touch friendly. */
 @media (max-width:767px){
   main{display:block;padding-left:10px;padding-right:10px;margin-top:10px}
-  .hero-layout{display:block!important;margin-top:10px}
-  .latest-panel{width:100%;height:auto;max-height:none;overflow:visible;margin-top:12px}
+  .hero-layout{display:block!important;width:100%;margin-top:10px}
+  .latest-panel{display:block;width:100%;max-height:none;overflow:visible;margin-top:12px}
   #berita,.join-card{width:100%}
-  .headline-card,.headline-image{height:clamp(270px,78vw,320px);min-height:270px}
+  .brand-inner{min-height:78px;padding:7px 10px;gap:8px}
+  .brand-logo{width:205px;max-width:58vw;max-height:62px}
+  .brand-search{display:none}
+  .nav-inner{padding-left:6px;padding-right:6px}
+  .nav-inner a{font-size:13px;padding:12px 10px}
+  .breaking-bar{margin-left:10px;margin-right:10px;max-width:none}
+  .headline-card,.headline-image{width:100%;height:clamp(270px,78vw,325px);min-height:270px}
   .headline-content{padding:14px}
-  .headline-content h2{font-size:clamp(19px,5.8vw,23px);line-height:1.16}
+  .headline-content h2{font-size:clamp(19px,5.8vw,24px);line-height:1.16}
   .headline-content p{font-size:12px;line-height:1.4}
-  .latest-item{grid-template-columns:minmax(76px,25vw) minmax(0,1fr);gap:9px}
+  .latest-item{grid-template-columns:minmax(78px,25vw) minmax(0,1fr);gap:9px}
   .latest-item img{width:100%;height:auto;aspect-ratio:1.45;object-fit:cover}
+  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 22px}
+  .category-tile{height:105px}
+  .berita-grid{grid-template-columns:1fr;gap:10px}
+  .gambar,.tanpa-gambar{height:185px}
 }
 
-/* Very narrow cover displays: eliminate oversized header and vertical gaps. */
+/* Narrow cover displays: Samsung Z Fold closed and small Android screens. */
 @media (max-width:380px){
   main{padding-left:8px;padding-right:8px}
-  .brand-inner{min-height:76px;padding-left:7px;padding-right:7px}
-  .brand-logo{width:150px;height:58px}
+  .brand-inner{padding-left:7px;padding-right:7px}
+  .brand-logo{width:150px;max-width:50vw;height:58px}
   .headline-card,.headline-image{height:270px;min-height:270px}
   .headline-content{padding:12px}
   .headline-content h2{font-size:19px}
+  .latest-item{grid-template-columns:74px minmax(0,1fr)}
+  .latest-item img{width:74px;height:56px}
 }
+
+/* Avoid cards becoming wider than their grid tracks. */
+.hero-layout,.headline-card,.headline-link,.latest-panel,#berita,.berita-grid,.berita,.join-card{min-width:0;max-width:100%}
+img{max-width:100%}
 </style>
 </head>
 
