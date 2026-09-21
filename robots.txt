@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://visi-bangsa.vercel.app/api/sitemap.js
+Sitemap: https://visibangsa.id/sitemap.xml
