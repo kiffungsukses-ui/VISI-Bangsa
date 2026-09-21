@@ -1967,10 +1967,10 @@ main.container{padding-bottom:36px}
     async function rejectPendingAd(){
       if(!currentAdPreviewId)return;
       const id=currentAdPreviewId;
-      const r=await supabaseClient.from("iklan").delete().eq("id",id).eq("status","pending");
+      const r=await supabaseClient.from("iklan").delete().eq("id",id).in("status",["masuk","pending"]);
       if(r.error){showAdsMessage("Gagal menolak iklan: "+r.error.message,"error");return;}
       closeAdPreview();
-      showAdsMessage("Iklan ditolak dan dihapus dari folder Pending.","success");
+      showAdsMessage("✓ Iklan ditolak dan dihapus dari daftar pengelolaan.","success");
       await loadAdsAdmin();
     }
     async function saveAdEdits(){
