@@ -1162,6 +1162,55 @@ main.container{padding-bottom:36px}
         </div>
       </section>
 
+      <details id="adminSettingsFolder" class="panel admin-folder">
+        <summary>
+          <div class="folder-summary-icon settings-icon" aria-hidden="true">⚙</div>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Pengaturan Website</h2>
+              <div class="panel-subtitle">Klik untuk membuka pengaturan profil, kontak, dan logo VISI Bangsa.</div>
+            </div>
+          </div>
+        </summary>
+        <div class="admin-folder-body">
+        <div id="settingsMessage" class="message"></div>
+        <form id="settingsForm">
+          <div class="tagline-editor">
+          <div class="field">
+            <label for="siteTagline">Tulisan Running / Tagline</label>
+            <input id="siteTagline" type="text" maxlength="180" placeholder="TERDEPAN DALAM MENCERAHKAN" disabled>
+            <div class="settings-note">Pengaturan tagline berdiri sendiri. Klik <strong>Ubah</strong> untuk mengedit, lalu <strong>Simpan Tagline</strong> untuk menerapkannya.</div>
+          </div>
+          <div class="form-actions tagline-actions">
+            <button id="editTaglineButton" type="button" class="secondary">Ubah</button>
+            <button id="saveTaglineButton" type="button" class="primary" disabled>Simpan Tagline</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
+        </div>
+          <div class="field"><label for="siteProfile">Profil / Tentang VISI Bangsa</label><textarea id="siteProfile" placeholder="Tulis profil media VISI Bangsa..."></textarea></div>
+          <div class="grid-2">
+            <div class="field"><label for="siteEmail">Email Kontak</label><input id="siteEmail" type="email" maxlength="180" placeholder="Email media"></div>
+            <div class="field"><label for="sitePhone">WhatsApp / Telepon</label><input id="sitePhone" type="text" maxlength="50" placeholder="Nomor kontak"></div>
+          </div>
+          <div class="field">
+            <label>Logo Website</label>
+            <div class="image-box">
+              <input id="siteLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml">
+              <div class="settings-note">JPG, PNG, WEBP, atau SVG. Maksimal 5 MB.</div>
+              <img id="siteLogoPreview" class="settings-logo-preview" src="https://vupvgdfdnpqactlqufbu.supabase.co/storage/v1/object/public/site-assets/486a84f6-5440-47e9-99c4-f9beac23b5d9/logo-1789834956033.png" alt="Preview logo VISI Bangsa" style="visibility:hidden" onload="this.style.visibility='visible'">
+              <div id="siteLogoNote" class="settings-note"></div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="saveSettingsButton" type="submit" class="primary">Simpan Pengaturan</button>
+            <button id="refreshSettingsButton" type="button" class="secondary">Muat Ulang</button>
+          </div>
+        </form>
+        </div>
+      </details>
+
       <details id="statisticsFolder" class="panel admin-folder stats-folder">
         <summary>
           <div class="folder-summary-icon stats-icon" aria-hidden="true">▥</div>
@@ -1405,54 +1454,7 @@ main.container{padding-bottom:36px}
         </div>
       </details>
 
-      <details id="adminSettingsFolder" class="panel admin-folder">
-        <summary>
-          <div class="folder-summary-icon settings-icon" aria-hidden="true">⚙</div>
-          <div class="panel-header">
-            <div>
-              <h2 class="panel-title">Pengaturan Website</h2>
-              <div class="panel-subtitle">Klik untuk membuka pengaturan profil, kontak, dan logo VISI Bangsa.</div>
-            </div>
-          </div>
-        </summary>
-        <div class="admin-folder-body">
-        <div id="settingsMessage" class="message"></div>
-        <form id="settingsForm">
-          <div class="tagline-editor">
-          <div class="field">
-            <label for="siteTagline">Tulisan Running / Tagline</label>
-            <input id="siteTagline" type="text" maxlength="180" placeholder="TERDEPAN DALAM MENCERAHKAN" disabled>
-            <div class="settings-note">Pengaturan tagline berdiri sendiri. Klik <strong>Ubah</strong> untuk mengedit, lalu <strong>Simpan Tagline</strong> untuk menerapkannya.</div>
-          </div>
-          <div class="form-actions tagline-actions">
-            <button id="editTaglineButton" type="button" class="secondary">Ubah</button>
-            <button id="saveTaglineButton" type="button" class="primary" disabled>Simpan Tagline</button>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label for="siteName">Nama Media</label><input id="siteName" type="text" maxlength="120" placeholder="VISI Bangsa"></div>
-        </div>
-          <div class="field"><label for="siteProfile">Profil / Tentang VISI Bangsa</label><textarea id="siteProfile" placeholder="Tulis profil media VISI Bangsa..."></textarea></div>
-          <div class="grid-2">
-            <div class="field"><label for="siteEmail">Email Kontak</label><input id="siteEmail" type="email" maxlength="180" placeholder="Email media"></div>
-            <div class="field"><label for="sitePhone">WhatsApp / Telepon</label><input id="sitePhone" type="text" maxlength="50" placeholder="Nomor kontak"></div>
-          </div>
-          <div class="field">
-            <label>Logo Website</label>
-            <div class="image-box">
-              <input id="siteLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml">
-              <div class="settings-note">JPG, PNG, WEBP, atau SVG. Maksimal 5 MB.</div>
-              <img id="siteLogoPreview" class="settings-logo-preview" src="https://vupvgdfdnpqactlqufbu.supabase.co/storage/v1/object/public/site-assets/486a84f6-5440-47e9-99c4-f9beac23b5d9/logo-1789834956033.png" alt="Preview logo VISI Bangsa" style="visibility:hidden" onload="this.style.visibility='visible'">
-              <div id="siteLogoNote" class="settings-note"></div>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button id="saveSettingsButton" type="submit" class="primary">Simpan Pengaturan</button>
-            <button id="refreshSettingsButton" type="button" class="secondary">Muat Ulang</button>
-          </div>
-        </form>
-        </div>
-      </details>
+
 
 
       <details id="adminAdsFolder" class="panel admin-folder">
