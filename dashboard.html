@@ -6,7 +6,7 @@
   <meta name="description" content="Dashboard pengelola berita VISI Bangsa">
   <meta name="theme-color" content="#b40000">
   <link rel="preload" as="image" href="https://vupvgdfdnpqactlqufbu.supabase.co/storage/v1/object/public/site-assets/486a84f6-5440-47e9-99c4-f9beac23b5d9/logo-1789834956033.png">
-  <title>Dashboard Pengelola — VISI Bangsa</title>
+  <title>Dashboard Admin — VISI Bangsa</title>
 
   <style>
     * { box-sizing: border-box; }
@@ -1065,7 +1065,7 @@ main.container{padding-bottom:36px}
 
           <div class="brand-text">
             <strong>VISI Bangsa</strong>
-            <span>Dashboard Pengelola Berita</span>
+            <span id="dashboardRoleLabel">Dashboard Admin</span>
           </div>
         </div>
 
@@ -1094,7 +1094,7 @@ main.container{padding-bottom:36px}
       <section class="welcome dashboard-welcome">
         <div class="dashboard-title-card">
           <div class="dashboard-title-copy">
-            <h1 id="dashboardTitle">DASHBOARD REDAKSI</h1>
+            <h1 id="dashboardTitle">DASHBOARD ADMIN</h1>
             <p>Panel utama untuk mengelola konten berita</p>
           </div>
         </div>
@@ -3539,6 +3539,13 @@ main.container{padding-bottom:36px}
           normalizedEmail === "redaksivisibangsa@gmail.com"
             ? "redaksi"
             : (metadataRole || "admin");
+
+        const dashboardTitle = document.getElementById("dashboardTitle");
+        const dashboardRoleLabel = document.getElementById("dashboardRoleLabel");
+        const dashboardRoleName = currentUserRole === "redaksi" ? "Redaksi" : "Admin";
+        if (dashboardTitle) dashboardTitle.textContent = "DASHBOARD " + dashboardRoleName.toUpperCase();
+        if (dashboardRoleLabel) dashboardRoleLabel.textContent = "Dashboard " + dashboardRoleName;
+        document.title = "Dashboard " + dashboardRoleName + " — VISI Bangsa";
 
         sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
 
