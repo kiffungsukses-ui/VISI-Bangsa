@@ -1177,7 +1177,7 @@ main.container{padding-bottom:36px}
             <div id="publishActionsText" class="publish-actions-text">Berita sudah disimpan sebagai draft. Periksa kembali sebelum diterbitkan.</div>
             <div class="publish-actions-buttons">
               <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
-              <button id="keepDraftButton" type="button" class="draft-button">Periksa Ulang</button>
+              <button id="keepDraftButton" type="button" class="draft-button">Pending</button>
             </div>
           </div>
 
@@ -1604,6 +1604,7 @@ main.container{padding-bottom:36px}
     const keepDraftButton = document.getElementById("keepDraftButton");
     let pendingPublishId = null;
     let reviewingPendingDraft = false;
+    let pendingPublishMode = "pending";
 
     function hidePublishActions(clearPending = true) {
       if (!publishActions) return;
@@ -1615,7 +1616,7 @@ main.container{padding-bottom:36px}
       if (!publishActions || !id) return;
       pendingPublishId = id;
       publishActionsText.textContent =
-        "✓ Berita tersimpan sebagai DRAFT. Periksa kembali sebelum diterbitkan.";
+        "✓ Berita tersimpan. Pilih Terbitkan untuk tampil di publik atau Pending untuk menyimpannya di folder Pending.";
       publishActions.classList.remove("hidden");
     }
 
@@ -1637,7 +1638,7 @@ main.container{padding-bottom:36px}
           .from("berita")
           .select("tanggal")
           .eq("id", id)
-          .eq("status", "draft")
+          .in("status", ["draft","pending"])
           .maybeSingle();
 
         if (draftRow.error || !draftRow.data) {
@@ -1651,7 +1652,7 @@ main.container{padding-bottom:36px}
             updated_at: draftRow.data.tanggal
           })
           .eq("id", id)
-          .eq("status", "draft");
+          .in("status", ["draft","pending"]);
 
         if (result.error) throw result.error;
 
@@ -1874,7 +1875,7 @@ main.container{padding-bottom:36px}
     }
 
     function renderPendingFolder() {
-      const pendingNews = (beritaData || []).filter(n => String(n.status || "").toLowerCase() !== "terbit");
+      const pendingNews = (beritaData || []).filter(n => ["draft","pending"].includes(String(n.status || "").toLowerCase()));
       const pendingOpinions = pendingNews.filter(n => String(n.kategori || "").toLowerCase() === "opini");
       const pendingBerita = pendingNews.filter(n => String(n.kategori || "").toLowerCase() !== "opini");
       const pendingAds = (adsData || []).filter(a => String(a.status || "").toLowerCase() === "pending");
@@ -3366,12 +3367,28 @@ main.container{padding-bottom:36px}
 
     publishButton.addEventListener("click", publishPendingNews);
 
-    keepDraftButton.addEventListener("click", () => {
-      if (pendingPublishId) {
-        reviewPendingNews();
-      } else {
+    keepDraftButton.addEventListener("click", async () => {
+      if (!pendingPublishId) {
         hidePublishActions();
         resetForm();
+        return;
+      }
+      keepDraftButton.disabled = true;
+      keepDraftButton.textContent = "Menyimpan...";
+      try {
+        const result = await supabaseClient.from("berita")
+          .update({ status: "pending" })
+          .eq("id", pendingPublishId);
+        if (result.error) throw result.error;
+        await loadNews();
+        hidePublishActions();
+        resetForm();
+        showMessage("✓ Berita berhasil disimpan ke Berita/Opini Pending.", "success");
+      } catch (error) {
+        showMessage("Gagal menyimpan sebagai pending: " + (error.message || error), "error");
+      } finally {
+        keepDraftButton.disabled = false;
+        keepDraftButton.textContent = "Pending";
       }
     });
 
