@@ -1425,7 +1425,8 @@ main.container{padding-bottom:36px}
             <div id="adPreviewBody" class="ad-preview-body"></div>
             <div class="ad-preview-actions">
               <button id="adPreviewActivate" type="button" class="approve-btn">Terbitkan</button>
-              <button id="adPreviewPending" type="button" class="draft-button">Pending</button>
+              <button id="adPreviewPending" type="button" class="draft-button">Simpan</button>
+              <button id="adPreviewReject" type="button" class="review-reject">Tolak</button>
               <button id="adPreviewCloseBottom" type="button" class="secondary">Kembali</button>
             </div>
           </div>
@@ -1468,7 +1469,7 @@ main.container{padding-bottom:36px}
             <div class="review-actions">
               <button id="reviewSaveButton" type="button" class="review-save">Simpan Perubahan</button>
               <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
-              <button id="reviewPendingButton" type="button" class="draft-button">Pending</button>
+              <button id="reviewPendingButton" type="button" class="draft-button">Simpan</button>
               <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
               <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
             </div>
@@ -1878,6 +1879,7 @@ main.container{padding-bottom:36px}
       adPreviewActivate.textContent="Terbitkan";
       adPreviewActivate.style.display=a.status==="pending"?"inline-block":"none";
       adPreviewPending.style.display=a.status==="pending"?"inline-block":"none";
+      adPreviewReject.style.display=a.status==="pending"?"inline-block":"none";
       adPreviewModal.classList.add("open");
       adPreviewModal.setAttribute("aria-hidden","false");
     }
@@ -1911,6 +1913,15 @@ main.container{padding-bottom:36px}
       const r=await supabaseClient.from("site_settings").update({ads_enabled:adsEnabled.checked,updated_at:new Date().toISOString()}).eq("id",1);
       if(r.error){showAdsMessage("Gagal mengubah tampilan iklan: "+r.error.message,"error");await loadAdsAdmin();return;}
       showAdsMessage(adsEnabled.checked?"Iklan publik diaktifkan.":"Iklan publik dinonaktifkan. Slot bawah logo sekarang tersembunyi.","success");
+    }
+    async function rejectPendingAd(){
+      if(!currentAdPreviewId)return;
+      const id=currentAdPreviewId;
+      const r=await supabaseClient.from("iklan").delete().eq("id",id).eq("status","pending");
+      if(r.error){showAdsMessage("Gagal menolak iklan: "+r.error.message,"error");return;}
+      closeAdPreview();
+      showAdsMessage("Iklan ditolak dan dihapus dari folder Pending.","success");
+      await loadAdsAdmin();
     }
     async function setAdPending(){
       if(!currentAdPreviewId)return;
@@ -3662,6 +3673,8 @@ main.container{padding-bottom:36px}
       await updateAdStatus(currentAdPreviewId, "pending");
       closeAdPreview();
     });
+
+    if (adPreviewReject) adPreviewReject.addEventListener("click", rejectPendingAd);
 
     async function loadSiteSettingsAdmin() {
       if (!settingsForm) return;
