@@ -1054,6 +1054,7 @@ body.vb-menu-open{overflow:hidden}
 </div></header>
 
 <div id="topAdSlot" class="ad-slot" aria-label="Iklan"></div>
+<div id="midAdSlot" class="ad-slot" aria-label="Iklan di antara berita"></div>
 
 <nav class="legacy-nav" aria-hidden="true"><div class="nav-inner">
 <a href="/"><span class="nav-icon">⌂</span><span>Beranda</span></a>
@@ -1767,58 +1768,52 @@ searchInput.addEventListener(
 
 Promise.all([loadSiteSettings(),loadBerita(),loadAds()]);
 
-let activeAds = [];
-let activeAdIndex = 0;
-let activeAdTimer = null;
+const adRotators = {};
 
-function renderActiveAd(){
-  const slot=document.getElementById("topAdSlot");
+function renderAdSlot(slotId, ads, index){
+  const slot=document.getElementById(slotId);
   if(!slot)return;
-  if(!activeAds.length){
-    slot.classList.remove("active");
-    slot.innerHTML="";
-    return;
-  }
-  const a=activeAds[activeAdIndex % activeAds.length];
+  if(!ads.length){slot.classList.remove("active");slot.innerHTML="";return;}
+  const a=ads[index % ads.length];
   let content='<div class="ad-card"><div class="ad-label">Iklan</div>';
   if(a.link_url)content+='<a href="'+escapeAttribute(a.link_url)+'" target="_blank" rel="noopener sponsored">';
   content+='<img src="'+escapeAttribute(a.gambar)+'" alt="'+escapeAttribute(a.judul||"Iklan")+'">';
   if(a.link_url)content+='</a>';
   content+='</div>';
-  slot.innerHTML=content;
-  slot.classList.add("active");
+  slot.innerHTML=content;slot.classList.add("active");
+}
+
+function startAdRotator(slotId, ads){
+  if(adRotators[slotId])clearInterval(adRotators[slotId]);
+  renderAdSlot(slotId,ads,0);
+  if(ads.length>1){
+    let index=0;
+    adRotators[slotId]=setInterval(()=>{index=(index+1)%ads.length;renderAdSlot(slotId,ads,index);},30000);
+  }
 }
 
 async function loadAds(){
-  const slot=document.getElementById("topAdSlot");
-  if(!slot)return;
-  if(activeAdTimer){clearInterval(activeAdTimer);activeAdTimer=null;}
   const settings=await supabaseClient.from("site_settings").select("ads_enabled").eq("id",1).maybeSingle();
-  if(settings.error||!settings.data?.ads_enabled){activeAds=[];renderActiveAd();return;}
+  const slotIds=["topAdSlot","midAdSlot"];
+  if(settings.error||!settings.data?.ads_enabled){
+    slotIds.forEach(id=>renderAdSlot(id,[],0)); return;
+  }
   const r=await supabaseClient.from("iklan")
-    .select("id,nama_pengiklan,judul,gambar,link_url,mulai,selesai")
+    .select("id,nama_pengiklan,judul,gambar,link_url,mulai,selesai,posisi")
     .eq("status","aktif")
-    .eq("posisi","bawah_logo")
     .not("gambar","is",null)
     .order("created_at",{ascending:false});
-  if(r.error){activeAds=[];renderActiveAd();return;}
-  const today=new Date(); today.setHours(0,0,0,0);
-  activeAds=(r.data||[]).filter(a=>{
+  if(r.error){slotIds.forEach(id=>renderAdSlot(id,[],0));return;}
+  const today=new Date();today.setHours(0,0,0,0);
+  const active=(r.data||[]).filter(a=>{
     if(!a.gambar)return false;
     const start=a.mulai?new Date(String(a.mulai).slice(0,10)+"T00:00:00"):null;
     const end=a.selesai?new Date(String(a.selesai).slice(0,10)+"T23:59:59"):null;
-    if(start&&!Number.isNaN(start.getTime())&&today<start)return false;
-    if(end&&!Number.isNaN(end.getTime())&&today>end)return false;
-    return true;
+    return !(start&&!Number.isNaN(start.getTime())&&today<start) &&
+           !(end&&!Number.isNaN(end.getTime())&&today>end);
   });
-  activeAdIndex=0;
-  renderActiveAd();
-  if(activeAds.length>1){
-    activeAdTimer=setInterval(()=>{
-      activeAdIndex=(activeAdIndex+1)%activeAds.length;
-      renderActiveAd();
-    },30000);
-  }
+  startAdRotator("topAdSlot",active.filter(a=>a.posisi==="bawah_logo"));
+  startAdRotator("midAdSlot",active.filter(a=>a.posisi==="di_antara_berita"));
 }
 
 
