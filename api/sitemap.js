@@ -36,9 +36,11 @@ export default async function handler(req, res) {
       .trim();
 
     const origin =
-      host === "localhost" || host.startsWith("127.0.0.1")
-        ? `http://${host}`
-        : `https://${host}`;
+      host === "visibangsa.id" || host === "www.visibangsa.id"
+        ? "https://visibangsa.id"
+        : host === "localhost" || host.startsWith("127.0.0.1")
+          ? `http://${host}`
+          : "https://visibangsa.id";
 
     const urls = [];
 
@@ -76,10 +78,7 @@ ${urls.join("")}
       "application/xml; charset=utf-8"
     );
 
-    res.setHeader(
-      "Cache-Control",
-      "s-maxage=300, stale-while-revalidate=600"
-    );
+    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
 
     res.status(200).send(xml);
   } catch (error) {
