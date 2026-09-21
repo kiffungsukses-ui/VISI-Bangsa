@@ -2999,38 +2999,30 @@ main.container{padding-bottom:36px}
     }
 
     function updateStatistics() {
+      // Statistik ringkas lama tetap dipertahankan untuk kompatibilitas,
+      // tetapi hanya menulis ke elemen yang memang masih ada di dashboard.
+      // Statistik utama sekarang dimuat melalui loadStats() / RPC.
       const total = beritaData.length;
+      const today = new Date().toISOString().slice(0, 10);
+      const todayCount = beritaData.filter(item => {
+        if (!item.tanggal) return false;
+        return new Date(item.tanggal).toISOString().slice(0, 10) === today;
+      }).length;
+      const imageCount = beritaData.filter(item => !!item.gambar).length;
+      const categories = new Set(
+        beritaData.map(item => item.kategori).filter(Boolean)
+      );
 
-      const today =
-        new Date()
-          .toISOString()
-          .slice(0, 10);
+      const setStat = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
 
-      const todayCount =
-        beritaData.filter(item => {
-          if (!item.tanggal) return false;
-
-          return new Date(item.tanggal)
-            .toISOString()
-            .slice(0, 10) === today;
-        }).length;
-
-      const imageCount =
-        beritaData.filter(
-          item => !!item.gambar
-        ).length;
-
-      const categories =
-        new Set(
-          beritaData
-            .map(item => item.kategori)
-            .filter(Boolean)
-        );
-
-      statTotal.textContent = total;
-      statToday.textContent = todayCount;
-      statImages.textContent = imageCount;
-      statCategories.textContent = categories.size;
+      setStat("statTotal", total);
+      // Elemen statistik lama mungkin tidak lagi ditampilkan.
+      setStat("statToday", todayCount);
+      setStat("statImages", imageCount);
+      setStat("statCategories", categories.size);
     }
 
     function renderNewsCategoryTabs() {
