@@ -3768,7 +3768,7 @@ main.container{padding-bottom:36px}
     if (refreshPublishedAdsButton) {
       refreshPublishedAdsButton.addEventListener("click", loadAdsAdmin);
     }
-    if (publishedAdsList) {
+    if (publishedActiveAdsList || publishedInactiveAdsList) {
       const publishedAdsActionHandler = async (event) => {
         const button = event.target.closest("[data-published-ad-action]");
         if (!button) return;
@@ -3788,7 +3788,7 @@ main.container{padding-bottom:36px}
       publishedAdsSearchInput.value = "";
       renderPublishedAds();
       publishedAdsSearchInput.focus();
-    });}
+    });
     if (adsEnabled) {
       adsEnabled.addEventListener("change", setAdsEnabled);
     }
