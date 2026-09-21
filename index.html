@@ -914,6 +914,91 @@ img{max-width:100%}
   .ringkasan{min-height:0;font-size:13px}
   .footer-inner{grid-template-columns:1fr}
 }
+
+/* ===== VISI BANGSA RESPONSIVE CLEANUP v3 — 2026-09-21 ===== */
+/* Aturan terakhir: layout mengikuti lebar viewport nyata, termasuk Z Fold unfolded. */
+html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+img{max-width:100%}
+.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,main,.footer-inner,.copyright{width:100%;box-sizing:border-box}
+.hero-layout,.headline-link,.headline-card,.latest-panel,.berita-grid,.berita,.category-tiles,.category-tile{min-width:0}
+
+@media (min-width:768px) and (max-width:1100px){
+  .topbar-inner,.brand-inner,.nav-inner{max-width:none}
+  .brand-inner{min-height:104px;padding:8px 16px;gap:14px}
+  .brand-logo{width:clamp(220px,31vw,320px);max-width:38vw;height:auto}
+  .brand-search{display:flex;flex:1;min-width:0;max-width:none}
+  .brand-search input{width:100%;min-width:0;height:44px;font-size:14px}
+  .brand-search button{height:44px;padding:0 14px;font-size:13px}
+  .login{flex:0 0 auto;padding:9px 12px;font-size:12px}
+  .nav-inner{max-width:none;padding:0 10px;overflow-x:auto;white-space:nowrap}
+  .nav-inner a{flex:0 0 auto;width:auto;min-width:max-content;padding:13px 12px;font-size:13px;white-space:nowrap}
+  .breaking-bar{width:calc(100% - 24px);max-width:none;margin:10px 12px 0;padding:0 8px}
+  main{width:100%;max-width:none;margin:14px 0 0;padding:0 12px}
+  .hero-layout{
+    display:grid;
+    width:100%;
+    grid-template-columns:minmax(0,1.55fr) minmax(300px,.9fr);
+    gap:14px;
+    margin-top:12px;
+    align-items:stretch;
+  }
+  .headline-card,.headline-link,.latest-panel{width:100%;min-width:0}
+  .headline-card{height:auto;min-height:0}
+  .headline-link{height:100%}
+  .headline-image{
+    display:block;width:100%;height:auto;min-height:0;
+    aspect-ratio:16/10;object-fit:cover;
+  }
+  .headline-content{padding:17px}
+  .headline-content h2{font-size:clamp(23px,2.8vw,28px);overflow-wrap:anywhere}
+  .headline-content p{font-size:12px;line-height:1.45}
+  .latest-panel{height:auto;min-height:0;max-height:none;padding:11px}
+  .latest-item{grid-template-columns:minmax(78px,28%) minmax(0,1fr);gap:9px;padding:9px 0}
+  .latest-item img{width:100%;height:auto;aspect-ratio:1.45/1;object-fit:cover}
+  .latest-title{font-size:13px;overflow-wrap:anywhere}
+  .category-tiles{width:100%;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .category-tile{width:100%;height:auto;aspect-ratio:1.55/1}
+  .berita-grid{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .berita{width:100%;min-width:0}
+  #berita .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #berita .berita-link{display:block;min-height:0}
+  #berita .gambar,#berita .tanpa-gambar{width:100%;height:auto;min-height:0;aspect-ratio:16/10}
+  #berita .isi{padding:12px}
+  #berita .meta{margin-top:0}
+}
+
+@media (min-width:1101px){
+  .hero-layout{width:100%;grid-template-columns:minmax(0,1.65fr) minmax(320px,.85fr);gap:18px}
+  .headline-card,.headline-link,.latest-panel{width:100%;min-width:0}
+  .headline-card{height:auto;min-height:0}
+  .headline-image{width:100%;height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover}
+  .latest-panel{height:auto;min-height:0}
+}
+
+@media (max-width:767px){
+  .brand-inner{min-height:78px;height:auto;padding:4px 10px;gap:7px}
+  .brand-logo{width:clamp(180px,62vw,245px);max-width:62vw;height:auto}
+  .brand-search{display:none}
+  .login{padding:8px 10px;font-size:11px}
+  .nav-inner{min-width:0;max-width:none;overflow:hidden}
+  main{width:100%;max-width:none;padding:0 10px;margin:10px 0 0}
+  .breaking-bar{width:100%;margin:9px 0 0}
+  .hero-layout{display:block;width:100%;margin-top:10px}
+  .headline-card{width:100%;height:auto;min-height:0}
+  .headline-link{height:auto}
+  .headline-image{width:100%;height:auto;min-height:0;aspect-ratio:16/10;object-fit:cover}
+  .headline-content{padding:15px}
+  .latest-panel{width:100%;height:auto;min-height:0;margin-top:10px}
+  .category-tiles{width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .category-tile{width:100%;height:auto;aspect-ratio:1/1}
+  #berita .berita-grid{grid-template-columns:1fr;gap:0}
+  #berita .berita-link{grid-template-columns:105px minmax(0,1fr);display:grid;min-height:0}
+  #berita .gambar,#berita .tanpa-gambar{width:105px;height:76px;min-height:76px;aspect-ratio:auto}
+  #berita .isi{padding:0 12px}
+}
+
+
 </style>
 <style id="nav-polish">
 .nav-inner{display:flex;flex-wrap:nowrap;align-items:stretch}
