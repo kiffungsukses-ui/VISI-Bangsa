@@ -4158,46 +4158,52 @@ main.container{padding-bottom:36px}
     // The auth gate is deliberately the last step: a valid Supabase session
     // immediately reveals the dashboard instead of leaving "Memeriksa sesi login".
     async function initializeVISIBangsaDashboard() {
+      // Inisialisasi dibuat anti-macet: dashboard tidak boleh berhenti di
+      // "Memeriksa sesi login". Sesi dicoba beberapa kali dengan batas waktu,
+      // lalu pengguna diarahkan ke login jika memang tidak ada sesi.
       try {
-        // Jangan biarkan halaman berhenti selamanya di "Memeriksa sesi login".
-        // getSession() normalnya membaca sesi lokal dengan cepat; jika browser
-        // sedang menunggu lock/network, beri batas waktu lalu coba validasi user.
-        const withTimeout = (promise, ms, label) => Promise.race([
+        loginCheck.textContent = "Menyiapkan dashboard...";
+        const withTimeout = (promise, ms) => Promise.race([
           promise,
-          new Promise((_, reject) => setTimeout(() => reject(new Error(label)), ms))
+          new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))
         ]);
 
         let session = null;
-        try {
-          const { data, error } = await withTimeout(
-            supabaseClient.auth.getSession(),
-            8000,
-            "Pemeriksaan sesi login terlalu lama."
-          );
-          if (error) throw error;
-          session = data?.session || null;
-        } catch (sessionError) {
-          console.warn("getSession gagal/timeout:", sessionError);
+        let lastError = null;
+
+        for (let attempt = 1; attempt <= 3 && !session; attempt++) {
+          try {
+            const { data, error } = await withTimeout(
+              supabaseClient.auth.getSession(),
+              3500
+            );
+            if (error) throw error;
+            session = data?.session || null;
+            if (session) break;
+          } catch (error) {
+            lastError = error;
+            console.warn("Pemeriksaan sesi percobaan " + attempt + " gagal:", error);
+            if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 250));
+          }
+        }
+
+        // Fallback terakhir untuk sesi yang belum terbaca dari getSession().
+        if (!session) {
           try {
             const { data, error } = await withTimeout(
               supabaseClient.auth.getUser(),
-              8000,
-              "Validasi akun terlalu lama."
+              3500
             );
             if (error) throw error;
-            if (data?.user) {
-              session = { user: data.user };
-            }
-          } catch (userError) {
-            console.error("Validasi sesi login gagal:", userError);
-            loginCheck.innerHTML = 'Sesi login belum dapat diperiksa.<br><button type="button" id="retryLoginCheck" class="secondary" style="margin-top:10px">Coba Lagi</button>';
-            const retry = document.getElementById("retryLoginCheck");
-            if (retry) retry.addEventListener("click", () => window.location.reload());
-            return;
+            if (data?.user) session = { user: data.user };
+          } catch (error) {
+            lastError = error;
+            console.warn("Validasi akun fallback gagal:", error);
           }
         }
 
         if (!session?.user) {
+          console.warn("Tidak ada sesi aktif:", lastError);
           window.location.replace("login.html");
           return;
         }
@@ -4220,8 +4226,6 @@ main.container{padding-bottom:36px}
         document.title = "Dashboard " + dashboardRoleName + " — VISI Bangsa";
 
         sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
-
-        // Redaksi tidak mendapat menu pengaturan/iklan Admin.
         setupPendingFolder();
 
         if (currentUserRole === "redaksi") {
@@ -4238,8 +4242,7 @@ main.container{padding-bottom:36px}
         await Promise.allSettled(jobs);
       } catch (error) {
         console.error("Kesalahan inisialisasi dashboard:", error);
-        loginCheck.textContent = "Sesi login tidak dapat diperiksa. Silakan login kembali.";
-        setTimeout(() => window.location.replace("login.html"), 1200);
+        window.location.replace("login.html");
       }
     }
 
