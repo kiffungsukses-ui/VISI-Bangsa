@@ -2606,7 +2606,7 @@ main.container{padding-bottom:36px}
         await supabaseClient
           .from("berita")
           .select(
-            "id,judul,isi,gambar,kategori,penulis,tanggal,created_at,updated_at"
+            "id,judul,isi,gambar,kategori,penulis,tanggal,created_at,updated_at,status"
           )
           .order(
             "tanggal",
@@ -2631,6 +2631,7 @@ main.container{padding-bottom:36px}
       }
 
       beritaData = result.data || [];
+      renderPendingFolder();
 
       updateStatistics();
       renderNews();
