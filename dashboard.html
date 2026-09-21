@@ -1891,7 +1891,7 @@ main.container{padding-bottom:36px}
       renderAds();
     }
     function renderPublishedAds(){
-      if(!publishedAdsList) return;
+      if(!publishedActiveAdsList && !publishedInactiveAdsList) return;
       const query=String(publishedAdsSearchInput?.value||"").trim().toLowerCase();
       const allPublished=(adsData||[]).filter(a=>{
         const s=String(a.status||"").toLowerCase();
