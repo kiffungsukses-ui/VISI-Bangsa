@@ -1877,6 +1877,23 @@ main.container{padding-bottom:36px}
     const publishedAdsList=document.getElementById("publishedAdsList");
     const publishedActiveAdsList=document.getElementById("publishedActiveAdsList");
     const publishedInactiveAdsList=document.getElementById("publishedInactiveAdsList");
+    const publishedActiveTab=document.getElementById("publishedActiveTab");
+    const publishedInactiveTab=document.getElementById("publishedInactiveTab");
+    const publishedAdsPanel=document.getElementById("publishedAdsPanel");
+    let publishedAdsSelectedCategory=null;
+
+    function selectPublishedAdsCategory(category){
+      publishedAdsSelectedCategory=category;
+      publishedAdsPanel?.classList.remove("hidden");
+      publishedActiveTab?.classList.toggle("active",category==="active");
+      publishedInactiveTab?.classList.toggle("active",category==="inactive");
+      publishedActiveTab?.setAttribute("aria-selected",String(category==="active"));
+      publishedInactiveTab?.setAttribute("aria-selected",String(category==="inactive"));
+      publishedActiveAdsList?.classList.toggle("hidden",category!=="active");
+      publishedInactiveAdsList?.classList.toggle("hidden",category!=="inactive");
+      renderPublishedAds();
+    }
+
     const publishedAdsSearchInput=document.getElementById("publishedAdsSearchInput");
     const clearPublishedAdsSearchButton=document.getElementById("clearPublishedAdsSearchButton");
     const publishedAdsMessage=document.getElementById("publishedAdsMessage");
@@ -3802,6 +3819,8 @@ main.container{padding-bottom:36px}
       publishedActiveAdsList?.addEventListener("click", publishedAdsActionHandler);
       publishedInactiveAdsList?.addEventListener("click", publishedAdsActionHandler);
     }
+    publishedActiveTab?.addEventListener("click",()=>selectPublishedAdsCategory("active"));
+    publishedInactiveTab?.addEventListener("click",()=>selectPublishedAdsCategory("inactive"));
     if (publishedAdsSearchInput) publishedAdsSearchInput.addEventListener("input", renderPublishedAds);
     if (clearPublishedAdsSearchButton) clearPublishedAdsSearchButton.addEventListener("click", () => {
       publishedAdsSearchInput.value = "";
