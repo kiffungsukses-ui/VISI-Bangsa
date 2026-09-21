@@ -1224,668 +1224,98 @@ body.vb-menu-open{overflow:hidden}
 @media(max-width:700px){#berita .berita-link{align-items:start!important;}#berita .berita-link .isi{padding-top:0!important;margin-top:0!important;}#berita .berita-link .kategori{margin-top:0!important;padding-top:0!important;}}
 </style>
 
-<!-- VISI Bangsa responsive hardening: phone, Z Fold closed/open, tablet, laptop and PC -->
-<style id="visi-responsive-hardening">
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-img,svg,video,canvas{max-width:100%;height:auto}
-button,input,select,textarea{max-width:100%;font:inherit}
-.topbar-inner,.brand-inner,.nav-inner,main,.footer-inner{width:100%;min-width:0}
-.brand-inner>*{min-width:0}
-.brand-logo{flex:0 1 auto}
-.brand-search{min-width:0}
-.hero-layout>*{min-width:0}
-.headline-content,.latest-panel,.berita,.isi{min-width:0;overflow-wrap:anywhere}
-
-/* Z Fold/tablet/compact laptop: avoid a cramped two-column header. */
-@media (max-width:1100px){
-  .brand-inner{gap:16px;padding-left:18px;padding-right:18px}
-  .brand-logo{width:360px;height:112px;max-width:42vw}
-  .brand-search{max-width:none}
-  .hero-layout{grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);gap:16px}
-  .headline-card,.headline-image{min-height:420px;height:420px}
-  .headline-content{padding:22px}
-  .headline-content h2{font-size:30px}
-  main{padding-left:18px;padding-right:18px}
-}
-
-/* Fold opened / tablet portrait and below. */
-@media (max-width:850px){
-  .topbar-inner{padding:8px 14px}
-  .topbar-links{gap:10px;font-size:12px}
-  .topbar-links a{display:none}
-  .brand-inner{padding:10px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
-  .menu-toggle{display:flex!important;flex:0 0 auto}
-  .brand-logo{width:100%;max-width:100%;height:82px;object-fit:contain;object-position:left center}
-  .brand-search{display:none}
-  .header-search-toggle{display:flex!important;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px}
-  nav.legacy-nav{display:none}
-  main{margin-top:16px;padding-left:14px;padding-right:14px}
-  .hero-layout{grid-template-columns:1fr;gap:14px}
-  .headline-card,.headline-image{min-height:390px;height:390px}
-  .headline-content{padding:20px}
-  .headline-content h2{font-size:27px}
-  .latest-panel{margin-top:0}
-  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  .gambar,.tanpa-gambar{height:180px}
-  .footer-inner{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-}
-
-/* Z Fold closed / normal phone. */
-@media (max-width:600px){
-  .topbar-inner{padding:7px 10px;justify-content:center}
-  .running-tagline{max-width:100%;overflow:hidden}
-  .topbar-links{display:none}
-  .brand-inner{grid-template-columns:38px minmax(0,1fr) 38px;gap:7px;padding:8px 10px}
-  .brand-logo{height:64px;object-position:center}
-  .menu-toggle{width:38px!important;height:38px!important}
-  .header-search-toggle{width:38px!important;height:38px!important;flex-basis:38px}
-  main{padding:0 10px;margin-top:12px}
-  .hero-layout{gap:12px}
-  .headline-card,.headline-image{min-height:320px;height:320px}
-  .headline-content{padding:15px}
-  .headline-category{font-size:11px;padding:5px 8px;margin-bottom:7px}
-  .headline-content h2{font-size:21px;line-height:1.18}
-  .headline-content p{font-size:13px;line-height:1.4}
-  .latest-panel{padding:12px}
-  .latest-head h2{font-size:19px}
-  .latest-item{grid-template-columns:88px minmax(0,1fr);gap:9px}
-  .latest-item img{width:88px;height:62px}
-  .latest-title{font-size:13px}
-  .section-header{align-items:flex-start;flex-direction:column;gap:8px}
-  .berita-grid{grid-template-columns:1fr;gap:12px}
-  .gambar,.tanpa-gambar{height:200px}
-  .isi{padding:13px}
-  .judul{font-size:17px;min-height:0}
-  .ringkasan{min-height:0}
-  .footer-inner{grid-template-columns:1fr;gap:12px}
-  footer{padding:24px 14px}
-}
-
-/* Very narrow Fold closed screens: keep every control inside the viewport. */
-@media (max-width:380px){
-  .brand-logo{height:58px}
-  .brand-inner{grid-template-columns:34px minmax(0,1fr) 34px;padding-left:7px;padding-right:7px}
-  .menu-toggle,.header-search-toggle{width:34px!important;height:34px!important;flex-basis:34px}
-  .menu-toggle span{width:19px}
-  .headline-card,.headline-image{min-height:285px;height:285px}
-  .headline-content{padding:12px}
-  .headline-content h2{font-size:19px}
-  .headline-content p{font-size:12px}
-  .latest-item{grid-template-columns:76px minmax(0,1fr)}
-  .latest-item img{width:76px;height:56px}
-}
-
-/* Desktop / PC: use available width without forcing fixed content. */
-@media (min-width:1200px){
-  main,.topbar-inner,.brand-inner,.nav-inner,.footer-inner{max-width:1280px}
-}
-/* VISI Bangsa responsive space-balance polish — 2026-09-21 */
-.hero-layout{width:100%;}
-#headline{width:100%;}
-.headline-card,.headline-image{width:100%;}
-.latest-panel{width:100%;}
-main{max-width:1280px;padding-left:22px;padding-right:22px;}
-@media (max-width: 900px){
-  main{padding-left:16px;padding-right:16px;margin-top:16px;}
-  .hero-layout{display:block !important;}
-  .headline-card,.headline-image{min-height:400px;height:400px;}
-  .headline-content{padding:22px;}
-  .headline-content h2{font-size:29px;}
-  .latest-panel{margin-top:14px;}
-}
-@media (max-width: 720px){
-  main{padding-left:12px;padding-right:12px;margin-top:12px;}
-  .headline-card,.headline-image{min-height:330px;height:330px;}
-  .headline-content{padding:17px;}
-  .headline-content h2{font-size:23px;}
-  .headline-content p{font-size:13px;line-height:1.4;}
-  .latest-panel{margin-top:12px;}
-  .latest-item{grid-template-columns:92px 1fr;gap:10px;padding:9px 0;}
-  .latest-item img{width:92px;height:66px;}
-  .latest-title{font-size:13px;}
-}
-@media (max-width: 430px){
-  .headline-card,.headline-image{min-height:300px;height:300px;}
-  .headline-content{padding:14px;}
-  .headline-content h2{font-size:21px;}
-  .headline-category{font-size:10px;padding:6px 9px;margin-bottom:7px;}
-  .headline-meta{font-size:10px;}
-  .latest-panel{padding-left:10px;padding-right:10px;}
-}
-@media (min-width: 1200px){
-  .headline-card,.headline-image{height:440px;min-height:440px;}
-}
-</style>
-
-/* VISI Bangsa adaptive newsroom layout — 2026-09-21 */
-/* Prinsip: fluid container, breakpoint mengikuti ruang nyata, bukan memaksa layout desktop ke layar lipat. */
-html,body{max-width:100%;overflow-x:hidden}
-img{max-width:100%}
-main,.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,.footer-inner,.copyright{width:100%;max-width:1320px}
-.nav-inner{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.nav-inner::-webkit-scrollbar{display:none}
-.hero-layout{width:100%;min-width:0}
-.headline-card,.headline-link,.latest-panel,.latest-item,.berita,.category-tile{min-width:0}
-.headline-content h2,.latest-title,.judul{overflow-wrap:anywhere}
-
-/* Laptop / tablet landscape / Z Fold unfolded: keep the news hierarchy in two columns. */
-@media (min-width:768px) and (max-width:1023px){
-  main{padding:0 16px}
-  .brand-inner{padding:10px 16px;min-height:125px;gap:16px}
-  .brand-logo{width:250px;max-width:34vw;height:auto}
-  .brand-search{display:flex;max-width:none}
-  .brand-search input{height:44px;font-size:14px}
-  .brand-search button{height:44px;padding:0 18px;font-size:14px}
-  .login{padding:10px 12px;font-size:13px}
-  .nav-inner{padding:0 10px}
-  .nav-inner a{padding:12px 13px;font-size:13px}
-  .breaking-bar{margin:10px 16px 0;padding:0 8px}
-  .hero-layout{
-    grid-template-columns:minmax(0,1.35fr) minmax(270px,.85fr);
-    gap:14px;
-    margin-top:14px
-  }
-  .headline-card{height:auto;min-height:0}.headline-image{height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover}
-  .headline-content{padding:18px}
-  .headline-content h2{font-size:27px}
-  .headline-content p{font-size:13px}
-  .latest-panel{padding:12px}
-  .latest-item{grid-template-columns:88px minmax(0,1fr);gap:9px;padding:9px 0}
-  .latest-item img{width:88px;height:64px}
-  .latest-title{font-size:13px}
-  .latest-cat,.latest-time{font-size:10px}
-  .category-tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 24px}
-  .category-tile{height:100px}
-  .category-tile span{font-size:12px;padding:8px 9px}
-  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .gambar,.tanpa-gambar{height:160px}
-  .isi{padding:12px}
-  .judul{font-size:16px;min-height:0}
-  .ringkasan{font-size:12px;min-height:0}
-}
-
-/* Phones and Z Fold closed: one clean column, no forced desktop dimensions. */
-@media (max-width:767px){
-  main{padding:0 10px;margin-top:10px}
-  .brand-inner{padding:6px 10px;min-height:92px;gap:8px}
-  .brand-logo{width:180px;max-width:58vw;height:auto}
-  .login{padding:7px 9px;font-size:11px}
-  .nav-inner{padding:0 5px}
-  .nav-inner a{font-size:12px;padding:11px 10px}
-  .breaking-bar{margin:8px 10px 0;height:36px;padding:0 7px}
-  .breaking-label{font-size:9px;padding:6px 8px}
-  .breaking-text{font-size:11px}
-  .hero-layout{grid-template-columns:1fr;gap:10px;margin-top:10px}
-  .headline-card,.headline-image{height:295px;min-height:295px}
-  .headline-content{padding:14px}
-  .headline-content h2{font-size:21px;line-height:1.16}
-  .headline-content p{font-size:12px;line-height:1.4}
-  .headline-category{font-size:9px;padding:5px 8px;margin-bottom:7px}
-  .latest-panel{padding:11px}
-  .latest-item{grid-template-columns:82px minmax(0,1fr);gap:9px;padding:8px 0}
-  .latest-item img{width:82px;height:60px}
-  .latest-title{font-size:12px}
-  .latest-cat,.latest-time{font-size:9px}
-  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 22px}
-  .category-tile{height:92px}
-  .category-tile span{font-size:11px;padding:7px 8px}
-  .berita-grid{grid-template-columns:1fr;gap:10px}
-  .gambar,.tanpa-gambar{height:185px}
-}
-
-/* Very narrow folded/compact screens: prevent oversized branding and empty bands. */
-@media (max-width:380px){
-  .brand-inner{min-height:78px}
-  .brand-logo{width:150px}
-  .login{font-size:10px;padding:6px 8px}
-  .nav-inner a{font-size:11px;padding:10px 8px}
-  .headline-card,.headline-image{height:270px;min-height:270px}
-  .headline-content h2{font-size:19px}
-  .latest-item{grid-template-columns:74px minmax(0,1fr)}
-  .latest-item img{width:74px;height:56px}
-}
-</style>
-
-
-<style id="visi-bangsa-final-responsive-cleanup">
-/* VISI Bangsa — final responsive layout authority
-   One layout model for desktop, Z Fold/tablet and mobile.
-   Keep this block last so older legacy rules cannot fight the layout.
-*/
-html,body{width:100%;max-width:100%;overflow-x:hidden}
+<!-- VISI BANGSA — SINGLE RESPONSIVE AUTHORITY — 2026-09-21 -->
+<style id="visi-single-responsive-authority">
+/* One responsive system. No legacy fixed hero heights. */
+html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
 *,*:before,*:after{box-sizing:border-box}
-body{min-width:0}
-main{width:100%;max-width:1320px;margin:0 auto;padding-left:24px;padding-right:24px;min-width:0}
-main>*{min-width:0}
-
-/* Header: prevent oversized logo and accidental horizontal overflow. */
-.topbar-inner,.brand-inner,.nav-inner{width:100%;max-width:1320px;min-width:0}
-.brand-inner{min-height:118px}
-.brand-logo{width:340px;max-width:42vw;height:auto;max-height:105px}
-.brand-search{min-width:0}
-.brand-search input{min-width:0}
-.nav-inner{overflow-x:auto;overscroll-behavior-x:contain}
-
-/* Desktop newsroom: hero left, latest right, lower content full width. */
-@media (min-width:1024px){
-  main{display:grid;grid-template-columns:minmax(0,1.68fr) minmax(310px,.88fr);column-gap:18px;row-gap:18px;align-items:start}
-  .hero-layout{grid-column:1;grid-row:1;display:block!important;width:100%;margin-top:18px}
-  .latest-panel{grid-column:2;grid-row:1;width:100%;margin-top:18px;max-height:455px;overflow:auto}
-  #berita,.join-card{grid-column:1/-1;width:100%}
-  .headline-card,.headline-image{width:100%;height:clamp(390px,34vw,455px);min-height:390px}
-  .headline-content{padding:24px 26px}
-  .headline-content h2{font-size:clamp(28px,2.5vw,34px)}
-}
-
-/* Z Fold unfolded / tablet: two useful columns, no giant empty side area. */
-@media (min-width:768px) and (max-width:1023px){
-  main{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(270px,.86fr);column-gap:14px;row-gap:14px;padding-left:14px;padding-right:14px}
-  .hero-layout{grid-column:1;grid-row:1;display:block!important;width:100%;margin-top:12px}
-  .latest-panel{grid-column:2;grid-row:1;width:100%;margin-top:12px;max-height:410px;overflow:auto}
-  #berita,.join-card{grid-column:1/-1;width:100%}
-  .headline-card,.headline-image{width:100%;height:clamp(340px,48vw,405px);min-height:340px}
-  .headline-content{padding:18px}
-  .headline-content h2{font-size:clamp(23px,3.3vw,29px)}
-  .latest-item{grid-template-columns:96px minmax(0,1fr)}
-  .latest-item img{width:96px;height:66px}
-  .category-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-}
-
-/* Z Fold closed / ordinary phones: single column, compact and touch friendly. */
-@media (max-width:767px){
-  main{display:block;padding-left:10px;padding-right:10px;margin-top:10px}
-  .hero-layout{display:block!important;width:100%;margin-top:10px}
-  .latest-panel{display:block;width:100%;max-height:none;overflow:visible;margin-top:12px}
-  #berita,.join-card{width:100%}
-  .brand-inner{min-height:78px;padding:7px 10px;gap:8px}
-  .brand-logo{width:205px;max-width:58vw;max-height:62px}
-  .brand-search{display:none}
-  .nav-inner{padding-left:6px;padding-right:6px}
-  .nav-inner a{font-size:13px;padding:12px 10px}
-  .breaking-bar{margin-left:10px;margin-right:10px;max-width:none}
-  .headline-card,.headline-image{width:100%;height:clamp(270px,78vw,325px);min-height:270px}
-  .headline-content{padding:14px}
-  .headline-content h2{font-size:clamp(19px,5.8vw,24px);line-height:1.16}
-  .headline-content p{font-size:12px;line-height:1.4}
-  .latest-item{grid-template-columns:minmax(78px,25vw) minmax(0,1fr);gap:9px}
-  .latest-item img{width:100%;height:auto;aspect-ratio:1.45;object-fit:cover}
-  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 22px}
-  .category-tile{height:105px}
-  .berita-grid{grid-template-columns:1fr;gap:10px}
-  .gambar,.tanpa-gambar{height:185px}
-}
-
-/* Narrow cover displays: Samsung Z Fold closed and small Android screens. */
-@media (max-width:380px){
-  main{padding-left:8px;padding-right:8px}
-  .brand-inner{padding-left:7px;padding-right:7px}
-  .brand-logo{width:150px;max-width:50vw;height:58px}
-  .headline-card,.headline-image{height:270px;min-height:270px}
-  .headline-content{padding:12px}
-  .headline-content h2{font-size:19px}
-  .latest-item{grid-template-columns:74px minmax(0,1fr)}
-  .latest-item img{width:74px;height:56px}
-}
-
-/* Avoid cards becoming wider than their grid tracks. */
-.hero-layout,.headline-card,.headline-link,.latest-panel,#berita,.berita-grid,.berita,.join-card{min-width:0;max-width:100%}
-img{max-width:100%}
-
-/* ===== VISI BANGSA FINAL ADAPTIVE NEWSROOM v4 — 2026-09-21 =====
-   Single authority layer: desktop, Z Fold unfolded, Z Fold closed, phone.
-*/
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-*,*:before,*:after{box-sizing:border-box}
-body{min-width:0}
-img{max-width:100%;height:auto}
-main,.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,.footer-inner,.copyright{width:100%;max-width:1320px;min-width:0}
-main{margin-left:auto;margin-right:auto}
-main>*{min-width:0}
-.topbar-inner,.brand-inner,.nav-inner{min-width:0}
-.running-tagline{min-width:0}
-.nav-inner{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.nav-inner::-webkit-scrollbar{display:none}
-.nav-inner a{flex:0 0 auto}
-.brand-inner{min-width:0}
-.brand-logo{display:block;max-width:42vw;height:auto;flex:0 1 auto}
-.brand-search{min-width:0}
-.brand-search input{min-width:0}
-.hero-layout{width:100%;min-width:0}
-.headline-card,.headline-link,.headline-image,.latest-panel,.latest-item,#berita,.berita-grid,.berita,.category-tile{min-width:0}
-.headline-link{min-height:100%}
-.headline-content h2,.latest-title,.judul{overflow-wrap:anywhere;word-break:normal}
-
-/* Category tiles: the icon and label must never overlap. */
-.category-tile{display:flex;align-items:flex-end;position:relative}
-.category-tile .category-icon{position:static!important;display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:0!important;background:none!important;font-size:30px;line-height:1;color:#fff;z-index:1}
-.category-tile .category-name{position:absolute!important;left:0;right:0;bottom:0!important;display:block;padding:10px 11px!important;background:linear-gradient(transparent,rgba(0,0,0,.84))!important;color:#fff!important;font-size:14px!important;font-weight:800;z-index:2}
-
-/* Desktop newsroom proportion */
-@media (min-width:1024px){
-  main{padding-left:24px;padding-right:24px}
-  .hero-layout{grid-template-columns:minmax(0,1.65fr) minmax(320px,.85fr);gap:18px;margin-top:18px}
-  .headline-card,.headline-image{height:455px;min-height:455px}
-  .latest-panel{height:455px;overflow:hidden}
-  .latest-item{grid-template-columns:100px minmax(0,1fr);gap:10px;padding:10px 0}
-  .latest-item img{width:100px;height:68px}
-  .category-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-  .berita-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-}
-
-/* Z Fold unfolded / tablets: keep the newsroom hierarchy in TWO columns. */
-@media (min-width:768px) and (max-width:1023px){
-  main{padding-left:16px;padding-right:16px}
-  .topbar-inner{padding-left:16px;padding-right:16px}
-  .brand-inner{padding:8px 16px;min-height:120px;gap:14px}
-  .brand-logo{width:260px;max-width:36vw}
-  .brand-search{display:flex;flex:1;max-width:none}
-  .brand-search input{height:42px;font-size:14px}
-  .brand-search button{height:42px;padding:0 16px;font-size:13px}
-  .login{padding:9px 11px;font-size:12px}
-  .nav-inner{padding-left:10px;padding-right:10px}
-  .nav-inner a{padding:12px 12px;font-size:13px}
-  .breaking-bar{margin:10px 16px 0;padding:0 8px;height:40px}
-  .hero-layout{grid-template-columns:minmax(0,1.5fr) minmax(250px,.95fr);gap:14px;margin-top:12px}
-  .headline-card,.headline-image{height:365px;min-height:365px}
-  .headline-content{padding:18px}
-  .headline-content h2{font-size:26px;line-height:1.16}
-  .headline-content p{font-size:13px;line-height:1.45}
-  .latest-panel{height:365px;padding:12px;overflow:hidden}
-  .latest-head h2{font-size:18px}
-  .latest-head a{font-size:11px}
-  .latest-item{grid-template-columns:76px minmax(0,1fr);gap:8px;padding:8px 0}
-  .latest-item img{width:76px;height:58px}
-  .latest-title{font-size:12px;line-height:1.25}
-  .latest-cat,.latest-time{font-size:9px}
-  .category-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 24px}
-  .category-tile{height:100px}
-  .category-tile .category-icon{font-size:25px}
-  .category-tile .category-name{font-size:12px!important;padding:8px 9px!important}
-  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .gambar,.tanpa-gambar{height:155px}
-  .isi{padding:12px}
-  .judul{font-size:16px;min-height:0}
-  .ringkasan{font-size:12px;min-height:0}
-}
-
-/* Z Fold closed / phones: one column, compact header, no artificial empty bands. */
-@media (max-width:767px){
-  main{padding-left:10px;padding-right:10px;margin-top:10px}
-  .topbar-inner{padding:7px 10px;min-height:30px}
-  .topbar-links{display:none}
-  .brand-inner{padding:6px 10px;min-height:78px;gap:8px}
-  .brand-logo{width:180px;max-width:55vw;max-height:70px}
-  .brand-search{display:none}
-  .login{padding:7px 9px;font-size:11px}
-  .nav-inner{padding:0 5px}
-  .nav-inner a{font-size:12px;padding:10px 9px}
-  .breaking-bar{margin:8px 10px 0;height:36px;padding:0 7px}
-  .breaking-label{font-size:9px;padding:6px 8px}
-  .breaking-text{font-size:11px}
-  .hero-layout{grid-template-columns:1fr;gap:10px;margin-top:10px}
-  .headline-card,.headline-image{height:295px;min-height:295px}
-  .headline-content{padding:14px}
-  .headline-content h2{font-size:21px;line-height:1.16}
-  .headline-content p{font-size:12px;line-height:1.4}
-  .headline-category{font-size:9px;padding:5px 8px;margin-bottom:7px}
-  .latest-panel{height:auto;max-height:none;padding:11px;overflow:visible}
-  .latest-item{grid-template-columns:78px minmax(0,1fr);gap:9px;padding:8px 0}
-  .latest-item img{width:78px;height:58px}
-  .latest-title{font-size:12px}
-  .latest-cat,.latest-time{font-size:9px}
-  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 22px}
-  .category-tile{height:92px}
-  .category-tile .category-icon{font-size:24px}
-  .category-tile .category-name{font-size:11px!important;padding:7px 8px!important}
-  .berita-grid{grid-template-columns:1fr;gap:10px}
-  .gambar,.tanpa-gambar{height:185px}
-  .isi{padding:12px}
-  .judul{font-size:16px;min-height:0}
-  .ringkasan{font-size:12px;min-height:0}
-  footer{margin-top:30px}
-}
-
-/* Extra-narrow screens */
-@media (max-width:380px){
-  .brand-inner{min-height:72px}
-  .brand-logo{width:150px;max-width:52vw;max-height:62px}
-  .login{font-size:10px;padding:6px 8px}
-  .nav-inner a{font-size:11px;padding:9px 8px}
-  .headline-card,.headline-image{height:270px;min-height:270px}
-  .headline-content h2{font-size:19px}
-  .latest-item{grid-template-columns:70px minmax(0,1fr)}
-  .latest-item img{width:70px;height:54px}
-}
-
-/* Prevent accidental horizontal overflow from long generated content. */
-#headline,#latestList,#categoryTiles,#beritaGrid,.latest-panel,.headline-card{max-width:100%}
-
-
-/* ===== FINAL STRUCTURAL FIX — VISI BANGSA NEWSROOM ===== */
-.topbar-inner{min-height:34px}
-.running-tagline-track{animation:none!important;transform:none!important}
-.brand-inner{min-height:112px;padding-top:8px;padding-bottom:8px;align-items:center}
-.brand-logo{width:300px;max-width:34vw;max-height:96px;height:auto}
-.menu-toggle{flex:0 0 42px;width:42px;height:42px}
-.brand-search{min-width:0}
-.hero-layout{display:grid!important;align-items:stretch}
-.hero-layout>.latest-panel{margin-top:0!important}
-.latest-panel{min-height:0}
-@media (min-width:1024px){
-  .brand-inner{min-height:118px}
-  .brand-logo{width:320px;max-width:30vw;max-height:100px}
-  .hero-layout{grid-template-columns:minmax(0,1.7fr) minmax(330px,.9fr);gap:18px;margin-top:16px}
-  .headline-card,.headline-image{height:430px;min-height:430px}
-  .latest-panel{height:430px;overflow:hidden}
-}
-@media (min-width:768px) and (max-width:1023px){
-  .brand-inner{min-height:98px;padding:6px 16px}
-  .brand-logo{width:230px;max-width:32vw;max-height:78px}
-  .hero-layout{grid-template-columns:minmax(0,1.45fr) minmax(250px,.85fr);gap:12px;margin-top:12px}
-  .headline-card,.headline-image{height:350px;min-height:350px}
-  .latest-panel{height:350px;overflow:hidden;padding:11px}
-}
-@media (max-width:767px){
-  .topbar-inner{min-height:30px;padding:6px 10px}
-  .running-tagline{display:none}
-  .brand-inner{min-height:68px;padding:5px 10px;gap:8px}
-  .brand-logo{width:160px;max-width:52vw;max-height:58px}
-  .menu-toggle{width:38px;height:38px;flex-basis:38px;border-radius:8px}
-  .header-search-toggle{width:38px;height:38px;flex-basis:38px}
-  .hero-layout{grid-template-columns:1fr;gap:10px;margin-top:10px}
-  .headline-card,.headline-image{height:285px;min-height:285px}
-  .latest-panel{height:auto;max-height:none;overflow:visible;padding:10px}
-}
-
-</style>
-
-<style id="visi-bangsa-pc-zfold-final-layout">
-/* Final visual balancing: use the available viewport without stretching images. */
-main{
-  width:100%;
-  max-width:1440px;
-  margin-left:auto;
-  margin-right:auto;
-  padding-left:24px;
-  padding-right:24px;
-}
-.breaking-bar{max-width:1440px;margin-left:auto;margin-right:auto}
-.topbar-inner,.brand-inner,.nav-inner,.footer-inner,.copyright{max-width:1440px}
-
-.hero-layout{
-  width:100%;
-  grid-template-columns:minmax(0,1.7fr) minmax(320px,.9fr);
-}
-.headline-card,.headline-image{width:100%}
-.headline-image{aspect-ratio:16/9;height:auto;min-height:0;object-fit:cover}
-.latest-panel{width:100%}
-.latest-item{min-width:0}
-.latest-item img{width:100%;aspect-ratio:1.5/1;height:auto;object-fit:cover}
-
-.category-tiles,
-.berita-grid{width:100%}
-.category-tile{width:100%;aspect-ratio:1.9/1;height:auto}
-.category-tile img{width:100%;height:100%;object-fit:cover}
-.berita{min-width:0}
-.gambar,.tanpa-gambar{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
-.tanpa-gambar{display:flex}
-.berita-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-
-/* Wide PC: consume more horizontal space and keep the photo grid balanced. */
-@media (min-width:1440px){
-  main{max-width:1560px;padding-left:28px;padding-right:28px}
-  .breaking-bar{max-width:1560px}
-  .topbar-inner,.brand-inner,.nav-inner,.footer-inner,.copyright{max-width:1560px}
-  .hero-layout{grid-template-columns:minmax(0,1.72fr) minmax(360px,.88fr);gap:22px}
-  .headline-image{aspect-ratio:16/9}
-  .berita-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-  .category-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
-}
-
-/* Z Fold unfolded / tablet landscape: use the full viewport width without a phantom right gutter. */
-@media (min-width:768px) and (max-width:1023px){
-  main{
-    width:100%;
-    max-width:none;
-    padding-left:12px;
-    padding-right:12px;
-  }
-  .breaking-bar{
-    width:calc(100% - 24px);
-    max-width:none;
-    margin-left:12px;
-    margin-right:12px;
-  }
-  .hero-layout{
-    width:100%;
-    grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
-    gap:12px;
-  }
-  .headline-card,
-  .headline-link,
-  .latest-panel{width:100%;min-width:0}
-  .headline-image{
-    width:100%;
-    aspect-ratio:16/10;
-    height:auto;
-  }
-  .latest-item{
-    grid-template-columns:minmax(76px,26%) minmax(0,1fr);
-    gap:9px;
-  }
-  .latest-item img{
-    width:100%;
-    height:auto;
-    aspect-ratio:1.45/1;
-  }
-  .category-tiles{
-    width:100%;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:10px;
-  }
-  .category-tile{
-    width:100%;
-    aspect-ratio:1.55/1;
-    height:auto;
-  }
-  .berita-grid{
-    width:100%;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-  }
-  .berita,.gambar,.tanpa-gambar{width:100%;min-width:0}
-  .gambar,.tanpa-gambar{aspect-ratio:16/10;height:auto}
-  .isi{padding:12px}
-}
-
-/* Extra-wide folded/tablet CSS viewports: keep the composition balanced. */
-@media (min-width:900px) and (max-width:1023px){
-  .hero-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:14px}
-  .category-tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  .berita-grid{gap:14px}
-}
-
-/* Phones / Fold cover: one column, consistent image proportions. */
-@media (max-width:767px){
-  main{max-width:none;padding-left:10px;padding-right:10px}
-  .breaking-bar{margin-left:10px;margin-right:10px}
-  .headline-image{aspect-ratio:16/10}
-  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .berita-grid{grid-template-columns:1fr}
-  .gambar,.tanpa-gambar{aspect-ratio:16/10}
-}
-
-/* Never let an image or grid item create a phantom empty side area. */
+img,svg,video,canvas{max-width:100%}
+main,.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,.footer-inner,.copyright{width:100%;min-width:0}
+main{max-width:1440px;margin-left:auto;margin-right:auto;padding-left:24px;padding-right:24px}
 main>*,
 .hero-layout>*,
 .category-tiles>*,
 .berita-grid>*{min-width:0;max-width:100%}
-img{display:block;max-width:100%}
-</style>
+.hero-layout{width:100%;min-width:0}
+.headline-card,.headline-link,.headline-image,.latest-panel,.latest-item,.berita,.category-tile{min-width:0}
+.headline-content h2,.latest-title,.judul{overflow-wrap:anywhere}
+.nav-inner{min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-inner a{flex:0 0 auto}
+.brand-inner,.brand-search{min-width:0}
+.brand-logo{display:block;width:320px;max-width:34vw;height:auto;max-height:100px}
+.brand-search{flex:1}
+.latest-item img{width:100%;height:auto;object-fit:cover}
+.headline-image{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.gambar,.tanpa-gambar{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
 
-
-<style id="zfold-authority-v4">
-/* ===== VISI BANGSA Z FOLD AUTHORITY v4 — 2026-09-21 ===== */
-@media (min-width:768px) and (max-width:1100px){
-  html,body{width:100%;min-width:0;overflow-x:hidden}
-  .brand-inner,.nav-inner,main{width:100%;max-width:none}
-  .brand-inner{min-height:100px;padding:7px 14px;gap:12px}
-  .brand-logo{width:clamp(210px,29vw,300px);max-width:36vw;height:auto}
-  .brand-search{display:flex;flex:1;min-width:0;max-width:none}
-  .brand-search input{width:100%;min-width:0;height:42px;font-size:14px}
-  .brand-search button{height:42px;padding:0 13px;font-size:12px}
-  .login{flex:0 0 auto;padding:9px 11px;font-size:12px}
-  .nav-inner{padding:0 8px;overflow-x:auto;white-space:nowrap}
-  .nav-inner a{flex:0 0 auto;width:auto;min-width:max-content;padding:12px 11px;font-size:12px}
-  main{padding:0 12px;margin:12px 0 0}
-  .breaking-bar{width:100%;max-width:none;margin:9px 0 0}
-  .hero-layout{
-    display:grid;
-    width:100%;
-    grid-template-columns:minmax(0,1fr) minmax(280px,.58fr);
-    gap:12px;
-    align-items:stretch;
-    margin-top:11px
-  }
-  .headline-card,.headline-link,.latest-panel{width:100%;min-width:0}
+/* PC */
+@media (min-width:1024px){
+  .hero-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.9fr);gap:18px;align-items:stretch;margin-top:16px}
   .headline-card{height:auto;min-height:0}
-  .headline-link{height:100%}
-  .headline-image{display:block;width:100%;height:auto;min-height:0;aspect-ratio:16/10;object-fit:cover}
-  .headline-content{padding:16px}
-  .headline-content h2{font-size:clamp(22px,2.7vw,27px);line-height:1.15;overflow-wrap:anywhere}
-  .headline-content p{font-size:12px;line-height:1.4}
-  .latest-panel{height:auto;min-height:0;max-height:none;padding:10px}
-  .latest-head{margin:-10px -10px 4px;padding:11px 12px}
-  .latest-item{grid-template-columns:82px minmax(0,1fr);gap:8px;padding:8px 0}
-  .latest-item img{width:82px;height:auto;aspect-ratio:1.4/1}
-  .latest-title{font-size:12px;line-height:1.25;overflow-wrap:anywhere}
-  .latest-cat,.latest-time{font-size:9px}
-  .category-tiles{width:100%;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0 20px}
-  .category-tile{width:100%;height:auto;aspect-ratio:1.6/1}
-  #berita .berita-grid{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  #berita .berita-link{display:block;min-height:0}
-  #berita .gambar,#berita .tanpa-gambar{width:100%;height:auto;min-height:0;aspect-ratio:16/10}
-  #berita .isi{padding:10px}
-  #berita .judul{font-size:14px}
+  .headline-link{height:auto}
+  .headline-content{padding:24px 26px}
+  .latest-panel{height:auto;min-height:0;max-height:none;overflow:visible}
+  .latest-item{grid-template-columns:minmax(90px,27%) minmax(0,1fr);gap:10px;padding:9px 0}
+  .latest-item img{aspect-ratio:1.45/1}
+  .category-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+  .berita-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 }
-</style>
 
-<style id="zfold-clean-v5">
-/* ===== VISI BANGSA Z FOLD CLEAN v5 — 2026-09-21 ===== */
-/* Override legacy tablet rules: use the actual available width and remove forced 390px heights. */
-@media (min-width:768px) and (max-width:1100px){
-  .hero-layout{grid-template-columns:minmax(0,1.65fr) minmax(250px,.85fr)!important;gap:14px!important}
-  .headline-card{height:auto!important;min-height:0!important}
-  .headline-link{height:auto!important}
-  .headline-image{height:auto!important;min-height:0!important;aspect-ratio:16/9!important;object-fit:cover}
-  .latest-panel{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
-  .latest-item{grid-template-columns:minmax(72px,27%) minmax(0,1fr)!important}
-  .latest-item img{width:100%!important;height:auto!important;aspect-ratio:1.45/1;object-fit:cover}
-  main{padding-left:12px!important;padding-right:12px!important}
+/* Z Fold unfolded / tablet landscape: two columns, fluid proportions. */
+@media (min-width:768px) and (max-width:1023px){
+  main{max-width:none;padding-left:12px;padding-right:12px}
+  .brand-inner{padding:8px 14px;min-height:100px;gap:12px}
+  .brand-logo{width:clamp(210px,29vw,300px);max-width:36vw;max-height:82px}
+  .brand-search{display:flex;min-width:0}
+  .brand-search input{width:100%;min-width:0;height:42px}
+  .brand-search button{height:42px}
+  .nav-inner{padding:0 8px}
+  .nav-inner a{padding:12px 11px;font-size:12px}
+  .breaking-bar{width:100%;max-width:none;margin:9px 0 0}
+  .hero-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,.85fr);gap:14px;align-items:stretch;margin-top:12px}
+  .headline-card{height:auto;min-height:0}
+  .headline-link{height:auto}
+  .headline-image{height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover}
+  .headline-content{padding:18px}
+  .headline-content h2{font-size:clamp(23px,3.3vw,29px);line-height:1.16}
+  .latest-panel{height:auto;min-height:0;max-height:none;overflow:visible;padding:11px}
+  .latest-item{grid-template-columns:minmax(72px,27%) minmax(0,1fr);gap:9px;padding:8px 0}
+  .latest-item img{aspect-ratio:1.45/1}
+  .category-tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 }
-@media (min-width:900px) and (max-width:1100px){
-  .hero-layout{grid-template-columns:minmax(0,1.8fr) minmax(280px,.8fr)!important}
+
+/* Z Fold closed / phones: one column, fluid hero image. */
+@media (max-width:767px){
+  main{max-width:none;padding-left:10px;padding-right:10px;margin-top:10px}
+  .brand-inner{padding:6px 10px;min-height:72px;gap:8px}
+  .brand-logo{width:180px;max-width:55vw;max-height:62px}
+  .brand-search{display:none}
+  .nav-inner{padding:0 5px}
+  .nav-inner a{font-size:12px;padding:10px 9px}
+  .breaking-bar{margin:8px 10px 0;height:36px;padding:0 7px}
+  .hero-layout{display:block;gap:10px;margin-top:10px}
+  .headline-card{height:auto;min-height:0}
+  .headline-link{height:auto}
+  .headline-image{height:auto;min-height:0;aspect-ratio:16/10;object-fit:cover}
+  .headline-content{padding:14px}
+  .headline-content h2{font-size:clamp(19px,5.8vw,24px);line-height:1.16}
+  .headline-content p{font-size:12px;line-height:1.4}
+  .latest-panel{height:auto;max-height:none;overflow:visible;margin-top:12px;padding:10px}
+  .latest-item{grid-template-columns:minmax(74px,25vw) minmax(0,1fr);gap:9px;padding:8px 0}
+  .latest-item img{aspect-ratio:1.45/1}
+  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .berita-grid{grid-template-columns:1fr;gap:10px}
+}
+
+/* Very narrow cover display */
+@media (max-width:380px){
+  main{padding-left:8px;padding-right:8px}
+  .brand-inner{padding-left:7px;padding-right:7px}
+  .brand-logo{width:150px;max-width:52vw;max-height:58px}
+  .headline-image{aspect-ratio:16/10}
+  .latest-item{grid-template-columns:70px minmax(0,1fr)}
 }
 </style>
 </head>
