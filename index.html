@@ -1558,14 +1558,67 @@ main{
   .category-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 }
 
-/* Z Fold unfolded / tablet landscape: fill both columns evenly. */
+/* Z Fold unfolded / tablet landscape: use the full viewport width without a phantom right gutter. */
 @media (min-width:768px) and (max-width:1023px){
-  main{max-width:none;padding-left:14px;padding-right:14px}
-  .breaking-bar{margin-left:14px;margin-right:14px}
-  .hero-layout{grid-template-columns:minmax(0,1.5fr) minmax(0,.95fr);gap:14px}
-  .headline-image{aspect-ratio:4/3}
-  .category-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  main{
+    width:100%;
+    max-width:none;
+    padding-left:12px;
+    padding-right:12px;
+  }
+  .breaking-bar{
+    width:calc(100% - 24px);
+    max-width:none;
+    margin-left:12px;
+    margin-right:12px;
+  }
+  .hero-layout{
+    width:100%;
+    grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+    gap:12px;
+  }
+  .headline-card,
+  .headline-link,
+  .latest-panel{width:100%;min-width:0}
+  .headline-image{
+    width:100%;
+    aspect-ratio:16/10;
+    height:auto;
+  }
+  .latest-item{
+    grid-template-columns:minmax(76px,26%) minmax(0,1fr);
+    gap:9px;
+  }
+  .latest-item img{
+    width:100%;
+    height:auto;
+    aspect-ratio:1.45/1;
+  }
+  .category-tiles{
+    width:100%;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+  }
+  .category-tile{
+    width:100%;
+    aspect-ratio:1.55/1;
+    height:auto;
+  }
+  .berita-grid{
+    width:100%;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+  .berita,.gambar,.tanpa-gambar{width:100%;min-width:0}
+  .gambar,.tanpa-gambar{aspect-ratio:16/10;height:auto}
+  .isi{padding:12px}
+}
+
+/* Extra-wide folded/tablet CSS viewports: keep the composition balanced. */
+@media (min-width:900px) and (max-width:1023px){
+  .hero-layout{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:14px}
+  .category-tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .berita-grid{gap:14px}
 }
 
 /* Phones / Fold cover: one column, consistent image proportions. */
