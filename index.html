@@ -1019,7 +1019,7 @@ body.vb-menu-open{overflow:hidden}
     line-height:1.25!important;
   }
 }
-<style id="berita-card-match-latest-spacing">
+/* flattened nested style: berita-card-match-latest-spacing */
 /* Samakan jarak vertikal Berita Pilihan dengan Berita Terbaru tanpa mengubah fungsi. */
 .berita .kategori{margin-bottom:4px!important;}
 .berita .judul{margin-bottom:0!important;min-height:0!important;}
@@ -1031,7 +1031,7 @@ body.vb-menu-open{overflow:hidden}
   .berita .ringkasan{margin-top:3px!important;margin-bottom:0!important;}
   .berita .meta{margin-top:4px!important;}
 }
-</style></style><style id="berita-pilihan-top-alignment">
+</style><style id="berita-pilihan-top-alignment">
 /* Berita Pilihan: kategori dimulai tepat sejajar dengan sisi atas foto, seperti Berita Terbaru. */
 #berita .berita-link{align-items:start!important;}
 #berita .berita-link .isi{padding-top:0!important;margin-top:0!important;}
@@ -1134,12 +1134,8 @@ button,input,select,textarea{max-width:100%;font:inherit}
 @media (min-width:1200px){
   main,.topbar-inner,.brand-inner,.nav-inner,.footer-inner{max-width:1280px}
 }
-<style>
 /* VISI Bangsa responsive space-balance polish — 2026-09-21 */
-.hero-layout{
-  display:block !important;
-  width:100%;
-}
+.hero-layout{width:100%;}
 #headline{width:100%;}
 .headline-card,.headline-image{width:100%;}
 .latest-panel{width:100%;}
@@ -1176,7 +1172,6 @@ main{max-width:1280px;padding-left:22px;padding-right:22px;}
 }
 </style>
 
-<style>
 /* VISI Bangsa adaptive newsroom layout — 2026-09-21 */
 /* Prinsip: fluid container, breakpoint mengikuti ruang nyata, bukan memaksa layout desktop ke layar lipat. */
 html,body{max-width:100%;overflow-x:hidden}
@@ -1266,6 +1261,58 @@ main,.topbar-inner,.brand-inner,.nav-inner,.breaking-bar,.footer-inner,.copyrigh
 }
 </style>
 
+
+<style id="visi-bangsa-final-responsive-cleanup">
+/* Final responsive authority: one predictable layout system for PC, tablet and Z Fold. */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+main{width:100%;max-width:1320px;margin-left:auto;margin-right:auto}
+.hero-layout{display:block!important;width:100%;min-width:0}
+.headline-card,.headline-image{width:100%}
+
+/* Desktop: headline + latest news form a balanced two-column newsroom. */
+@media (min-width:1024px){
+  main{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(300px,.9fr);gap:18px;align-items:start}
+  .hero-layout{grid-column:1;grid-row:1;display:block!important;margin-top:14px}
+  .latest-panel{grid-column:2;grid-row:1;width:100%;height:auto;max-height:440px;overflow:auto;margin-top:14px}
+  #berita,.join-card{grid-column:1/-1}
+  .headline-card,.headline-image{height:clamp(380px,34vw,440px);min-height:380px}
+}
+
+/* Z Fold unfolded / tablet landscape: keep two columns without wasting side space. */
+@media (min-width:768px) and (max-width:1023px){
+  main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.85fr);gap:14px;padding-left:14px;padding-right:14px}
+  .hero-layout{grid-column:1;grid-row:1;display:block!important;margin-top:12px}
+  .latest-panel{grid-column:2;grid-row:1;width:100%;height:auto;max-height:390px;overflow:auto;margin-top:12px}
+  #berita,.join-card{grid-column:1/-1}
+  .headline-card,.headline-image{height:clamp(340px,45vw,390px);min-height:340px}
+  .headline-content{padding:18px}
+  .headline-content h2{font-size:clamp(24px,3.2vw,28px)}
+}
+
+/* Z Fold closed / normal phones: single column and compact spacing. */
+@media (max-width:767px){
+  main{display:block;padding-left:10px;padding-right:10px;margin-top:10px}
+  .hero-layout{display:block!important;margin-top:10px}
+  .latest-panel{width:100%;height:auto;max-height:none;overflow:visible;margin-top:12px}
+  #berita,.join-card{width:100%}
+  .headline-card,.headline-image{height:clamp(270px,78vw,320px);min-height:270px}
+  .headline-content{padding:14px}
+  .headline-content h2{font-size:clamp(19px,5.8vw,23px);line-height:1.16}
+  .headline-content p{font-size:12px;line-height:1.4}
+  .latest-item{grid-template-columns:minmax(76px,25vw) minmax(0,1fr);gap:9px}
+  .latest-item img{width:100%;height:auto;aspect-ratio:1.45;object-fit:cover}
+}
+
+/* Very narrow cover displays: eliminate oversized header and vertical gaps. */
+@media (max-width:380px){
+  main{padding-left:8px;padding-right:8px}
+  .brand-inner{min-height:76px;padding-left:7px;padding-right:7px}
+  .brand-logo{width:150px;height:58px}
+  .headline-card,.headline-image{height:270px;min-height:270px}
+  .headline-content{padding:12px}
+  .headline-content h2{font-size:19px}
+}
+</style>
 </head>
 
 <body>
