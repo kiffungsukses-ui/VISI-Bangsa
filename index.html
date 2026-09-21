@@ -1514,6 +1514,78 @@ main>*{min-width:0}
 }
 
 </style>
+
+<style id="visi-bangsa-pc-zfold-final-layout">
+/* Final visual balancing: use the available viewport without stretching images. */
+main{
+  width:100%;
+  max-width:1440px;
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:24px;
+  padding-right:24px;
+}
+.breaking-bar{max-width:1440px;margin-left:auto;margin-right:auto}
+.topbar-inner,.brand-inner,.nav-inner,.footer-inner,.copyright{max-width:1440px}
+
+.hero-layout{
+  width:100%;
+  grid-template-columns:minmax(0,1.7fr) minmax(320px,.9fr);
+}
+.headline-card,.headline-image{width:100%}
+.headline-image{aspect-ratio:16/9;height:auto;min-height:0;object-fit:cover}
+.latest-panel{width:100%}
+.latest-item{min-width:0}
+.latest-item img{width:100%;aspect-ratio:1.5/1;height:auto;object-fit:cover}
+
+.category-tiles,
+.berita-grid{width:100%}
+.category-tile{width:100%;aspect-ratio:1.9/1;height:auto}
+.category-tile img{width:100%;height:100%;object-fit:cover}
+.berita{min-width:0}
+.gambar,.tanpa-gambar{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
+.tanpa-gambar{display:flex}
+.berita-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* Wide PC: consume more horizontal space and keep the photo grid balanced. */
+@media (min-width:1440px){
+  main{max-width:1560px;padding-left:28px;padding-right:28px}
+  .breaking-bar{max-width:1560px}
+  .topbar-inner,.brand-inner,.nav-inner,.footer-inner,.copyright{max-width:1560px}
+  .hero-layout{grid-template-columns:minmax(0,1.72fr) minmax(360px,.88fr);gap:22px}
+  .headline-image{aspect-ratio:16/9}
+  .berita-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+  .category-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+}
+
+/* Z Fold unfolded / tablet landscape: fill both columns evenly. */
+@media (min-width:768px) and (max-width:1023px){
+  main{max-width:none;padding-left:14px;padding-right:14px}
+  .breaking-bar{margin-left:14px;margin-right:14px}
+  .hero-layout{grid-template-columns:minmax(0,1.5fr) minmax(0,.95fr);gap:14px}
+  .headline-image{aspect-ratio:4/3}
+  .category-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .berita-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+}
+
+/* Phones / Fold cover: one column, consistent image proportions. */
+@media (max-width:767px){
+  main{max-width:none;padding-left:10px;padding-right:10px}
+  .breaking-bar{margin-left:10px;margin-right:10px}
+  .headline-image{aspect-ratio:16/10}
+  .category-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .berita-grid{grid-template-columns:1fr}
+  .gambar,.tanpa-gambar{aspect-ratio:16/10}
+}
+
+/* Never let an image or grid item create a phantom empty side area. */
+main>*,
+.hero-layout>*,
+.category-tiles>*,
+.berita-grid>*{min-width:0;max-width:100%}
+img{display:block;max-width:100%}
+</style>
+
 </head>
 
 <body>
