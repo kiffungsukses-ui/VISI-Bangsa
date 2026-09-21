@@ -4206,12 +4206,22 @@ main.container{padding-bottom:36px}
         currentUser = session.user;
         userEmail.textContent = currentUser.email || "";
 
-        const metadataRole = session.user.app_metadata?.role || session.user.user_metadata?.role || "";
+        const appRole = session.user.app_metadata?.role || "";
         const normalizedEmail = String(session.user.email || "").trim().toLowerCase();
         currentUserRole =
           normalizedEmail === "redaksivisibangsa@gmail.com"
             ? "redaksi"
-            : (metadataRole || "admin");
+            : normalizedEmail === "kiffungsukses@gmail.com"
+              ? "admin"
+              : (appRole === "admin" || appRole === "redaksi" ? appRole : "unknown");
+
+        // Jangan pernah menganggap akun tak dikenal sebagai Admin.
+        // Perlindungan data tetap ditegakkan oleh RLS di Supabase.
+        if (currentUserRole === "unknown") {
+          await supabaseClient.auth.signOut();
+          window.location.replace("login.html");
+          return;
+        }
 
         const dashboardTitle = document.getElementById("dashboardTitle");
         const dashboardRoleLabel = document.getElementById("dashboardRoleLabel");
