@@ -1424,6 +1424,7 @@ main.container{padding-bottom:36px}
             <div id="adPreviewBody" class="ad-preview-body"></div>
             <div class="ad-preview-actions">
               <button id="adPreviewActivate" type="button" class="approve-btn">Terbitkan</button>
+              <button id="adPreviewPending" type="button" class="draft-button">Pending</button>
               <button id="adPreviewCloseBottom" type="button" class="secondary">Kembali</button>
             </div>
           </div>
@@ -1816,6 +1817,7 @@ main.container{padding-bottom:36px}
         '<div class="ad-preview-meta"><strong>'+escapeHtml(a.judul)+'</strong><br>Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"sekarang")+' s/d '+escapeHtml(a.selesai||"tanpa batas")+'<br>Catatan: '+escapeHtml(a.catatan||"-")+'</div>';
       adPreviewActivate.textContent="Terbitkan";
       adPreviewActivate.style.display=a.status==="pending"?"inline-block":"none";
+      adPreviewPending.style.display=a.status==="pending"?"inline-block":"none";
       adPreviewModal.classList.add("open");
       adPreviewModal.setAttribute("aria-hidden","false");
     }
@@ -1849,6 +1851,11 @@ main.container{padding-bottom:36px}
       const r=await supabaseClient.from("site_settings").update({ads_enabled:adsEnabled.checked,updated_at:new Date().toISOString()}).eq("id",1);
       if(r.error){showAdsMessage("Gagal mengubah tampilan iklan: "+r.error.message,"error");await loadAdsAdmin();return;}
       showAdsMessage(adsEnabled.checked?"Iklan publik diaktifkan.":"Iklan publik dinonaktifkan. Slot bawah logo sekarang tersembunyi.","success");
+    }
+    async function setAdPending(){
+      if(!currentAdPreviewId)return;
+      await updateAdStatus(currentAdPreviewId,"pending");
+      closeAdPreview();
     }
     async function updateAdStatus(id,status){
       const r=await supabaseClient.from("iklan").update({status,updated_at:new Date().toISOString()}).eq("id",id);
