@@ -207,6 +207,7 @@
       font-weight: 700;
     }
 
+    .news-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
     .edit-btn {
       border: 0;
       background: #eee;
@@ -3127,6 +3128,10 @@ main.container{padding-bottom:36px}
               </div>
 
               <div class="news-actions">
+
+                <span class="news-view-count" title="Jumlah pembaca">
+                  👁 ${Number(item.views || 0).toLocaleString("id-ID")} pembaca
+                </span>
 
                 <button
                   type="button"
