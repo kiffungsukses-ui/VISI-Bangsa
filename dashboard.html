@@ -4083,6 +4083,7 @@ main.container{padding-bottom:36px}
             profile: siteProfileInput.value.trim(),
             email: siteEmailInput.value.trim(),
             phone: sitePhoneInput.value.trim(),
+            editorial_note: siteEditorialNoteInput ? siteEditorialNoteInput.value.trim() : "",
             updated_at: new Date().toISOString()
           };
           if (logoUrl && !logoUrl.startsWith("blob:")) payload.logo_url = logoUrl;
