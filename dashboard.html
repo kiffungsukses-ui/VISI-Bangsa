@@ -1486,9 +1486,20 @@ main.container{padding-bottom:36px}
       <details id="publishedAdsFolder" class="panel admin-folder">
         <summary><div class="folder-summary-icon ads-icon" aria-hidden="true">✓</div><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Daftar Iklan Terbit</h2><span id="publishedAdNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Daftar setiap iklan yang sedang aktif dan tampil di website publik.</div></div></div></summary>
         <div class="admin-folder-body">
-          <div class="panel-header"><div><div class="panel-title">Iklan Aktif di Publik</div><div class="panel-subtitle">Iklan di daftar ini adalah iklan dengan status aktif.</div></div><button id="refreshPublishedAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
+          <div class="panel-header"><div><div class="panel-title">Kelola Iklan Terbit</div><div class="panel-subtitle">Pisahkan iklan aktif dan nonaktif, lalu cari iklan berdasarkan judul atau pengiklan.</div></div><button id="refreshPublishedAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
+          <div class="toolbar">
+            <input id="publishedAdsSearchInput" class="search-input" type="search" placeholder="Cari judul, pengiklan, atau perusahaan...">
+            <button id="clearPublishedAdsSearchButton" type="button" class="secondary">Reset</button>
+          </div>
           <div id="publishedAdsMessage" class="message"></div>
-          <div id="publishedAdsList" class="submission-list"><div class="loading">Memuat iklan terbit...</div></div>
+          <div class="published-ads-category">
+            <div class="panel-header"><div><div class="panel-title">Iklan Aktif</div><div class="panel-subtitle">Seluruh iklan yang sedang aktif dan tampil di website publik.</div></div><span id="publishedActiveCount" class="notification-badge">0</span></div>
+            <div id="publishedActiveAdsList" class="submission-list"><div class="loading">Memuat iklan aktif...</div></div>
+          </div>
+          <div class="published-ads-category">
+            <div class="panel-header"><div><div class="panel-title">Iklan Nonaktif</div><div class="panel-subtitle">Seluruh iklan yang sementara tidak ditampilkan di website publik.</div></div><span id="publishedInactiveCount" class="notification-badge">0</span></div>
+            <div id="publishedInactiveAdsList" class="submission-list"><div class="loading">Memuat iklan nonaktif...</div></div>
+          </div>
         </div>
       </details>
 
@@ -1877,31 +1888,39 @@ main.container{padding-bottom:36px}
     }
     function renderPublishedAds(){
       if(!publishedAdsList) return;
+      const query=String(publishedAdsSearchInput?.value||"").trim().toLowerCase();
       const allPublished=(adsData||[]).filter(a=>{
         const s=String(a.status||"").toLowerCase();
         return s==="aktif" || s==="nonaktif";
+      }).filter(a=>{
+        if(!query)return true;
+        return [a.judul,a.nama_pengiklan,a.perusahaan,a.email].some(v=>String(v||"").toLowerCase().includes(query));
       });
       const activeAds=allPublished.filter(a=>String(a.status||"").toLowerCase()==="aktif");
+      const inactiveAds=allPublished.filter(a=>String(a.status||"").toLowerCase()==="nonaktif");
       if(publishedAdNotificationBadge){
         publishedAdNotificationBadge.textContent=String(activeAds.length);
         publishedAdNotificationBadge.classList.remove("hidden","checked");
         if(!activeAds.length) publishedAdNotificationBadge.classList.add("checked");
       }
-      if(!allPublished.length){
-        publishedAdsList.innerHTML='<div class="empty">Belum ada iklan yang pernah diterbitkan.</div>';
-        return;
-      }
-      publishedAdsList.innerHTML=allPublished.map(a=>{
-        const isActive=String(a.status||"").toLowerCase()==="aktif";
-        const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi||"-";
-        const image=a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Iklan '+escapeHtml(a.judul||"")+'">':"";
-        const state=isActive?"AKTIF / TERBIT":"NONAKTIF / SEMENTARA";
-        const toggle=isActive
-          ? '<button type="button" class="reject-btn" data-published-ad-action="disable" data-ad-id="'+escapeHtml(a.id)+'">Nonaktifkan</button>'
-          : '<button type="button" class="approve-btn" data-published-ad-action="activate" data-ad-id="'+escapeHtml(a.id)+'">Aktifkan Kembali</button>';
-        const actions='<div class="submission-actions"><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button>'+toggle+'<button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
-        return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+state+'</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+actions+'</article>';
-      }).join("");
+      if(publishedActiveCount) publishedActiveCount.textContent=String(activeAds.length);
+      if(publishedInactiveCount) publishedInactiveCount.textContent=String(inactiveAds.length);
+      const renderList=(list,items,empty)=>{
+        if(!list)return;
+        if(!items.length){list.innerHTML='<div class="empty">'+empty+'</div>';return;}
+        list.innerHTML=items.map(a=>{
+          const isActive=String(a.status||"").toLowerCase()==="aktif";
+          const pos={bawah_logo:"Bawah logo",di_antara_berita:"Di antara berita",dalam_artikel:"Dalam artikel"}[a.posisi]||a.posisi||"-";
+          const image=a.gambar?'<img class="submission-photo" src="'+escapeHtml(a.gambar)+'" alt="Iklan '+escapeHtml(a.judul||"")+'">':"";
+          const toggle=isActive
+            ? '<button type="button" class="reject-btn" data-published-ad-action="disable" data-ad-id="'+escapeHtml(a.id)+'">Nonaktifkan</button>'
+            : '<button type="button" class="approve-btn" data-published-ad-action="activate" data-ad-id="'+escapeHtml(a.id)+'">Aktifkan Kembali</button>';
+          const actions='<div class="submission-actions"><button type="button" class="secondary" data-published-ad-action="edit" data-ad-id="'+escapeHtml(a.id)+'">Edit</button>'+toggle+'<button type="button" class="danger" data-published-ad-action="delete" data-ad-id="'+escapeHtml(a.id)+'">Hapus</button></div>';
+          return '<article class="submission-item"><div class="submission-head"><div><div class="submission-type">'+(isActive?"AKTIF / TERBIT":"NONAKTIF / SEMENTARA")+'</div><div class="submission-title">'+escapeHtml(a.judul||"Tanpa judul")+'</div><div class="submission-meta">Pengiklan: '+escapeHtml(a.nama_pengiklan||"-")+'<br>Perusahaan: '+escapeHtml(a.perusahaan||"-")+'<br>Posisi: '+escapeHtml(pos)+'<br>Periode: '+escapeHtml(a.mulai||"-")+' s/d '+escapeHtml(a.selesai||"-")+'</div></div></div>'+image+actions+'</article>';
+        }).join("");
+      };
+      renderList(publishedActiveAdsList,activeAds,"Belum ada iklan aktif.");
+      renderList(publishedInactiveAdsList,inactiveAds,"Belum ada iklan nonaktif.");
     }
 
     function renderAds(){
@@ -3746,7 +3765,7 @@ main.container{padding-bottom:36px}
       refreshPublishedAdsButton.addEventListener("click", loadAdsAdmin);
     }
     if (publishedAdsList) {
-      publishedAdsList.addEventListener("click", async (event) => {
+      const publishedAdsActionHandler = async (event) => {
         const button = event.target.closest("[data-published-ad-action]");
         if (!button) return;
         const id = button.dataset.adId;
@@ -3755,8 +3774,17 @@ main.container{padding-bottom:36px}
         else if (action === "disable") await updateAdStatus(id, "nonaktif");
         else if (action === "activate") await updateAdStatus(id, "aktif");
         else if (action === "delete") await deleteAd(id);
-      });
+      };
+      publishedAdsList.addEventListener("click", publishedAdsActionHandler);
+      publishedActiveAdsList?.addEventListener("click", publishedAdsActionHandler);
+      publishedInactiveAdsList?.addEventListener("click", publishedAdsActionHandler);
     }
+    if (publishedAdsSearchInput) publishedAdsSearchInput.addEventListener("input", renderPublishedAds);
+    if (clearPublishedAdsSearchButton) clearPublishedAdsSearchButton.addEventListener("click", () => {
+      publishedAdsSearchInput.value = "";
+      renderPublishedAds();
+      publishedAdsSearchInput.focus();
+    });}
     if (adsEnabled) {
       adsEnabled.addEventListener("change", setAdsEnabled);
     }
