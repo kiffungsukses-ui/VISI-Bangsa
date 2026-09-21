@@ -3591,6 +3591,12 @@ main.container{padding-bottom:36px}
       closeAdPreview();
     });
 
+    adPreviewPending.addEventListener("click", async () => {
+      if (!currentAdPreviewId) return;
+      await updateAdStatus(currentAdPreviewId, "pending");
+      closeAdPreview();
+    });
+
     async function loadSiteSettingsAdmin() {
       if (!settingsForm) return;
       try {
