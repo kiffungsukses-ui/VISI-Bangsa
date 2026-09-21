@@ -17,6 +17,29 @@ main{max-width:1200px;margin:28px auto;padding:0 20px}.about-card{background:#ff
 footer{margin-top:35px;background:#17212b;color:#fff}.footer-inner{max-width:1200px;margin:auto;padding:28px 20px}.footer-inner h3{margin:0 0 8px}.footer-inner p{margin:0;color:#cbd2d9;line-height:1.6;text-align:justify}.copyright{text-align:center;border-top:1px solid rgba(255,255,255,.12);padding:14px 20px;color:#aeb7c1;font-size:12px}
 @media(max-width:600px){.topbar-inner{padding:6px 12px}.topbar-links span:nth-child(-n+4){display:none}.brand-inner{padding:8px 10px;gap:7px}.menu-toggle{width:40px;height:40px;flex-basis:40px;border-radius:9px}.menu-toggle span{width:20px}.brand-logo{width:auto;max-width:245px;height:58px;object-fit:contain}.vb-menu-drawer{width:min(340px,88vw)}.vb-menu-head{min-height:80px}.vb-menu-brand img{width:52px;height:52px}.vb-menu-brand strong{font-size:16px}main{margin:18px auto;padding:0 12px}.about-card{padding:20px;border-radius:10px}.intro-card{padding:18px;margin-bottom:14px}.about-card h1{font-size:27px}.lead{font-size:14px}.about-grid{grid-template-columns:1fr;gap:14px}.about-section,.identity,.contact-middle{padding:18px}.about-section h2,.contact-middle h2{font-size:18px}.contact-list{grid-template-columns:1fr;gap:10px}}
 </style>
+
+<!-- VISI Bangsa responsive hardening -->
+<style id="visi-responsive-page">
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+img,svg,video,canvas{max-width:100%;height:auto}
+input,select,textarea,button{max-width:100%;font:inherit}
+.container,.wrapper,.page,.content,.main,.shell{width:100%;max-width:1200px;margin-left:auto;margin-right:auto}
+@media(max-width:900px){
+  body{min-width:0!important}
+  .container,.wrapper,.page,.content,.main,.shell{width:100%!important;max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
+  table{display:block;max-width:100%;overflow-x:auto}
+  .grid,.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:600px){
+  .grid,.cards{grid-template-columns:1fr!important}
+  .container,.wrapper,.page,.content,.main,.shell{padding-left:10px!important;padding-right:10px!important}
+  h1{font-size:clamp(22px,6vw,34px)}
+  h2{font-size:clamp(19px,5vw,28px)}
+  .card{min-width:0!important}
+  .actions{flex-wrap:wrap!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="topbar-inner"><div>MEDIA ELEKTRONIK INDONESIA</div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a></div></div></div>
