@@ -446,19 +446,19 @@
           const user = userData && userData.user;
           const appRole =
             user && user.app_metadata && user.app_metadata.role;
-          const userRole =
-            user && user.user_metadata && user.user_metadata.role;
-
           const normalizedLoginEmail = String(email || "").trim().toLowerCase();
           const normalizedUserEmail = String((user && user.email) || "").trim().toLowerCase();
 
-          // Dua akun pengelola VISI Bangsa yang ditetapkan.
+          // Role UI hanya menerima sumber yang tidak dapat diedit pengguna.
+          // Otorisasi sebenarnya tetap ditegakkan oleh RLS Supabase.
           const actualRole =
-            normalizedLoginEmail === "kiffungsukses@gmail.com" && normalizedUserEmail === "kiffungsukses@gmail.com"
+            normalizedLoginEmail === "kiffungsukses@gmail.com" &&
+            normalizedUserEmail === "kiffungsukses@gmail.com"
               ? "admin"
-              : normalizedLoginEmail === "redaksivisibangsa@gmail.com" && normalizedUserEmail === "redaksivisibangsa@gmail.com"
+              : normalizedLoginEmail === "redaksivisibangsa@gmail.com" &&
+                normalizedUserEmail === "redaksivisibangsa@gmail.com"
                 ? "redaksi"
-                : (appRole || userRole || "unknown");
+                : (appRole || "unknown");
 
           if (selectedLoginRole !== actualRole) {
             await supabaseClient.auth.signOut();
