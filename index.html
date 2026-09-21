@@ -1769,6 +1769,26 @@ searchInput.addEventListener(
 Promise.all([loadSiteSettings(),loadBerita(),loadAds()]);
 
 const adRotators = {};
+const adImpressionLastSent = new Map();
+
+async function recordAdImpression(ad, slotId){
+  if(!ad?.id) return;
+  const posisi = ad.posisi || (slotId === "topAdSlot" ? "bawah_logo" : "di_antara_berita");
+  const key = ad.id + "|" + posisi;
+  const now = Date.now();
+  const last = adImpressionLastSent.get(key) || 0;
+  if(now - last < 5000) return;
+  adImpressionLastSent.set(key, now);
+  try {
+    await supabaseClient.rpc("track_ad_impression", {
+      p_iklan_id: ad.id,
+      p_posisi: posisi,
+      p_visitor_id: getVisitorId()
+    });
+  } catch(error) {
+    console.warn("Tayangan iklan tidak tercatat:", error);
+  }
+}
 
 function renderAdSlot(slotId, ads, index){
   const slot=document.getElementById(slotId);
@@ -1781,6 +1801,7 @@ function renderAdSlot(slotId, ads, index){
   if(a.link_url)content+='</a>';
   content+='</div>';
   slot.innerHTML=content;slot.classList.add("active");
+  recordAdImpression(a, slotId);
 }
 
 function startAdRotator(slotId, ads){
