@@ -1985,6 +1985,11 @@ main.container{padding-bottom:36px}
       const newsButton = event.target.closest("[data-pending-news-id]");
       if (newsButton) {
         const id = newsButton.dataset.pendingNewsId;
+        // Menandai bahwa editor dibuka khusus dari folder Pending.
+        // Setelah Simpan Perubahan, editor wajib menampilkan 3 aksi:
+        // Terbitkan / Tolak / Simpan.
+        reviewingPendingDraft = true;
+        pendingPublishId = id;
         if (typeof editNews === "function") editNews(id);
         return;
       }
