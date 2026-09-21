@@ -11,6 +11,18 @@
   <style>
     * { box-sizing: border-box; }
 
+    .news-category-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:4px 0 14px}
+    .news-category-tab{min-height:62px;border:1px solid #dfe5ec;border-radius:12px;background:#f8fafc;color:#334155;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;font-weight:900;cursor:pointer;transition:.18s ease;text-align:left}
+    .news-category-tab span{font-size:14px;letter-spacing:.2px}
+    .news-category-tab b{min-width:30px;height:30px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:12px}
+    .news-category-tab:hover{border-color:#b8c4d1;background:#f1f5f9}
+    .news-category-tab.active{background:#eaf3ff;border-color:#0b5ca8;color:#0b5ca8;box-shadow:0 5px 16px rgba(11,92,168,.10)}
+    .news-category-tab.active b{background:#0b5ca8;color:#fff}
+    .news-category-panel{margin-top:4px;padding:14px;border:1px solid #e2e8f0;border-radius:12px;background:#fafcff}
+    @media(max-width:900px){.news-category-tabs{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.news-category-tabs{gap:8px}.news-category-tab{min-height:56px;padding:11px 10px}.news-category-tab span{font-size:11px}.news-category-tab b{min-width:26px;height:26px}.news-category-panel{padding:10px}}
+
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -1584,8 +1596,15 @@ main.container{padding-bottom:36px}
 
         </div>
 
-        <div id="newsList" class="news-list">
-          <div class="loading">Memuat berita...</div>
+        <div id="newsCategoryTabs" class="news-category-tabs" aria-label="Kategori berita"></div>
+        <div id="newsCategoryPanel" class="news-category-panel hidden">
+          <div class="toolbar">
+            <input id="newsCategorySearch" class="search-input" type="search" placeholder="Cari berita dalam kategori...">
+            <button id="clearNewsCategorySearch" type="button" class="secondary">Reset</button>
+          </div>
+          <div id="newsList" class="news-list">
+            <div class="loading">Memuat berita...</div>
+          </div>
         </div>
         </div>
       </details>
@@ -1805,6 +1824,11 @@ main.container{padding-bottom:36px}
     const message = document.getElementById("message");
 
     const newsList = document.getElementById("newsList");
+    const newsCategoryTabs = document.getElementById("newsCategoryTabs");
+    const newsCategoryPanel = document.getElementById("newsCategoryPanel");
+    const newsCategorySearch = document.getElementById("newsCategorySearch");
+    const clearNewsCategorySearch = document.getElementById("clearNewsCategorySearch");
+    let selectedNewsCategory = null;
     const searchInput = document.getElementById("searchInput");
     const filterCategory = document.getElementById("filterCategory");
     const clearFilterButton = document.getElementById("clearFilterButton");
@@ -2931,6 +2955,7 @@ main.container{padding-bottom:36px}
 
       beritaData = result.data || [];
       renderPendingFolder();
+      renderNewsCategoryTabs();
 
       updateStatistics();
       renderNews();
@@ -2971,9 +2996,35 @@ main.container{padding-bottom:36px}
       statCategories.textContent = categories.size;
     }
 
+    function renderNewsCategoryTabs() {
+      if (!newsCategoryTabs) return;
+      const counts = {};
+      beritaData.forEach(item => {
+        const category = String(item.kategori || "Tanpa Kategori").trim() || "Tanpa Kategori";
+        counts[category] = (counts[category] || 0) + 1;
+      });
+      const categories = Object.keys(counts).sort((a,b) => a.localeCompare(b, "id"));
+      newsCategoryTabs.innerHTML = categories.map(category => {
+        const active = selectedNewsCategory === category;
+        return '<button type="button" class="news-category-tab' + (active ? ' active' : '') +
+          '" data-news-category="' + escapeHtml(category) + '" aria-selected="' + active + '">' +
+          '<span>' + escapeHtml(category) + '</span><b>' + counts[category] + '</b></button>';
+      }).join("");
+      newsCategoryTabs.querySelectorAll("[data-news-category]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedNewsCategory = button.getAttribute("data-news-category");
+          if (newsCategoryPanel) newsCategoryPanel.classList.remove("hidden");
+          if (filterCategory) filterCategory.value = selectedNewsCategory === "Tanpa Kategori" ? "" : selectedNewsCategory;
+          if (newsCategorySearch) newsCategorySearch.value = "";
+          renderNewsCategoryTabs();
+          renderNews();
+        });
+      });
+    }
+
     function renderNews() {
       const search =
-        searchInput.value
+        (newsCategorySearch?.value || searchInput.value)
           .trim()
           .toLowerCase();
 
@@ -2998,12 +3049,17 @@ main.container{padding-bottom:36px}
             !search ||
             haystack.includes(search);
 
+          const normalizedCategory = String(item.kategori || "Tanpa Kategori").trim() || "Tanpa Kategori";
+          const matchesSelectedCategory =
+            !selectedNewsCategory ||
+            normalizedCategory === selectedNewsCategory;
           const matchesCategory =
             !category ||
             item.kategori === category;
 
           return (
             matchesSearch &&
+            matchesSelectedCategory &&
             matchesCategory
           );
         });
@@ -3639,6 +3695,12 @@ main.container{padding-bottom:36px}
         renderNews();
       }
     );
+
+    if (newsCategorySearch) newsCategorySearch.addEventListener("input", renderNews);
+    if (clearNewsCategorySearch) clearNewsCategorySearch.addEventListener("click", () => {
+      if (newsCategorySearch) newsCategorySearch.value = "";
+      renderNews();
+    });
 
     refreshButton.addEventListener(
       "click",
