@@ -1466,6 +1466,7 @@ main.container{padding-bottom:36px}
             <div class="review-actions">
               <button id="reviewSaveButton" type="button" class="review-save">Simpan Perubahan</button>
               <button id="reviewPublishButton" type="button" class="review-publish">Terbitkan</button>
+              <button id="reviewPendingButton" type="button" class="draft-button">Pending</button>
               <button id="reviewRejectButton" type="button" class="review-reject">Tolak</button>
               <button id="reviewCancelButton" type="button" class="review-cancel">Kembali</button>
             </div>
@@ -1757,6 +1758,7 @@ main.container{padding-bottom:36px}
     const reviewSaveButton = document.getElementById("reviewSaveButton");
     const reviewPublishButton = document.getElementById("reviewPublishButton");
     const reviewRejectButton = document.getElementById("reviewRejectButton");
+    const reviewPendingButton = document.getElementById("reviewPendingButton");
 
 
     let beritaData = [];
@@ -2369,6 +2371,59 @@ main.container{padding-bottom:36px}
       const id = currentReviewId;
       closeReviewModal();
       await publishSubmission(id);
+    }
+
+    async function reviewPending() {
+      if (!currentReviewId) return;
+
+      const saved = await saveReviewChanges(false);
+      if (!saved) return;
+
+      const item = kirimanData.find(
+        submission => String(submission.id) === String(currentReviewId)
+      );
+      if (!item) return;
+
+      reviewPendingButton.disabled = true;
+      reviewPendingButton.textContent = "Menyimpan...";
+
+      try {
+        const insertResult = await supabaseClient
+          .from("berita")
+          .insert({
+            judul: item.judul,
+            kategori: item.kategori || "Daerah",
+            penulis: item.nama || "Kontributor",
+            isi: item.isi,
+            tanggal: item.created_at || new Date().toISOString(),
+            gambar: item.gambar || null,
+            status: "pending"
+          })
+          .select("id")
+          .single();
+
+        if (insertResult.error) throw insertResult.error;
+
+        const statusResult = await supabaseClient
+          .from("kiriman")
+          .update({ status: "diterima" })
+          .eq("id", currentReviewId);
+
+        if (statusResult.error) throw statusResult.error;
+
+        closeReviewModal();
+        await loadSubmissions();
+        await loadNews();
+        showMessage("✓ Kiriman disimpan ke Berita/Opini Pending untuk diperiksa dan diterbitkan nanti.", "success");
+      } catch (error) {
+        showSubmissionMessage(
+          "Gagal menyimpan kiriman sebagai pending: " + (error.message || error),
+          "error"
+        );
+      } finally {
+        reviewPendingButton.disabled = false;
+        reviewPendingButton.textContent = "Pending";
+      }
     }
 
     async function reviewReject() {
@@ -3292,6 +3347,7 @@ main.container{padding-bottom:36px}
     reviewSaveButton.addEventListener("click", reviewSave);
     reviewPublishButton.addEventListener("click", reviewPublish);
     reviewRejectButton.addEventListener("click", reviewReject);
+    reviewPendingButton.addEventListener("click", reviewPending);
 
     reviewModal.addEventListener("click", event => {
       if (event.target === reviewModal) {
