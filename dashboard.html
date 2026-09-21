@@ -3779,7 +3779,7 @@ main.container{padding-bottom:36px}
         else if (action === "activate") await updateAdStatus(id, "aktif");
         else if (action === "delete") await deleteAd(id);
       };
-      publishedAdsList.addEventListener("click", publishedAdsActionHandler);
+      if (publishedAdsList) publishedAdsList.addEventListener("click", publishedAdsActionHandler);
       publishedActiveAdsList?.addEventListener("click", publishedAdsActionHandler);
       publishedInactiveAdsList?.addEventListener("click", publishedAdsActionHandler);
     }
