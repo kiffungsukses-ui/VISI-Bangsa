@@ -1177,7 +1177,8 @@ main.container{padding-bottom:36px}
             <div id="publishActionsText" class="publish-actions-text">Berita sudah disimpan sebagai draft. Periksa kembali sebelum diterbitkan.</div>
             <div class="publish-actions-buttons">
               <button id="publishButton" type="button" class="publish-button">Terbitkan</button>
-              <button id="keepDraftButton" type="button" class="draft-button">Pending</button>
+              <button id="rejectPendingButton" type="button" class="review-reject">Tolak</button>
+              <button id="keepDraftButton" type="button" class="draft-button">Simpan</button>
             </div>
           </div>
 
@@ -1604,6 +1605,7 @@ main.container{padding-bottom:36px}
     const publishActionsText = document.getElementById("publishActionsText");
     const publishButton = document.getElementById("publishButton");
     const keepDraftButton = document.getElementById("keepDraftButton");
+    const rejectPendingButton = document.getElementById("rejectPendingButton");
     let pendingPublishId = null;
     let reviewingPendingDraft = false;
     let pendingPublishMode = "pending";
@@ -1618,8 +1620,66 @@ main.container{padding-bottom:36px}
       if (!publishActions || !id) return;
       pendingPublishId = id;
       publishActionsText.textContent =
-        "✓ Berita tersimpan. Pilih Terbitkan untuk tampil di publik atau Pending untuk menyimpannya di folder Pending.";
+        "✓ Berita tersimpan. Pilih Terbitkan untuk tampil di publik, Tolak untuk menghapus, atau Simpan untuk tetap di folder Pending.";
       publishActions.classList.remove("hidden");
+    }
+
+    async function rejectPendingNews() {
+      if (!pendingPublishId) {
+        showMessage("Tidak ada berita pending yang siap ditolak.", "error");
+        return;
+      }
+
+      rejectPendingButton.disabled = true;
+      rejectPendingButton.textContent = "Menghapus...";
+
+      try {
+        const id = pendingPublishId;
+        const row = await supabaseClient
+          .from("berita")
+          .select("id,gambar,status")
+          .eq("id", id)
+          .in("status", ["draft", "pending"])
+          .maybeSingle();
+
+        if (row.error || !row.data) {
+          throw row.error || new Error("Berita pending tidak ditemukan.");
+        }
+
+        const result = await supabaseClient
+          .from("berita")
+          .delete()
+          .eq("id", id)
+          .in("status", ["draft", "pending"]);
+
+        if (result.error) throw result.error;
+
+        const verify = await supabaseClient
+          .from("berita")
+          .select("id")
+          .eq("id", id)
+          .maybeSingle();
+
+        if (verify.error) throw verify.error;
+        if (verify.data) throw new Error("Berita belum berhasil dihapus.");
+
+        if (row.data.gambar) {
+          try { await deleteStorageImage(row.data.gambar); } catch (imageError) {
+            console.warn("Gambar pending tidak dapat dihapus dari storage:", imageError);
+          }
+        }
+
+        hidePublishActions();
+        resetForm();
+        await loadNews();
+        showMessage("✓ Berita ditolak dan dihapus dari folder Pending.", "success");
+      } catch (error) {
+        console.error("Gagal menolak berita pending:", error);
+        showMessage("Gagal menolak berita: " + (error.message || error), "error");
+      } finally {
+        rejectPendingButton.disabled = false;
+        rejectPendingButton.textContent = "Tolak";
+      }
     }
 
     async function publishPendingNews() {
@@ -3429,6 +3489,7 @@ main.container{padding-bottom:36px}
     );
 
     publishButton.addEventListener("click", publishPendingNews);
+    if (rejectPendingButton) rejectPendingButton.addEventListener("click", rejectPendingNews);
 
     keepDraftButton.addEventListener("click", async () => {
       if (!pendingPublishId) {
@@ -3451,7 +3512,7 @@ main.container{padding-bottom:36px}
         showMessage("Gagal menyimpan sebagai pending: " + (error.message || error), "error");
       } finally {
         keepDraftButton.disabled = false;
-        keepDraftButton.textContent = "Pending";
+        keepDraftButton.textContent = "Simpan";
       }
     });
 
