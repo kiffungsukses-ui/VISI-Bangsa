@@ -4127,14 +4127,33 @@ main.container{padding-bottom:36px}
       });
     }
 
-    // Tagline/settings controls are optional so older deployments remain compatible.
+    // Pengaturan tagline dapat diedit lalu disimpan langsung dari tombol khusus.
     if (editTaglineButton && saveTaglineButton && siteTaglineInput) {
       editTaglineButton.addEventListener("click", () => {
         siteTaglineInput.disabled = false;
         siteTaglineInput.focus();
         saveTaglineButton.disabled = false;
       });
+      saveTaglineButton.addEventListener("click", async () => {
+        if (currentUserRole !== "admin") return;
+        saveTaglineButton.disabled = true;
+        try {
+          const tagline = siteTaglineInput.value.trim() || "TERDEPAN DALAM MENCERAHKAN";
+          const { error } = await supabaseClient.from("site_settings").update({tagline, updated_at:new Date().toISOString()}).eq("id",1);
+          if (error) throw error;
+          settingsMessage.textContent = "Tulisan running berhasil disimpan dan akan tampil di website publik.";
+          settingsMessage.className = "message success";
+          siteTaglineInput.value = tagline;
+        } catch (error) {
+          settingsMessage.textContent = "Gagal menyimpan tulisan running: " + (error.message || error);
+          settingsMessage.className = "message error";
+        } finally {
+          saveTaglineButton.disabled = false;
+        }
+      });
     }
+    if (refreshSettingsButton) refreshSettingsButton.addEventListener("click", loadSiteSettingsAdmin);
+
 
     // The auth gate is deliberately the last step: a valid Supabase session
     // immediately reveals the dashboard instead of leaving "Memeriksa sesi login".
