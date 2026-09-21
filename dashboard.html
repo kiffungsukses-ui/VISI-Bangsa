@@ -1062,6 +1062,19 @@ main.container{padding-bottom:36px}
 @media(max-width:600px){.pending-folder-body{padding:12px}.pending-category-grid{grid-template-columns:1fr}.pending-category:last-child{grid-column:auto}.pending-category{padding:13px}}
 </style>
 
+<style id="published-ads-tabs-style">
+.published-ads-tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 14px}
+.published-ads-tab{min-height:62px;border:1px solid #dfe5ec;border-radius:12px;background:#f8fafc;color:#334155;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;font-weight:900;cursor:pointer;transition:.18s ease;text-align:left}
+.published-ads-tab span{font-size:14px;letter-spacing:.2px}
+.published-ads-tab b{min-width:30px;height:30px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:12px}
+.published-ads-tab:hover{border-color:#b8c4d1;background:#f1f5f9}
+.published-ads-tab.active{background:#eaf3ff;border-color:#0b5ca8;color:#0b5ca8;box-shadow:0 5px 16px rgba(11,92,168,.10)}
+.published-ads-tab.active b{background:#0b5ca8;color:#fff}
+.published-ads-panel{margin-top:4px;padding:14px;border:1px solid #e2e8f0;border-radius:12px;background:#fafcff}
+.published-ads-category-view{margin-top:12px}
+@media(max-width:600px){.published-ads-tabs{gap:8px}.published-ads-tab{min-height:56px;padding:11px 10px}.published-ads-tab span{font-size:11px}.published-ads-tab b{min-width:26px;height:26px}.published-ads-panel{padding:10px}}
+</style>
+
 </head>
 
 <body>
@@ -1487,18 +1500,24 @@ main.container{padding-bottom:36px}
         <summary><div class="folder-summary-icon ads-icon" aria-hidden="true">✓</div><div class="panel-header"><div><div class="folder-title-row"><h2 class="panel-title">Daftar Iklan Terbit</h2><span id="publishedAdNotificationBadge" class="notification-badge hidden">0</span></div><div class="panel-subtitle">Daftar setiap iklan yang sedang aktif dan tampil di website publik.</div></div></div></summary>
         <div class="admin-folder-body">
           <div class="panel-header"><div><div class="panel-title">Kelola Iklan Terbit</div><div class="panel-subtitle">Pisahkan iklan aktif dan nonaktif, lalu cari iklan berdasarkan judul atau pengiklan.</div></div><button id="refreshPublishedAdsButton" type="button" class="secondary">↻ Muat Ulang</button></div>
-          <div class="toolbar">
-            <input id="publishedAdsSearchInput" class="search-input" type="search" placeholder="Cari judul, pengiklan, atau perusahaan...">
-            <button id="clearPublishedAdsSearchButton" type="button" class="secondary">Reset</button>
-          </div>
           <div id="publishedAdsMessage" class="message"></div>
-          <div class="published-ads-category">
-            <div class="panel-header"><div><div class="panel-title">Iklan Aktif</div><div class="panel-subtitle">Seluruh iklan yang sedang aktif dan tampil di website publik.</div></div><span id="publishedActiveCount" class="notification-badge">0</span></div>
-            <div id="publishedActiveAdsList" class="submission-list"><div class="loading">Memuat iklan aktif...</div></div>
+          <div class="published-ads-tabs" role="tablist" aria-label="Kategori iklan terbit">
+            <button id="publishedActiveTab" type="button" class="published-ads-tab" role="tab" aria-selected="false">
+              <span>IKLAN AKTIF</span><b id="publishedActiveCount">0</b>
+            </button>
+            <button id="publishedInactiveTab" type="button" class="published-ads-tab" role="tab" aria-selected="false">
+              <span>IKLAN NON AKTIF</span><b id="publishedInactiveCount">0</b>
+            </button>
           </div>
-          <div class="published-ads-category">
-            <div class="panel-header"><div><div class="panel-title">Iklan Nonaktif</div><div class="panel-subtitle">Seluruh iklan yang sementara tidak ditampilkan di website publik.</div></div><span id="publishedInactiveCount" class="notification-badge">0</span></div>
-            <div id="publishedInactiveAdsList" class="submission-list"><div class="loading">Memuat iklan nonaktif...</div></div>
+          <div id="publishedAdsPanel" class="published-ads-panel hidden">
+            <div class="toolbar">
+              <input id="publishedAdsSearchInput" class="search-input" type="search" placeholder="Cari judul, pengiklan, perusahaan, atau email...">
+              <button id="clearPublishedAdsSearchButton" type="button" class="secondary">Reset</button>
+            </div>
+            <div class="published-ads-category-view">
+              <div id="publishedActiveAdsList" class="submission-list hidden"><div class="loading">Memuat iklan aktif...</div></div>
+              <div id="publishedInactiveAdsList" class="submission-list hidden"><div class="loading">Memuat iklan nonaktif...</div></div>
+            </div>
           </div>
         </div>
       </details>
