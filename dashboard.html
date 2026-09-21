@@ -1042,6 +1042,26 @@ main.container{padding-bottom:36px}
 .top-article-main{min-width:0}.top-article-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.top-article-meta{margin-top:5px}.top-article-views{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;padding-left:10px;border-left:1px solid #edf1f5}.top-article-views strong{font-size:15px;line-height:1.1;font-weight:900}.top-article-views span{font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.35px}
 @media(max-width:600px){.top-article{grid-template-columns:32px minmax(0,1fr) 70px;gap:9px;min-height:54px}.top-article-rank{width:30px;height:30px;border-radius:8px}.top-article-title{-webkit-line-clamp:2}.top-article-views{grid-column:auto;text-align:right;align-items:flex-end;padding-left:7px}.top-article-views strong{font-size:12px}.top-article-views span{font-size:9px}}
 </style>
+
+<style id="pending-folder-style">
+.pending-folder-body{padding:18px;background:#f8fafc}
+.pending-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pending-category{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:15px;box-shadow:0 4px 14px rgba(15,23,42,.045);min-width:0}
+.pending-category-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.pending-category-head h3{margin:0;font-size:16px;color:#172033}
+.pending-count{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:25px;padding:0 8px;border-radius:999px;background:#b50000;color:#fff;font-size:11px;font-weight:900}
+.pending-list{display:grid;gap:8px}
+.pending-item{padding:10px;border:1px solid #edf1f5;border-radius:10px;background:#fbfcfe}
+.pending-item-title{font-size:13px;line-height:1.4;font-weight:800;color:#172033}
+.pending-item-meta{margin-top:4px;font-size:10px;color:#64748b;line-height:1.4}
+.pending-item-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.pending-item-actions button{font-size:11px;padding:7px 9px}
+.pending-empty{padding:14px 8px;color:#94a3b8;text-align:center;font-size:12px}
+.pending-badge{background:#b50000}
+@media(max-width:950px){.pending-category-grid{grid-template-columns:1fr 1fr}.pending-category:last-child{grid-column:1/-1}}
+@media(max-width:600px){.pending-folder-body{padding:12px}.pending-category-grid{grid-template-columns:1fr}.pending-category:last-child{grid-column:auto}.pending-category{padding:13px}}
+</style>
+
 </head>
 
 <body>
@@ -1304,6 +1324,39 @@ main.container{padding-bottom:36px}
       </details>
 
 
+
+      <details id="pendingFolder" class="panel admin-folder">
+        <summary>
+          <div class="folder-summary-icon submissions-icon" aria-hidden="true">⌛</div>
+          <div class="panel-header">
+            <div>
+              <div class="folder-title-row">
+                <h2 id="pendingFolderTitle" class="panel-title">Berita/Opini/Iklan Pending</h2>
+                <span id="pendingFolderBadge" class="notification-badge pending-badge hidden">0</span>
+              </div>
+              <div id="pendingFolderSubtitle" class="panel-subtitle">Kelola konten yang masih menunggu pemeriksaan atau penerbitan.</div>
+            </div>
+          </div>
+          <span class="folder-chevron">＋</span>
+        </summary>
+        <div class="admin-folder-body pending-folder-body">
+          <div class="pending-category-grid">
+            <section id="pendingNewsCategory" class="pending-category">
+              <div class="pending-category-head"><h3>Berita</h3><span id="pendingNewsCount" class="pending-count">0</span></div>
+              <div id="pendingNewsList" class="pending-list"><div class="pending-empty">Memuat...</div></div>
+            </section>
+            <section id="pendingOpinionCategory" class="pending-category">
+              <div class="pending-category-head"><h3>Opini</h3><span id="pendingOpinionCount" class="pending-count">0</span></div>
+              <div id="pendingOpinionList" class="pending-list"><div class="pending-empty">Memuat...</div></div>
+            </section>
+            <section id="pendingAdCategory" class="pending-category">
+              <div class="pending-category-head"><h3>Iklan</h3><span id="pendingAdCount" class="pending-count">0</span></div>
+              <div id="pendingAdList" class="pending-list"><div class="pending-empty">Memuat...</div></div>
+            </section>
+          </div>
+        </div>
+      </details>
+
       <details id="adminSettingsFolder" class="panel admin-folder">
         <summary>
           <div class="folder-summary-icon settings-icon" aria-hidden="true">⚙</div>
@@ -1520,6 +1573,21 @@ main.container{padding-bottom:36px}
     const userEmail = document.getElementById("userEmail");
     const logoutButton = document.getElementById("logoutButton");
 
+
+    const pendingFolder = document.getElementById("pendingFolder");
+    const pendingFolderTitle = document.getElementById("pendingFolderTitle");
+    const pendingFolderSubtitle = document.getElementById("pendingFolderSubtitle");
+    const pendingFolderBadge = document.getElementById("pendingFolderBadge");
+    const pendingNewsCategory = document.getElementById("pendingNewsCategory");
+    const pendingOpinionCategory = document.getElementById("pendingOpinionCategory");
+    const pendingAdCategory = document.getElementById("pendingAdCategory");
+    const pendingNewsCount = document.getElementById("pendingNewsCount");
+    const pendingOpinionCount = document.getElementById("pendingOpinionCount");
+    const pendingAdCount = document.getElementById("pendingAdCount");
+    const pendingNewsList = document.getElementById("pendingNewsList");
+    const pendingOpinionList = document.getElementById("pendingOpinionList");
+    const pendingAdList = document.getElementById("pendingAdList");
+
     const newsForm = document.getElementById("newsForm");
     const editingId = document.getElementById("editingId");
     const judul = document.getElementById("judul");
@@ -1717,7 +1785,9 @@ main.container{padding-bottom:36px}
       adsEnabled.checked=!!setting.data?.ads_enabled;
       const r=await supabaseClient.from("iklan").select("id,nama_pengiklan,perusahaan,email,telepon,judul,posisi,mulai,selesai,gambar,link_url,status,catatan,created_at").order("created_at",{ascending:false});
       if(r.error){showAdsMessage("Gagal memuat iklan: "+r.error.message,"error");adsList.innerHTML='<div class="empty">Gagal memuat iklan.</div>';return;}
-      adsData=r.data||[];const pending=adsData.filter(a=>a.status==="pending").length;
+      adsData=r.data||[];
+      const pending=adsData.filter(a=>a.status==="pending").length;
+      renderPendingFolder();
       adNotificationBadge.classList.remove("hidden");adNotificationBadge.textContent=pending>0?String(pending):"✓";if(!pending)adNotificationBadge.classList.add("checked");
       renderAds();
     }
@@ -1783,6 +1853,74 @@ main.container{padding-bottom:36px}
       showAdsMessage(status==="aktif"?"Iklan berhasil diaktifkan.":"Iklan berhasil dinonaktifkan/ditolak.","success");await loadAdsAdmin();
     }
 
+
+
+    function renderPendingCategory(listEl, items, emptyText, actionLabel = "Edit", actionType = "news") {
+      if (!listEl) return;
+      if (!items.length) {
+        listEl.innerHTML = '<div class="pending-empty">' + escapeHtml(emptyText) + '</div>';
+        return;
+      }
+      listEl.innerHTML = items.map(item => {
+        const title = item.judul || "Tanpa judul";
+        const meta = actionType === "ad"
+          ? (item.nama_pengiklan || "Pengiklan") + " · " + (item.status || "pending").toUpperCase()
+          : (item.penulis || "Tanpa penulis") + " · " + (item.status || "draft").toUpperCase();
+        const action = actionType === "news"
+          ? '<button type="button" class="secondary" data-pending-news-id="' + escapeHtml(item.id) + '">' + actionLabel + '</button>'
+          : '<button type="button" class="secondary" data-pending-ad-id="' + escapeHtml(item.id) + '">Lihat</button>';
+        return '<article class="pending-item"><div class="pending-item-title">' + escapeHtml(title) + '</div><div class="pending-item-meta">' + escapeHtml(meta) + '</div><div class="pending-item-actions">' + action + '</div></article>';
+      }).join("");
+    }
+
+    function renderPendingFolder() {
+      const pendingNews = (beritaData || []).filter(n => String(n.status || "").toLowerCase() !== "terbit");
+      const pendingOpinions = pendingNews.filter(n => String(n.kategori || "").toLowerCase() === "opini");
+      const pendingBerita = pendingNews.filter(n => String(n.kategori || "").toLowerCase() !== "opini");
+      const pendingAds = (adsData || []).filter(a => String(a.status || "").toLowerCase() === "pending");
+
+      if (pendingNewsCount) pendingNewsCount.textContent = String(pendingBerita.length);
+      if (pendingOpinionCount) pendingOpinionCount.textContent = String(pendingOpinions.length);
+      if (pendingAdCount) pendingAdCount.textContent = String(pendingAds.length);
+
+      renderPendingCategory(pendingNewsList, pendingBerita, "Tidak ada berita pending.");
+      renderPendingCategory(pendingOpinionList, pendingOpinions, "Tidak ada opini pending.");
+      renderPendingCategory(pendingAdList, pendingAds, "Tidak ada iklan pending.", "Lihat", "ad");
+
+      const total = currentUserRole === "admin"
+        ? pendingBerita.length + pendingOpinions.length + pendingAds.length
+        : pendingBerita.length + pendingOpinions.length;
+      if (pendingFolderBadge) {
+        pendingFolderBadge.textContent = total > 99 ? "99+" : String(total);
+        pendingFolderBadge.classList.remove("hidden","checked");
+        if (!total) pendingFolderBadge.classList.add("checked");
+      }
+    }
+
+    function setupPendingFolder() {
+      if (!pendingFolder) return;
+      if (currentUserRole === "redaksi") {
+        if (pendingFolderTitle) pendingFolderTitle.textContent = "Berita/Opini Pending";
+        if (pendingFolderSubtitle) pendingFolderSubtitle.textContent = "Kelola berita dan opini yang masih menunggu pemeriksaan atau penerbitan.";
+        if (pendingAdCategory) pendingAdCategory.style.display = "none";
+      } else {
+        if (pendingFolderTitle) pendingFolderTitle.textContent = "Berita/Opini/Iklan Pending";
+        if (pendingFolderSubtitle) pendingFolderSubtitle.textContent = "Kelola berita, opini, dan iklan yang masih menunggu pemeriksaan atau penerbitan.";
+        if (pendingAdCategory) pendingAdCategory.style.display = "";
+      }
+      renderPendingFolder();
+    }
+
+    document.addEventListener("click", event => {
+      const newsButton = event.target.closest("[data-pending-news-id]");
+      if (newsButton) {
+        const id = newsButton.dataset.pendingNewsId;
+        if (typeof editNews === "function") editNews(id);
+        return;
+      }
+      const adButton = event.target.closest("[data-pending-ad-id]");
+      if (adButton && typeof openAdPreview === "function") openAdPreview(adButton.dataset.pendingAdId);
+    });
 
     function showMessage(text, type = "success") {
       let toast = document.getElementById("globalToast");
@@ -3550,6 +3688,8 @@ main.container{padding-bottom:36px}
         sessionStorage.setItem("visiBangsaLoginRole", currentUserRole);
 
         // Redaksi tidak mendapat menu pengaturan/iklan Admin.
+        setupPendingFolder();
+
         if (currentUserRole === "redaksi") {
           if (adminSettingsFolder) adminSettingsFolder.style.display = "none";
           if (adminAdsFolder) adminAdsFolder.style.display = "none";
