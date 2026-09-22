@@ -19,6 +19,8 @@
   >
 
   <meta name="theme-color" content="#b40000">
+  <meta id="articlePublishedTime" property="article:published_time" content="">
+  <meta id="articleModifiedTime" property="article:modified_time" content="">
   <script async src="https://news.google.com/swg/js/v1/publisher.js"></script>
 
   <link
@@ -777,6 +779,9 @@ input,select,textarea,button{max-width:100%;font:inherit}
           image
         );
 
+      document.getElementById("articlePublishedTime")?.setAttribute("content", article.tanggal || "");
+      document.getElementById("articleModifiedTime")?.setAttribute("content", article.updated_at || article.tanggal || "");
+
       const schema = {
 
         "@context":
@@ -1085,7 +1090,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
       }
 
       relatedList.innerHTML =
-        data.map(
+        relatedData.map(
           item => {
 
             const image =
