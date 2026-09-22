@@ -2076,6 +2076,22 @@ function pilihKategoriMenu(kategori){
   if(target) target.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
+
+/* Klik "Lihat Semua" harus membuka seluruh daftar Berita Pilihan. */
+document.addEventListener("click",function(event){
+  const link=event.target.closest(".latest-head a[href="#berita"]");
+  if(!link) return;
+  event.preventDefault();
+  kategoriAktif="Semua";
+  pencarian="";
+  document.querySelectorAll(".filter-btn").forEach(function(btn){
+    btn.classList.toggle("active",btn.dataset.category==="Semua");
+  });
+  renderBerita();
+  const target=document.getElementById("berita");
+  if(target) target.scrollIntoView({behavior:"smooth",block:"start"});
+});
+
 const navMenu=document.querySelector(".nav-inner");
 const mobileSearchPanel=document.getElementById("mobileSearchPanel");
 const mobileSearchInput=document.getElementById("mobileSearchInput");
@@ -2715,6 +2731,20 @@ if(document.readyState==="loading"){
 .news-sections #latestList .berita:last-child,
 .news-sections #berita .berita:last-child{
   border-bottom:0!important;
+}
+
+/* Tombol Lihat Semua pada panel Berita Terbaru harus selalu dapat disentuh. */
+.news-sections .latest-head{
+  position:relative!important;
+  z-index:20!important;
+}
+.news-sections .latest-head a{
+  position:relative!important;
+  z-index:21!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
 }
 </style>\n</body>
 </html>
