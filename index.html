@@ -2843,6 +2843,119 @@ if(document.readyState==="loading"){
   font-weight:800!important;
   white-space:nowrap!important;
 }
-</style>\n</body>
+</style>\n<style id="mobile-latest-overlap-absolute-fix">
+/* FINAL OVERRIDE: mobile Berita Terkini — foto dan teks dipisahkan secara tegas. */
+@media (max-width:699px){
+  .news-sections #latestList .latest-item{
+    display:block!important;
+    position:relative!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link{
+    display:grid!important;
+    grid-template-columns:105px minmax(0,1fr)!important;
+    grid-template-rows:auto!important;
+    position:relative!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:76px!important;
+    padding:10px 0!important;
+    margin:0!important;
+    gap:0 12px!important;
+    align-items:start!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > img,
+  .news-sections #latestList .latest-item > .berita-link > .gambar,
+  .news-sections #latestList .latest-item > .berita-link > .tanpa-gambar{
+    position:relative!important;
+    inset:auto!important;
+    grid-column:1!important;
+    grid-row:1!important;
+    width:105px!important;
+    min-width:105px!important;
+    max-width:105px!important;
+    height:76px!important;
+    min-height:76px!important;
+    max-height:76px!important;
+    display:block!important;
+    object-fit:cover!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+    float:none!important;
+    z-index:1!important;
+    border-radius:7px!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi{
+    position:relative!important;
+    inset:auto!important;
+    grid-column:2!important;
+    grid-row:1!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:76px!important;
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    transform:none!important;
+    float:none!important;
+    z-index:2!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi *{
+    position:static!important;
+    float:none!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .kategori{
+    display:block!important;
+    width:100%!important;
+    margin:0 0 3px!important;
+    padding:0!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .judul{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    margin:0 0 5px!important;
+    padding:0!important;
+    font-size:15px!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .meta{
+    display:block!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:9px!important;
+    line-height:1.25!important;
+    white-space:normal!important;
+  }
+  .news-sections #latestList .latest-item + .latest-item{
+    border-top:1px solid #e2e7ec!important;
+  }
+}
+</style>
+</body>
 </html>
 ```
