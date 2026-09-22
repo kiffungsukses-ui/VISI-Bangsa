@@ -209,11 +209,12 @@
 
     .ad-view-count{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px 10px;border:1px solid #dbe4ec;border-radius:7px;background:#f6f9fc;color:#526273;font-size:12px;font-weight:800;white-space:nowrap}
     .stats-data-table-wrap{width:100%;margin-bottom:18px;border:1px solid #dbe7f1;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(30,70,110,.05)}
-    .stats-data-table{display:table!important;width:100%!important;max-width:none!important;overflow:visible!important;table-layout:fixed;border-collapse:collapse}
+    .stats-data-table{width:100%;table-layout:fixed;border-collapse:collapse}
     .stats-data-table th,.stats-data-table td{padding:13px 16px;border-bottom:1px solid #e8eef4;text-align:left}
-    .stats-data-table th{background:#f1f7fc;color:#31516d;font-size:12px;text-transform:uppercase;letter-spacing:.4px}.stats-data-table th:last-child{text-align:right}
+    .stats-data-table th{background:#f1f7fc;color:#31516d;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+    .stats-data-table th:last-child,.stats-data-table td:last-child{text-align:right}
     .stats-data-table td{font-size:13px;color:#526273;font-weight:700}
-    .stats-data-table td:last-child{text-align:right;font-size:16px;font-weight:900;color:#173d60}
+    .stats-data-table td:last-child{font-size:16px;font-weight:900;color:#173d60}
     .stats-data-table tr:last-child td{border-bottom:0}
     .stats-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
     .stats-chart-card{border:1px solid #dbe7f1;border-radius:14px;background:#fff;padding:18px;box-shadow:0 4px 14px rgba(30,70,110,.05)}
@@ -1115,7 +1116,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
 @media(max-width:900px){
   body{min-width:0!important}
   .container,.wrapper,.page,.content,.main,.shell{width:100%!important;max-width:100%!important;padding-left:16px!important;padding-right:16px!important}
-  table{display:block;max-width:100%;overflow-x:auto}
+  table:not(.stats-data-table){display:block;max-width:100%;overflow-x:auto}
   .grid,.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:600px){
