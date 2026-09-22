@@ -496,21 +496,19 @@ input,select,textarea,button{max-width:100%;font:inherit}
           id="content"
         ></div>
 
-        <div class="share">
+        <div class="share" aria-label="Bagikan berita">
 
-          <button
-            type="button"
-            id="shareButton"
-          >
-            Bagikan
-          </button>
+          <button type="button" id="shareButton">Bagikan</button>
 
-          <button
-            type="button"
-            id="copyButton"
-          >
-            Salin Link
-          </button>
+          <button type="button" class="social-share" data-channel="whatsapp">WhatsApp</button>
+
+          <button type="button" class="social-share" data-channel="telegram">Telegram</button>
+
+          <button type="button" class="social-share" data-channel="facebook">Facebook</button>
+
+          <button type="button" class="social-share" data-channel="x">X</button>
+
+          <button type="button" id="copyButton">Salin Link</button>
 
         </div>
 
@@ -1131,6 +1129,42 @@ input,select,textarea,button{max-width:100%;font:inherit}
         </div>
       `;
     }
+
+    async function logShare(channel) {
+      try {
+        await supabaseClient.from("share_events").insert({
+          news_id: articleId ? Number(articleId) : null,
+          channel: channel,
+          visitor_id: getVisitorId(),
+          path: window.location.pathname + window.location.search
+        });
+      } catch (error) {
+        console.warn("Pencatatan share tidak mengganggu proses berbagi:", error);
+      }
+    }
+
+    function openSocialShare(channel) {
+      const url = window.location.href;
+      const title = titleElement.textContent.trim() || document.title;
+      const text = title + " — VISI Bangsa";
+      const encodedUrl = encodeURIComponent(url);
+      const encodedText = encodeURIComponent(text);
+      const links = {
+        whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + url),
+        telegram: "https://t.me/share/url?url=" + encodedUrl + "&text=" + encodedText,
+        facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodedUrl,
+        x: "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodedUrl
+      };
+      if (!links[channel]) return;
+      logShare(channel);
+      window.open(links[channel], "_blank", "noopener,noreferrer");
+    }
+
+    document.querySelectorAll(".social-share").forEach((button) => {
+      button.addEventListener("click", () => {
+        openSocialShare(button.dataset.channel);
+      });
+    });
 
     document
       .getElementById("shareButton")
