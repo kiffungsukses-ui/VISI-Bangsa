@@ -1849,13 +1849,13 @@ function renderLatest(){
       ? '<img class="gambar" src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">'
       : '<div class="tanpa-gambar">VISI Bangsa</div>';
 
-    return '<article class="berita latest-item">'+
-      '<a class="berita-link" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+
-        gambar+
-        '<div class="isi">'+
-          '<div class="kategori">'+escapeHtml(item.kategori||"Berita")+'</div>'+
-          '<h3 class="judul">'+escapeHtml(item.judul)+'</h3>'+
-          '<div class="meta">'+escapeHtml(item.penulis||"Redaksi VISI Bangsa")+' • '+escapeHtml(formatTanggal(item.tanggal))+'</div>'+
+    return '<article class="vb-latest-item">'+
+      '<a class="vb-latest-link" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+
+        '<div class="vb-latest-thumb">'+gambar+'</div>'+
+        '<div class="vb-latest-body">'+
+          '<div class="vb-latest-category">'+escapeHtml(item.kategori||"Berita")+'</div>'+
+          '<h3 class="vb-latest-title">'+escapeHtml(item.judul)+'</h3>'+
+          '<div class="vb-latest-meta">'+escapeHtml(item.penulis||"Redaksi VISI Bangsa")+' • '+escapeHtml(formatTanggal(item.tanggal))+'</div>'+
         '</div>'+
       '</a>'+
     '</article>';
@@ -2952,6 +2952,126 @@ if(document.readyState==="loading"){
     white-space:normal!important;
   }
   .news-sections #latestList .latest-item + .latest-item{
+    border-top:1px solid #e2e7ec!important;
+  }
+}
+</style>
+
+<style id="vb-latest-phone-final">
+/* HP BIASA SAJA — tidak menyentuh layout Z Fold/tablet/desktop. */
+@media (max-width:599px){
+  .news-sections #latestList .vb-latest-item{
+    display:block!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:#fff!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  .news-sections #latestList .vb-latest-link{
+    display:grid!important;
+    grid-template-columns:88px minmax(0,1fr)!important;
+    column-gap:10px!important;
+    align-items:start!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:10px 0!important;
+    box-sizing:border-box!important;
+    text-decoration:none!important;
+    position:static!important;
+    overflow:visible!important;
+  }
+  .news-sections #latestList .vb-latest-thumb{
+    grid-column:1!important;
+    grid-row:1!important;
+    width:88px!important;
+    height:62px!important;
+    min-width:88px!important;
+    min-height:62px!important;
+    max-width:88px!important;
+    max-height:62px!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    border-radius:6px!important;
+    box-sizing:border-box!important;
+    position:static!important;
+  }
+  .news-sections #latestList .vb-latest-thumb img,
+  .news-sections #latestList .vb-latest-thumb .gambar,
+  .news-sections #latestList .vb-latest-thumb .tanpa-gambar{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:0!important;
+    object-fit:cover!important;
+    border-radius:0!important;
+    position:static!important;
+    transform:none!important;
+    float:none!important;
+  }
+  .news-sections #latestList .vb-latest-body{
+    grid-column:2!important;
+    grid-row:1!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    position:static!important;
+    display:block!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections #latestList .vb-latest-category,
+  .news-sections #latestList .vb-latest-title,
+  .news-sections #latestList .vb-latest-meta{
+    position:static!important;
+    float:none!important;
+    transform:none!important;
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+  .news-sections #latestList .vb-latest-category{
+    margin:0 0 2px!important;
+    padding:0!important;
+    color:#c40000!important;
+    font-size:9px!important;
+    line-height:1.2!important;
+    font-weight:800!important;
+    text-transform:uppercase!important;
+  }
+  .news-sections #latestList .vb-latest-title{
+    margin:0 0 4px!important;
+    padding:0!important;
+    color:#243445!important;
+    font-size:14px!important;
+    line-height:1.25!important;
+    font-weight:800!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+  .news-sections #latestList .vb-latest-meta{
+    margin:0!important;
+    padding:0!important;
+    color:#7c8792!important;
+    font-size:8.5px!important;
+    line-height:1.25!important;
+  }
+  .news-sections #latestList .vb-latest-item + .vb-latest-item{
     border-top:1px solid #e2e7ec!important;
   }
 }
