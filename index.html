@@ -1754,7 +1754,7 @@ async function loadBerita() {
 
 
 function renderLatest(){const el=document.getElementById("latestList");if(!el)return;const items=semuaBerita.slice(0,5);if(!items.length){el.innerHTML='<div class="empty">Belum ada berita.</div>';return;}el.innerHTML=items.map(item=>{const img=item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">':'<div class="latest-item" style="background:#eee"></div>';return '<a class="latest-item" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+img+'<div><div class="latest-cat">'+escapeHtml(item.kategori||"Berita")+'</div><div class="latest-title">'+escapeHtml(item.judul)+'</div><div class="latest-time">'+escapeHtml(formatTanggal(item.tanggal))+'</div></div></a>';}).join("");}
- scheduleNewsRowSync();function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
+function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
 function renderCategoryTiles(){const el=document.getElementById("categoryTiles");if(!el)return;const cats=[["Berita","▤"],["Nasional","♜"],["Daerah","⌁"],["Ekonomi","↗"],["Opini","◉"],["Pesona & Budaya","✦"]];el.innerHTML=cats.map(([cat,icon])=>'<a class="category-tile" href="#berita" data-cat="'+escapeAttribute(cat)+'"><span class="category-icon">'+icon+'</span><span class="category-name">'+escapeHtml(cat)+'</span></a>').join("");el.querySelectorAll(".category-tile").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();kategoriAktif=a.dataset.cat;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.category===kategoriAktif));renderBerita();document.getElementById("berita").scrollIntoView({behavior:"smooth"});}));}
 function renderHeadline() {
 
@@ -1986,7 +1986,7 @@ function renderBerita() {
       )
       .join("");
 
-}  scheduleNewsRowSync();
+}
 
 
 document
@@ -2292,6 +2292,21 @@ function scheduleNewsRowSync(){
 window.addEventListener("resize",scheduleNewsRowSync);
 window.addEventListener("orientationchange",()=>setTimeout(scheduleNewsRowSync,120));
 document.addEventListener("DOMContentLoaded",scheduleNewsRowSync);
+
+/* Berita dimuat async dari Supabase. Amati perubahan daftar lalu sejajarkan baris. */
+const newsRowObserver=new MutationObserver(scheduleNewsRowSync);
+function startNewsRowObserver(){
+  const latest=document.getElementById("latestList");
+  const chosen=document.getElementById("beritaGrid");
+  if(latest) newsRowObserver.observe(latest,{childList:true,subtree:true});
+  if(chosen) newsRowObserver.observe(chosen,{childList:true,subtree:true});
+  scheduleNewsRowSync();
+}
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",startNewsRowObserver,{once:true});
+}else{
+  startNewsRowObserver();
+}
 </script>
 
 <style id="fb-inspired-responsive-news-final">
