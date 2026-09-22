@@ -2591,6 +2591,54 @@ if(document.readyState==="loading"){
     width:100%!important;
   }
 }
+
+/* ===== UNIFIED NEWS CARD STYLE =====
+   Kedua kolom menggunakan SATU jenis kartu yang sama.
+   Tidak ada kartu bersarang pada Berita Pilihan.
+*/
+.news-sections #berita .berita{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.news-sections #berita .berita-link,
+.news-sections #latestList .latest-item{
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #e2e7ec!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.news-sections #berita .berita-link{
+  margin:0!important;
+}
+.news-sections #latestList .latest-item{
+  margin:0!important;
+}
+.news-sections #berita .berita-link:last-child,
+.news-sections #latestList .latest-item:last-child{
+  border-bottom:0!important;
+}
+/* Satu garis pemisah dan satu ritme vertikal untuk kedua sisi. */
+.news-sections #latestList .latest-item,
+.news-sections #berita .berita-link{
+  padding-top:12px!important;
+  padding-bottom:12px!important;
+}
+@media (min-width:700px) and (max-width:1199px){
+  .news-sections #latestList .latest-item,
+  .news-sections #berita .berita-link{
+    padding-top:10px!important;
+    padding-bottom:10px!important;
+  }
+}
 </style>\n</body>
 </html>
 ```
