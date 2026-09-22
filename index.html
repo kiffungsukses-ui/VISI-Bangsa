@@ -1318,7 +1318,18 @@ main>*,
   .latest-item{grid-template-columns:70px minmax(0,1fr)}
 }
 </style>
-</head>
+<style id="headline-no-image-fix">
+/* Fix berita utama tanpa gambar: jangan sisakan bidang kosong tinggi di layar foldable/mobile. */
+.headline-card.no-image{min-height:0!important;height:auto!important;background:linear-gradient(145deg,#173b5f,#071b2e)!important}
+.headline-card.no-image .headline-link{height:auto!important;min-height:0!important}
+.headline-card.no-image .headline-content{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;padding:24px!important}
+.headline-card.no-image:after{display:none!important}
+.headline-placeholder{height:170px!important;min-height:170px!important;background:linear-gradient(145deg,#29465f,#0d1c2b)!important;color:rgba(255,255,255,.72)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:34px!important;font-weight:800!important;letter-spacing:1px!important}
+@media(max-width:767px){
+  .headline-card.no-image .headline-content{padding:17px!important}
+  .headline-placeholder{height:130px!important;min-height:130px!important;font-size:28px!important}
+}
+</style></head>
 
 <body>
 
@@ -1693,7 +1704,7 @@ function renderHeadline() {
           class="headline-image"
           src="${escapeAttribute(gambar)}"
           alt="${escapeAttribute(item.judul)}"
-          onerror="this.style.display='none'"
+          onerror="this.style.display='none';this.closest('.headline-card')?.classList.add('no-image')"
         >
       `
 
