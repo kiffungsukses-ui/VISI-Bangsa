@@ -11,6 +11,13 @@ body {
   background: #f7f5ef;
   color: #17212b;
   font-family: Georgia, "Times New Roman", serif;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
 }
 
 a {
@@ -74,6 +81,12 @@ a {
   display: flex;
   gap: 30px;
   overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+
+.navin::-webkit-scrollbar {
+  display: none;
 }
 
 .nav a {
@@ -87,10 +100,7 @@ a {
   font-weight: 800;
 }
 
-.nav a:hover {
-  color: #a32626;
-}
-
+.nav a:hover,
 .nav a.active {
   color: #a32626;
 }
@@ -112,7 +122,7 @@ a {
 .hero {
   min-height: 470px;
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
   align-items: center;
   gap: 40px;
   padding: 55px 0;
@@ -137,6 +147,7 @@ a {
   font-size: clamp(48px, 7vw, 86px);
   line-height: 0.94;
   letter-spacing: -3px;
+  overflow-wrap: anywhere;
 }
 
 .hero h1 em {
@@ -179,14 +190,15 @@ a {
 }
 
 .hero-mark div {
-  width: 220px;
-  height: 220px;
+  width: min(220px, 70vw);
+  aspect-ratio: 1;
+  height: auto;
   display: grid;
   place-items: center;
   border: 2px solid #17212b;
   border-radius: 50%;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 160px;
+  font-size: clamp(100px, 12vw, 160px);
   font-style: italic;
   line-height: 1;
   transform: rotate(-8deg);
@@ -226,7 +238,7 @@ a {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
   margin: 30px 0 65px;
 }
@@ -235,6 +247,7 @@ a {
   min-height: 260px;
   padding: 20px 0 0;
   border-top: 1px solid #17212b;
+  min-width: 0;
 }
 
 .card:hover {
@@ -278,7 +291,7 @@ a {
 
 .quote {
   display: grid;
-  grid-template-columns: 110px 1fr;
+  grid-template-columns: 110px minmax(0, 1fr);
   gap: 25px;
   padding: 48px 0 70px;
   border-top: 5px solid #17212b;
@@ -319,6 +332,7 @@ a {
   font-size: clamp(46px, 7vw, 70px);
   line-height: 1;
   letter-spacing: -2px;
+  overflow-wrap: anywhere;
 }
 
 .article {
@@ -376,11 +390,60 @@ footer {
   }
 
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .quote h2 {
     font-size: 38px;
+  }
+}
+
+/* =========================
+   RESPONSIVE FOLDABLE / NARROW TABLET
+   Prevents desktop two-column layout from
+   creating large empty areas on foldable phones.
+========================= */
+
+@media (max-width: 820px) {
+  .wrap {
+    width: min(94%, 720px);
+  }
+
+  .mast {
+    gap: 16px;
+  }
+
+  .hero {
+    gap: 0;
+    padding: 42px 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 11vw, 70px);
+    letter-spacing: -2.5px;
+  }
+
+  .lead {
+    font-size: clamp(17px, 2.7vw, 20px);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .quote {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 40px 0 55px;
+  }
+
+  .qmark {
+    font-size: 80px;
+  }
+
+  .quote h2 {
+    font-size: clamp(32px, 6vw, 38px);
   }
 }
 
@@ -429,27 +492,12 @@ footer {
     font-size: 17px;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 25px;
-  }
-
   .card {
     min-height: auto;
   }
 
   .quote {
-    grid-template-columns: 1fr;
-    gap: 10px;
     padding: 40px 0 55px;
-  }
-
-  .qmark {
-    font-size: 80px;
-  }
-
-  .quote h2 {
-    font-size: 32px;
   }
 
   .quote p {
