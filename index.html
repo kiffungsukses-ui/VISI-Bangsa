@@ -656,7 +656,6 @@ footer{margin-top:34px}
   .breaking-text{font-size:13px}
   .hero-layout{display:contents}
   #headline{order:1}
-  #categoryTiles{order:2}
   .latest-panel{order:3}
   #berita{order:4}
   .join-card{order:5}
@@ -1584,9 +1583,7 @@ async function loadSiteSettings() {
 
   const defaultTagline = "TERDEPAN DALAM MENCERAHKAN";
   const tagline = document.getElementById("siteTagline");
-  const taglineDuplicate = document.getElementById("siteTaglineDuplicate");
   if (tagline) tagline.textContent = defaultTagline;
-  if (taglineDuplicate) taglineDuplicate.textContent = defaultTagline;
 
   if (result.error || !result.data) return;
 
@@ -1600,7 +1597,6 @@ async function loadSiteSettings() {
 
   const savedTagline = String(s.tagline || "").trim() || defaultTagline;
   if (tagline) tagline.textContent = savedTagline;
-  if (taglineDuplicate) taglineDuplicate.textContent = savedTagline;
 
   const profile = document.getElementById("siteProfile");
   if (profile && s.profile) {
@@ -1778,7 +1774,6 @@ function renderLatest(){
   scheduleNewsRowSync();
 }
 function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
-function renderCategoryTiles(){const el=document.getElementById("categoryTiles");if(!el)return;const cats=[["Berita","▤"],["Nasional","♜"],["Daerah","⌁"],["Ekonomi","↗"],["Opini","◉"],["Pesona & Budaya","✦"]];el.innerHTML=cats.map(([cat,icon])=>'<a class="category-tile" href="#berita" data-cat="'+escapeAttribute(cat)+'"><span class="category-icon">'+icon+'</span><span class="category-name">'+escapeHtml(cat)+'</span></a>').join("");el.querySelectorAll(".category-tile").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();kategoriAktif=a.dataset.cat;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.category===kategoriAktif));renderBerita();document.getElementById("berita").scrollIntoView({behavior:"smooth"});}));}
 function renderHeadline() {
 
   if (!semuaBerita.length) {
