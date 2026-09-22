@@ -2312,7 +2312,7 @@ function syncNewsRows(){
   }
 
   [...left,...right].forEach(el=>{
-    el.style.height="auto";
+    el.style.height="";
     el.style.minHeight="";
   });
 
@@ -2326,8 +2326,8 @@ function syncNewsRows(){
       b.getBoundingClientRect().height
     ));
     if(h>0){
-      a.style.height=h+"px";
-      b.style.height=h+"px";
+      /* Samakan tinggi minimum, bukan tinggi paksa, agar judul panjang
+         tetap dapat membuka baris tanpa terpotong. */
       a.style.minHeight=h+"px";
       b.style.minHeight=h+"px";
     }
@@ -2598,7 +2598,7 @@ if(document.readyState==="loading"){
 .news-sections #latestList .latest-item,
 .news-sections #berita .berita-link{
   box-sizing:border-box!important;
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 @media (min-width:700px){
   .news-sections #latestList,
@@ -2659,7 +2659,7 @@ if(document.readyState==="loading"){
   display:flex!important;
   flex-direction:column!important;
   width:100%!important;
-  height:100%!important;
+  height:auto!important;
   min-height:0!important;
   margin:0!important;
   padding:0!important;
@@ -2709,7 +2709,7 @@ if(document.readyState==="loading"){
   display:flex!important;
   flex-direction:column!important;
   width:100%!important;
-  height:100%!important;
+  height:auto!important;
   margin:0!important;
   padding:12px 0!important;
   background:#fff!important;
