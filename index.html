@@ -2257,36 +2257,54 @@ if(headerSearchToggle)headerSearchToggle.addEventListener("click",()=>{
 <script id="locked-news-rows">
 function syncNewsRows(){
   const left=[...document.querySelectorAll("#latestList .latest-item")];
-  const right=[...document.querySelectorAll("#beritaGrid .berita")];
-  const rightLinks=right.map(x=>x.querySelector(".berita-link")).filter(Boolean);
-  if(!left.length || !rightLinks.length) return;
+  const right=[...document.querySelectorAll("#beritaGrid .berita .berita-link")];
+  if(!left.length || !right.length) return;
 
-  /* Pada HP tidak perlu dikunci silang karena panel bertumpuk. */
   if(window.innerWidth < 700){
-    [...left,...rightLinks].forEach(el=>el.style.height="");
+    [...left,...right].forEach(el=>{
+      el.style.height="";
+      el.style.minHeight="";
+    });
     return;
   }
 
-  const count=Math.max(left.length,rightLinks.length);
-  for(let i=0;i<count;i++){
-    const a=left[i], b=rightLinks[i];
-    if(a) a.style.height="";
-    if(b) b.style.height="";
-  }
+  /* Reset dahulu, ukur setelah semua gambar memperoleh ukuran final. */
+  [...left,...right].forEach(el=>{
+    el.style.height="auto";
+    el.style.minHeight="";
+  });
 
+  const count=Math.min(left.length,right.length);
   for(let i=0;i<count;i++){
-    const a=left[i], b=rightLinks[i];
-    if(!a || !b) continue;
-    const h=Math.max(a.getBoundingClientRect().height,b.getBoundingClientRect().height);
+    const a=left[i], b=right[i];
+    const h=Math.ceil(Math.max(
+      a.scrollHeight,
+      b.scrollHeight,
+      a.getBoundingClientRect().height,
+      b.getBoundingClientRect().height
+    ));
     if(h>0){
-      a.style.height=Math.ceil(h)+"px";
-      b.style.height=Math.ceil(h)+"px";
+      a.style.height=h+"px";
+      b.style.height=h+"px";
+      a.style.minHeight=h+"px";
+      b.style.minHeight=h+"px";
     }
   }
 }
 
-/* Jalankan setelah gambar selesai dimuat agar tinggi baris memakai ukuran foto final. */
-function scheduleNewsRowSync(){
+async function waitNewsImages(){
+  const images=[...document.querySelectorAll("#latestList img,#beritaGrid img")];
+  await Promise.all(images.map(img=>{
+    if(img.complete) return img.decode ? img.decode().catch(()=>{}) : Promise.resolve();
+    return new Promise(resolve=>{
+      img.addEventListener("load",resolve,{once:true});
+      img.addEventListener("error",resolve,{once:true});
+    });
+  }));
+}
+
+async function scheduleNewsRowSync(){
+  await waitNewsImages();
   requestAnimationFrame(()=>requestAnimationFrame(syncNewsRows));
 }
 window.addEventListener("resize",scheduleNewsRowSync);
@@ -2544,6 +2562,33 @@ if(document.readyState==="loading"){
   .news-sections #latestList,
   .news-sections #berita .berita-grid{
     align-content:start!important;
+  }
+}
+
+/* Kolom kiri-kanan benar-benar identik lebarnya. */
+.news-sections,
+.news-sections>.latest-panel,
+.news-sections>#berita,
+.news-sections #latestList,
+.news-sections #berita .berita-grid,
+.news-sections #latestList .latest-item,
+.news-sections #berita .berita,
+.news-sections #berita .berita-link{
+  box-sizing:border-box!important;
+}
+.news-sections{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:start!important;
+}
+@media (min-width:700px){
+  .news-sections>.latest-panel,
+  .news-sections>#berita{
+    width:100%!important;
+    min-width:0!important;
+  }
+  .news-sections #latestList .latest-item,
+  .news-sections #berita .berita-link{
+    width:100%!important;
   }
 }
 </style>\n</body>
