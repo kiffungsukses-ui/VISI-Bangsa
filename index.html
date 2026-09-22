@@ -2256,8 +2256,10 @@ if(headerSearchToggle)headerSearchToggle.addEventListener("click",()=>{
 
 <script id="locked-news-rows">
 function syncNewsRows(){
+  /* Satu baris = satu .latest-item di kiri dan satu .berita di kanan.
+     Tinggi dikunci pada wrapper baris yang sama, bukan pada .berita-link di dalamnya. */
   const left=[...document.querySelectorAll("#latestList .latest-item")];
-  const right=[...document.querySelectorAll("#beritaGrid .berita .berita-link")];
+  const right=[...document.querySelectorAll("#beritaGrid .berita")];
   if(!left.length || !right.length) return;
 
   if(window.innerWidth < 700){
@@ -2268,7 +2270,6 @@ function syncNewsRows(){
     return;
   }
 
-  /* Reset dahulu, ukur setelah semua gambar memperoleh ukuran final. */
   [...left,...right].forEach(el=>{
     el.style.height="auto";
     el.style.minHeight="";
