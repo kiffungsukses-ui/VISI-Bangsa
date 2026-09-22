@@ -2592,49 +2592,55 @@ if(document.readyState==="loading"){
   }
 }
 
-/* ===== UNIFIED NEWS CARD STYLE =====
-   Kedua kolom menggunakan SATU jenis kartu yang sama.
-   Tidak ada kartu bersarang pada Berita Pilihan.
+/* ===== UNIFIED NEWS ROW/CARD STYLE =====
+   Kedua sisi memakai baris berita yang sama:
+   putih + garis pembatas penuh + tanpa kartu bertingkat.
 */
+.news-sections #latestList .latest-item,
 .news-sections #berita .berita{
-  display:block!important;
+  box-sizing:border-box!important;
   width:100%!important;
   min-width:0!important;
   margin:0!important;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  overflow:visible!important;
-}
-.news-sections #berita .berita-link,
-.news-sections #latestList .latest-item{
+  padding:12px 0!important;
   background:#fff!important;
   border:0!important;
   border-bottom:1px solid #e2e7ec!important;
   border-radius:0!important;
   box-shadow:none!important;
 }
+.news-sections #berita .berita{
+  display:block!important;
+  overflow:visible!important;
+}
 .news-sections #berita .berita-link{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
   margin:0!important;
+  padding:0!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
 }
-.news-sections #latestList .latest-item{
-  margin:0!important;
-}
-.news-sections #berita .berita-link:last-child,
-.news-sections #latestList .latest-item:last-child{
+.news-sections #latestList .latest-item:last-child,
+.news-sections #berita .berita:last-child{
   border-bottom:0!important;
 }
-/* Satu garis pemisah dan satu ritme vertikal untuk kedua sisi. */
-.news-sections #latestList .latest-item,
-.news-sections #berita .berita-link{
-  padding-top:12px!important;
-  padding-bottom:12px!important;
+.news-sections #latestList .latest-item img,
+.news-sections #berita .berita-link .gambar,
+.news-sections #berita .berita-link .tanpa-gambar{
+  width:100%!important;
+  aspect-ratio:16/9!important;
+  object-fit:cover!important;
+  display:block!important;
 }
 @media (min-width:700px) and (max-width:1199px){
   .news-sections #latestList .latest-item,
-  .news-sections #berita .berita-link{
+  .news-sections #berita .berita{
     padding-top:10px!important;
     padding-bottom:10px!important;
   }
