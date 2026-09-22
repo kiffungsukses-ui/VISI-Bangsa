@@ -1691,67 +1691,60 @@ function formatTanggal(value) {
 
 
 async function loadBerita() {
-
-  beritaGrid.innerHTML =
-    `<div class="empty">
-      Memuat berita...
-    </div>`;
-
-  headline.innerHTML =
-    `<div id="status">
-      Memuat berita utama...
-    </div>`;
-
-
-  let {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("berita")
-      .select("*")
-      .eq("status","terbit")
-      .order(
-        "tanggal",
-        {
-          ascending: false
-        }
-      );
-
-  // Hanya berita berstatus terbit yang boleh tampil di halaman publik.
-  // Jangan pernah menampilkan pending/rejected/draft sebagai fallback.
-
-  if (error) {
-
-    console.error(error);
-
+  if (beritaGrid) {
     beritaGrid.innerHTML =
-      `<div class="empty">
-        Berita belum dapat dimuat.
-      </div>`;
-
-    headline.innerHTML =
-      `<div class="empty">
-        Berita belum dapat dimuat.
-      </div>`;
-
-    return;
-
+      '<div class="empty">Memuat berita...</div>';
   }
 
+  if (headline) {
+    headline.innerHTML =
+      '<div id="status">Memuat berita utama...</div>';
+  }
 
-  semuaBerita =
-    data || [];
+  try {
+    const result = await supabaseClient
+      .from("berita")
+      .select("*")
+      .eq("status", "terbit")
+      .order("tanggal", { ascending: false });
 
+    if (result.error) {
+      throw result.error;
+    }
 
-  renderHeadline();
-  renderLatest();
-  renderBreaking();
-  renderCategoryTiles();
-  renderBerita();
+    semuaBerita = result.data || [];
 
+    renderHeadline();
+    renderLatest();
+    renderBreaking();
+    renderCategoryTiles();
+    renderBerita();
+
+  } catch (error) {
+    console.error("Gagal memuat berita:", error);
+
+    if (beritaGrid) {
+      beritaGrid.innerHTML =
+        '<div class="empty">Berita belum dapat dimuat. Silakan coba refresh kembali.</div>';
+    }
+
+    if (headline) {
+      headline.innerHTML =
+        '<div class="empty">Berita utama belum dapat dimuat.</div>';
+    }
+
+    const latest = document.getElementById("latestList");
+    if (latest) {
+      latest.innerHTML =
+        '<div class="empty">Berita belum dapat dimuat.</div>';
+    }
+
+    const breaking = document.getElementById("breakingText");
+    if (breaking) {
+      breaking.textContent = "Berita belum dapat dimuat.";
+    }
+  }
 }
-
 
 function renderLatest(){
   const el=document.getElementById("latestList");
@@ -2162,27 +2155,29 @@ function lakukanPencarian() {
 }
 
 
-searchButton.addEventListener(
-  "click",
-  lakukanPencarian
-);
+if (searchButton) {
+  searchButton.addEventListener(
+    "click",
+    lakukanPencarian
+  );
+}
 
 
 
 
-searchInput.addEventListener(
-  "keydown",
-  function(event) {
-
-    if (event.key === "Enter") {
-      lakukanPencarian();
+if (searchInput) {
+  searchInput.addEventListener(
+    "keydown",
+    function(event) {
+      if (event.key === "Enter") {
+        lakukanPencarian();
+      }
     }
+  );
+}
 
-  }
-);
 
-
-Promise.all([loadSiteSettings(),loadBerita(),loadAds()]);
+Promise.allSettled([loadSiteSettings(), loadBerita(), loadAds()]);
 
 const adRotators = {};
 const adImpressionLastSent = new Map();
