@@ -1753,7 +1753,37 @@ async function loadBerita() {
 }
 
 
-function renderLatest(){const el=document.getElementById("latestList");if(!el)return;const items=semuaBerita.slice(0,5);if(!items.length){el.innerHTML='<div class="empty">Belum ada berita.</div>';return;}el.innerHTML=items.map(item=>{const img=item.gambar?'<img src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">':'<div class="latest-item" style="background:#eee"></div>';return '<a class="latest-item" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+img+'<div><div class="latest-cat">'+escapeHtml(item.kategori||"Berita")+'</div><div class="latest-title">'+escapeHtml(item.judul)+'</div><div class="latest-time">'+escapeHtml(formatTanggal(item.tanggal))+'</div></div></a>';}).join("");}
+function renderLatest(){
+  const el=document.getElementById("latestList");
+  if(!el)return;
+  const items=semuaBerita.slice(0,5);
+  if(!items.length){
+    el.innerHTML='<div class="empty">Belum ada berita.</div>';
+    return;
+  }
+
+  /* Berita Terkini memakai STRUKTUR KARTU YANG SAMA PERSIS
+     dengan Berita Pilihan. Ini membuat foto, judul, dan garis
+     pembatas mengikuti ritme baris yang sama. */
+  el.innerHTML=items.map(item=>{
+    const gambar=item.gambar
+      ? '<img class="gambar" src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'">'
+      : '<div class="tanpa-gambar">VISI Bangsa</div>';
+
+    return '<article class="berita latest-item">'+
+      '<a class="berita-link" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+
+        gambar+
+        '<div class="isi">'+
+          '<div class="kategori">'+escapeHtml(item.kategori||"Berita")+'</div>'+
+          '<h3 class="judul">'+escapeHtml(item.judul)+'</h3>'+
+          '<div class="meta">'+escapeHtml(item.penulis||"Redaksi VISI Bangsa")+' • '+escapeHtml(formatTanggal(item.tanggal))+'</div>'+
+        '</div>'+
+      '</a>'+
+    '</article>';
+  }).join("");
+
+  scheduleNewsRowSync();
+}
 function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
 function renderCategoryTiles(){const el=document.getElementById("categoryTiles");if(!el)return;const cats=[["Berita","▤"],["Nasional","♜"],["Daerah","⌁"],["Ekonomi","↗"],["Opini","◉"],["Pesona & Budaya","✦"]];el.innerHTML=cats.map(([cat,icon])=>'<a class="category-tile" href="#berita" data-cat="'+escapeAttribute(cat)+'"><span class="category-icon">'+icon+'</span><span class="category-name">'+escapeHtml(cat)+'</span></a>').join("");el.querySelectorAll(".category-tile").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();kategoriAktif=a.dataset.cat;document.querySelectorAll(".filter-btn").forEach(b=>b.classList.toggle("active",b.dataset.category===kategoriAktif));renderBerita();document.getElementById("berita").scrollIntoView({behavior:"smooth"});}));}
 function renderHeadline() {
@@ -2645,6 +2675,40 @@ if(document.readyState==="loading"){
     padding-top:10px!important;
     padding-bottom:10px!important;
   }
+}
+
+/* Kedua kolom benar-benar satu jenis kartu: ringkasan tidak ditampilkan. */
+.news-sections #berita .ringkasan{
+  display:none!important;
+}
+.news-sections #latestList .berita,
+.news-sections #berita .berita{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #e2e7ec!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.news-sections #latestList .berita-link,
+.news-sections #berita .berita-link{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:12px 0!important;
+  background:#fff!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.news-sections #latestList .berita:last-child,
+.news-sections #berita .berita:last-child{
+  border-bottom:0!important;
 }
 </style>\n</body>
 </html>
