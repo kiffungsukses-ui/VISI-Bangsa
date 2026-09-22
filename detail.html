@@ -861,12 +861,15 @@ input,select,textarea,button{max-width:100%;font:inherit}
       );
     }
 
-    async function registerArticleView(id) {
-      if (!id) return;
+    async function registerArticleView(id, visitorId) {
+      if (!id || !visitorId) return;
       try {
         const { error } = await supabaseClient.rpc(
           "increment_news_view",
-          { p_news_id: String(id) }
+          {
+            p_news_id: String(id),
+            p_visitor_id: String(visitorId)
+          }
         );
         if (error) console.error("Gagal mencatat view:", error);
       } catch (error) {
@@ -911,8 +914,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       renderArticle(data);
 
+      await registerArticleView(data.id, getVisitorId());
       await registerSiteVisit(window.location.pathname, data.id);
-      await registerArticleView(data.id);
 
       await loadRelated(
         data.kategori,
