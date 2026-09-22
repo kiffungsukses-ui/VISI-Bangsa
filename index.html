@@ -2254,6 +2254,192 @@ if(headerSearchToggle)headerSearchToggle.addEventListener("click",()=>{
 
 </script>
 
-</body>
+<style id="fb-inspired-responsive-news-final">
+/* ===== FINAL NEWS FEED LAYOUT =====
+   Inspired by feed principles: consistent cards, fixed image ratio,
+   readable text column, and layout changes based on available width.
+*/
+.news-sections{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:16px!important;
+  align-items:start!important;
+}
+.news-sections>.latest-panel,
+.news-sections>#berita{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+}
+.news-sections .latest-panel{
+  padding:0 12px 10px!important;
+  background:#fff!important;
+  border-radius:10px!important;
+  overflow:visible!important;
+  box-shadow:0 2px 10px rgba(14,55,95,.08)!important;
+}
+.news-sections .latest-head,
+.news-sections #berita .section-header{
+  min-height:64px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  margin:0 -12px 6px!important;
+  padding:10px 14px!important;
+  background:#0b5aa6!important;
+  color:#fff!important;
+  border:0!important;
+  border-radius:10px 10px 0 0!important;
+}
+.news-sections .latest-head h2,
+.news-sections #berita .section-header h2{
+  margin:0!important;
+  font-size:clamp(20px,2vw,27px)!important;
+  line-height:1.1!important;
+}
+.news-sections .latest-head a{color:#fff!important;white-space:nowrap!important}
+
+.news-sections .latest-item{
+  display:grid!important;
+  grid-template-columns:118px minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+  padding:10px 0!important;
+  min-height:0!important;
+  border-bottom:1px solid #e2e7ec!important;
+}
+.news-sections .latest-item:last-child{border-bottom:0!important}
+.news-sections .latest-item img{
+  display:block!important;
+  width:118px!important;
+  height:82px!important;
+  aspect-ratio:118/82!important;
+  object-fit:cover!important;
+  border-radius:7px!important;
+}
+.news-sections .latest-item>div{min-width:0!important}
+.news-sections .latest-cat,
+.news-sections #berita .kategori{
+  display:block!important;
+  margin:0 0 4px!important;
+  color:#c40000!important;
+  background:transparent!important;
+  padding:0!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+.news-sections .latest-title{
+  color:#243445!important;
+  font-size:17px!important;
+  line-height:1.22!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+.news-sections .latest-time{
+  margin-top:5px!important;
+  color:#7c8792!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+}
+
+.news-sections #berita .filter-wrap{display:none!important}
+.news-sections #berita .berita-grid{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  padding:0 12px 8px!important;
+  background:#fff!important;
+  border-radius:0 0 10px 10px!important;
+}
+.news-sections #berita .berita-link{
+  display:grid!important;
+  grid-template-columns:118px minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:10px 0!important;
+  border-bottom:1px solid #e2e7ec!important;
+}
+.news-sections #berita .berita-link:last-child{border-bottom:0!important}
+.news-sections #berita .gambar,
+.news-sections #berita .tanpa-gambar{
+  display:block!important;
+  width:118px!important;
+  height:82px!important;
+  min-height:82px!important;
+  aspect-ratio:118/82!important;
+  object-fit:cover!important;
+  border-radius:7px!important;
+}
+.news-sections #berita .isi{
+  min-width:0!important;
+  padding:0!important;
+}
+.news-sections #berita .judul{
+  margin:0 0 5px!important;
+  color:#243445!important;
+  font-size:17px!important;
+  line-height:1.22!important;
+  overflow-wrap:anywhere!important;
+}
+.news-sections #berita .ringkasan{
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+  margin:0!important;
+  color:#697582!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+.news-sections #berita .meta{
+  margin-top:5px!important;
+  font-size:10px!important;
+  color:#8a949d!important;
+}
+
+/* Foldable/tablet: keep two panels, but compact the cards. */
+@media (min-width:600px) and (max-width:899px){
+  .news-sections{gap:12px!important}
+  .news-sections .latest-item,
+  .news-sections #berita .berita-link{
+    grid-template-columns:90px minmax(0,1fr)!important;
+    gap:9px!important;
+  }
+  .news-sections .latest-item img,
+  .news-sections #berita .gambar,
+  .news-sections #berita .tanpa-gambar{
+    width:90px!important;height:64px!important;min-height:64px!important;
+  }
+  .news-sections .latest-title,
+  .news-sections #berita .judul{font-size:14px!important}
+  .news-sections .latest-time,
+  .news-sections #berita .meta{font-size:9px!important}
+  .news-sections .latest-cat,
+  .news-sections #berita .kategori{font-size:9px!important}
+}
+
+/* Narrow phone / folded Z Fold: stack sections vertically. */
+@media (max-width:599px){
+  .news-sections{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:14px!important;
+  }
+  .news-sections .latest-item,
+  .news-sections #berita .berita-link{
+    grid-template-columns:105px minmax(0,1fr)!important;
+    gap:10px!important;
+  }
+  .news-sections .latest-item img,
+  .news-sections #berita .gambar,
+  .news-sections #berita .tanpa-gambar{
+    width:105px!important;height:72px!important;min-height:72px!important;
+  }
+  .news-sections .latest-title,
+  .news-sections #berita .judul{font-size:15px!important}
+}
+</style>\n</body>
 </html>
 ```
