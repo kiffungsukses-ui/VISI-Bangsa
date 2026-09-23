@@ -38,7 +38,7 @@ export default async function handler(req, res) {
 
     const clean = String(article.isi || "").replace(/\s+/g, " ").trim();
     const description = clean.length > 160 ? clean.slice(0, 157) + "..." : clean || "Berita terbaru dan informasi terkini dari VISI Bangsa.";
-    const image = article.gambar ? new URL(article.gambar, origin).href : origin + "/favicon.ico";
+    const image = article.gambar ? origin + "/api/og-image?id=" + encodeURIComponent(id) : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
     const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
