@@ -1774,7 +1774,8 @@ const supabaseClient =
           p_referrer_host: a.referrerHost,
           p_utm_source: a.utmSource,
           p_utm_medium: a.utmMedium,
-          p_utm_campaign: a.utmCampaign
+          p_utm_campaign: a.utmCampaign,
+          p_user_agent: navigator.userAgent || null
         });
       } catch (error) {
         console.warn("Statistik kunjungan tidak tercatat:", error);
