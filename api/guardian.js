@@ -12,14 +12,136 @@ function fail(name, details = {}) {
 
 async function probe(name, url, options = {}) {
   const started = Date.now();
+
   try {
     const response = await fetch(url, {
       ...options,
       signal: AbortSignal.timeout(8000),
     });
-    return response.ok
-      ? ok(name, { httpStatus: response.status, durationMs: Date.now() - started })
-      : fail(name, { httpStatus: response.status, durationMs: Date.now() - started });
+
+    const bodyText = await response.text();
+
+    if (!response.ok) {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        error: bodyText.slice(0, 500),
+      });
+    }
+
+    return ok(name, {
+      httpStatus: response.status,
+      durationMs: Date.now() - started,
+    });
+  } catch (error) {
+    return fail(name, {
+      durationMs: Date.now() - started,
+      error: String(error?.message || error),
+    });
+  }
+}
+
+async function probePublishedNews() {
+  const name = "public-published-news";
+  const started = Date.now();
+  const url =
+    SUPABASE_URL +
+    "/rest/v1/berita?select=id,status,judul&status=eq.terbit&order=id.desc&limit=1";
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: "Bearer " + SUPABASE_KEY,
+      },
+      signal: AbortSignal.timeout(8000),
+    });
+
+    const text = await response.text();
+
+    if (!response.ok) {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        error: text.slice(0, 500),
+        diagnosis:
+          "Pengunjung anonim tidak dapat membaca berita terbit. Periksa grant SELECT dan RLS policy public.berita.",
+      });
+    }
+
+    let rows;
+    try {
+      rows = JSON.parse(text);
+    } catch {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        error: "Supabase REST returned non-JSON data.",
+      });
+    }
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        diagnosis:
+          "API publik hidup tetapi tidak menemukan berita dengan status='terbit'.",
+      });
+    }
+
+    return ok(name, {
+      httpStatus: response.status,
+      durationMs: Date.now() - started,
+      latestPublishedId: rows[0]?.id ?? null,
+      latestPublishedTitle: rows[0]?.judul ?? null,
+      accessModel: "anonymous-publishable-key",
+    });
+  } catch (error) {
+    return fail(name, {
+      durationMs: Date.now() - started,
+      error: String(error?.message || error),
+    });
+  }
+}
+
+async function probeHomepageContent() {
+  const name = "homepage-content";
+  const started = Date.now();
+
+  try {
+    const response = await fetch(SITE_ORIGIN + "/", {
+      signal: AbortSignal.timeout(8000),
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    });
+
+    const html = await response.text();
+
+    if (!response.ok) {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        error: "Homepage HTTP request failed.",
+      });
+    }
+
+    const hasBrand = /VISI\s*Bangsa/i.test(html);
+    const hasSupabaseClient = /supabase/i.test(html);
+
+    if (!hasBrand || !hasSupabaseClient) {
+      return fail(name, {
+        httpStatus: response.status,
+        durationMs: Date.now() - started,
+        diagnosis: "Homepage HTML tidak memuat penanda aplikasi yang diharapkan.",
+      });
+    }
+
+    return ok(name, {
+      httpStatus: response.status,
+      durationMs: Date.now() - started,
+      htmlBytes: Buffer.byteLength(html, "utf8"),
+    });
   } catch (error) {
     return fail(name, {
       durationMs: Date.now() - started,
@@ -31,10 +153,10 @@ async function probe(name, url, options = {}) {
 export default async function handler(req, res) {
   const started = Date.now();
 
-  // Guardian is intentionally read-only: it observes availability and does not
-  // mutate content, authentication, or database records.
+  // Guardian is intentionally read-only. It tests the site from the public
+  // visitor path and never mutates content, authentication, or database rows.
   const checks = await Promise.all([
-    probe("homepage", SITE_ORIGIN + "/"),
+    probeHomepageContent(),
     probe("sitemap", SITE_ORIGIN + "/sitemap.xml"),
     probe(
       "supabase-rest",
@@ -46,22 +168,23 @@ export default async function handler(req, res) {
         },
       }
     ),
+    probePublishedNews(),
   ]);
 
   const healthy = checks.every((check) => check.status === "ok");
   const result = {
     guardian: "VISI Bangsa Guardian",
-    version: "1.0",
-    status: healthy ? "healthy" : "degraded",
+    version: "2.0-public-path",
+    status: healthy ? "healthy" : "critical",
     checkedAt: new Date().toISOString(),
     durationMs: Date.now() - started,
     checks,
   };
 
   if (!healthy) {
-    console.error("[GUARDIAN]", JSON.stringify(result));
+    console.error("[GUARDIAN][CRITICAL]", JSON.stringify(result));
   } else {
-    console.log("[GUARDIAN]", JSON.stringify(result));
+    console.log("[GUARDIAN][OK]", JSON.stringify(result));
   }
 
   res.setHeader("Cache-Control", "no-store, max-age=0");
