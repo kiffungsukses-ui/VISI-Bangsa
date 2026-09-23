@@ -1734,12 +1734,47 @@ const supabaseClient =
       }
     }
 
+    function getRadarAttribution() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const ref = document.referrer || "";
+        let referrerHost = "";
+        try { referrerHost = ref ? new URL(ref).hostname.replace(/^www\\./, "") : ""; } catch {}
+        let source = params.get("utm_source") || "";
+        if (!source && referrerHost) {
+          if (/google\\./i.test(referrerHost)) source = "google";
+          else if (/facebook\\.com$/i.test(referrerHost)) source = "facebook";
+          else if (/instagram\\.com$/i.test(referrerHost)) source = "instagram";
+          else if (/t\\.co$|twitter\\.com$/i.test(referrerHost)) source = "x";
+          else if (/t\\.me$|telegram\\.me$/i.test(referrerHost)) source = "telegram";
+          else if (/wa\\.me$|whatsapp\\.com$/i.test(referrerHost)) source = "whatsapp";
+          else source = "referral";
+        }
+        if (!source) source = "direct";
+        return {
+          source: source.slice(0, 40),
+          referrerHost: referrerHost.slice(0, 120),
+          utmSource: (params.get("utm_source") || "").slice(0,120),
+          utmMedium: (params.get("utm_medium") || "").slice(0,120),
+          utmCampaign: (params.get("utm_campaign") || "").slice(0,120)
+        };
+      } catch {
+        return {source:"direct",referrerHost:"",utmSource:"",utmMedium:"",utmCampaign:""};
+      }
+    }
+
     async function registerSiteVisit() {
       try {
-        await supabaseClient.rpc("track_site_visit", {
+        const a = getRadarAttribution();
+        await supabaseClient.rpc("track_site_visit_v2", {
           p_path: window.location.pathname || "/",
           p_news_id: null,
-          p_visitor_id: getVisitorId()
+          p_visitor_id: getVisitorId(),
+          p_source: a.source,
+          p_referrer_host: a.referrerHost,
+          p_utm_source: a.utmSource,
+          p_utm_medium: a.utmMedium,
+          p_utm_campaign: a.utmCampaign
         });
       } catch (error) {
         console.warn("Statistik kunjungan tidak tercatat:", error);
