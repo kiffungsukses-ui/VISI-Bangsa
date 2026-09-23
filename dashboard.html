@@ -3924,8 +3924,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
                   ' • Hari ini: ' + (todayMap.get(String(n.news_id)) || 0).toLocaleString("id-ID") +
                   ' • Total: ' + views.toLocaleString("id-ID") +
                   '</div></div><div class="top-article-views"><strong>' +
-                  (todayMap.get(String(n.news_id)) || 0).toLocaleString("id-ID") +
-                  '</strong><span>hari ini</span></div></div>';
+                  views.toLocaleString("id-ID") +
+                  '</strong><span>total</span></div></div>';
               }).join("")
             : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
         }
