@@ -1766,7 +1766,7 @@ const supabaseClient =
     async function registerSiteVisit() {
       try {
         const a = getRadarAttribution();
-        await supabaseClient.rpc("track_site_visit_v2", {
+        await supabaseClient.rpc("record_site_visit", {
           p_path: window.location.pathname || "/",
           p_news_id: null,
           p_visitor_id: getVisitorId(),
