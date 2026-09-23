@@ -1274,7 +1274,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
               titleElement.textContent,
 
             url:
-              new URL(baseUrl + "&utm_source=share&utm_medium=share&utm_campaign=berita").toString()
+              (() => { const u = new URL(PUBLIC_ORIGIN + "/detail.html"); u.searchParams.set("id", String(articleId || "")); u.searchParams.set("utm_source","share"); u.searchParams.set("utm_medium","share"); u.searchParams.set("utm_campaign","berita"); return u.toString(); })()
           };
 
           try {
@@ -1290,7 +1290,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             } else {
 
               await navigator.clipboard.writeText(
-                new URL(baseUrl + "&utm_source=copy&utm_medium=share&utm_campaign=berita").toString()
+                (() => { const u = new URL(PUBLIC_ORIGIN + "/detail.html"); u.searchParams.set("id", String(articleId || "")); u.searchParams.set("utm_source","copy"); u.searchParams.set("utm_medium","share"); u.searchParams.set("utm_campaign","berita"); return u.toString(); })()
               );
 
               alert(
