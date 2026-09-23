@@ -3882,6 +3882,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
         set("statAdUniqueToday", Number(stats.ad_unique_today) || 0);
 
         const top = Array.isArray(stats.top_articles) ? stats.top_articles.slice(0, 3) : [];
+        const todayTop = Array.isArray(stats.top_articles_today) ? stats.top_articles_today.slice(0, 3) : [];
+        const todayMap = new Map(todayTop.map(item => [String(item.news_id), Number(item.visits_today) || 0]));
         const renderBarChart = (id, rows) => {
           const el = document.getElementById(id);
           if (!el) return;
@@ -3916,9 +3918,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
                   escapeHtml(n.judul || "Tanpa judul") +
                   '</div><div class="top-article-meta">' +
                   escapeHtml(n.kategori || "Berita") +
+                  ' • Hari ini: ' + (todayMap.get(String(n.news_id)) || 0).toLocaleString("id-ID") +
+                  ' • Total: ' + views.toLocaleString("id-ID") +
                   '</div></div><div class="top-article-views"><strong>' +
-                  views.toLocaleString("id-ID") +
-                  '</strong><span>pembaca</span></div></div>';
+                  (todayMap.get(String(n.news_id)) || 0).toLocaleString("id-ID") +
+                  '</strong><span>hari ini</span></div></div>';
               }).join("")
             : '<div class="empty" style="padding:18px">Belum ada berita terbit.</div>';
         }
