@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/:slug([a-z0-9][a-z0-9-]*)",
+      "destination": "/api/share?slug=:slug"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     }
