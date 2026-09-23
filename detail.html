@@ -543,6 +543,10 @@ input,select,textarea,button{max-width:100%;font:inherit}
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    // Domain publik resmi VISI Bangsa. Semua canonical, share, dan link distribusi
+    // harus menggunakan domain ini, bukan hostname deployment Vercel.
+    const PUBLIC_ORIGIN = "https://visibangsa.id";
+
     const SUPABASE_URL =
       "https://vupvgdfdnpqactlqufbu.supabase.co";
 
@@ -1312,7 +1316,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           try {
 
             await navigator.clipboard.writeText(
-              window.location.href
+              PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
             );
 
             alert(
