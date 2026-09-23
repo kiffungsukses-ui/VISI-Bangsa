@@ -1261,6 +1261,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
               <tbody>
                 <tr><td>Total Berita</td><td id="statTotal">—</td></tr>
                 <tr><td>Total Kunjungan Website</td><td id="statViews">—</td></tr>
+                <tr><td>Total Pembacaan Artikel</td><td id="statTotalArticleViews">—</td></tr>
                 <tr><td>Kunjungan Website Hari Ini</td><td id="statTodayVisits">—</td></tr>
                 <tr><td>Pengunjung Unik Hari Ini</td><td id="statUniqueToday">—</td></tr>
                 <tr><td>Pembacaan Artikel Hari Ini</td><td id="statTodayArticleViews">—</td></tr>
@@ -1274,7 +1275,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           </div>
           <div class="top-articles">
             <div class="top-articles-head">
-              <div><h3>Berita Paling Banyak Dibaca</h3><span>Urutan berdasarkan pembacaan artikel (angka yang sama dengan Daftar Berita).</span></div>
+              <div><h3>Berita Paling Banyak Dibaca</h3><span>Urutan berdasarkan total pembacaan artikel. Kunjungan website dan pembacaan artikel adalah metrik yang berbeda.</span></div>
             </div>
             <div id="topArticlesList" class="top-articles-list"><div class="loading">Memuat statistik...</div></div>
           </div>
@@ -3873,6 +3874,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         set("statImages", Number(stats.images) || 0);
         set("statCategories", Number(stats.categories) || 0);
         set("statViews", Number(stats.total_visits) || 0);
+        set("statTotalArticleViews", Number(stats.total_article_views) || 0);
         set("statTodayVisits", Number(stats.today_visits) || 0);
         set("statUniqueToday", Number(stats.unique_today) || 0);
         set("statTodayArticleViews", Number(stats.today_article_views) || 0);
@@ -3895,8 +3897,9 @@ input,select,textarea,button{max-width:100%;font:inherit}
           }).join("");
         };
         renderBarChart("readerChart",[
-          {label:"Total kunjungan",value:Number(stats.total_visits)||0},
-          {label:"Kunjungan hari ini",value:Number(stats.today_visits)||0},
+          {label:"Total kunjungan website",value:Number(stats.total_visits)||0},
+          {label:"Total pembacaan artikel",value:Number(stats.total_article_views)||0},
+          {label:"Kunjungan website hari ini",value:Number(stats.today_visits)||0},
           {label:"Pengunjung unik hari ini",value:Number(stats.unique_today)||0},
           {label:"Pembacaan artikel hari ini",value:Number(stats.today_article_views)||0},
           {label:"Sedang online",value:Number(stats.online)||0}
