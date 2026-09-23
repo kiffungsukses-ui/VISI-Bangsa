@@ -3019,23 +3019,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       beritaData = result.data || [];
 
-      // Statistik daftar berita memakai sumber yang sama dengan Dashboard:
-      // article_view_events (bukan kolom views legacy), sehingga angka tidak lagi berbeda.
-      try {
-        const statsResult = await supabaseClient.rpc("get_article_view_counts");
-        if (!statsResult.error && Array.isArray(statsResult.data)) {
-          const verifiedMap = new Map(
-            statsResult.data.map(row => [String(row.news_id), Number(row.verified_views) || 0])
-          );
-          beritaData = beritaData.map(item => ({
-            ...item,
-            verified_views: verifiedMap.get(String(item.id)) || 0
-          }));
-        }
-      } catch (statsError) {
-        console.warn("Statistik pembacaan terverifikasi tidak dapat dimuat:", statsError);
-      }
-
+      // Angka pembacaan yang sudah tercatat pada berita adalah sumber angka utama dashboard.
+      // Event terverifikasi tetap dipakai oleh statistik audit/monitoring dan tidak menimpa views historis.
       renderPendingFolder();
       renderNewsCategoryTabs();
 
