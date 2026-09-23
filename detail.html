@@ -977,11 +977,13 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       renderArticle(data);
 
-      // Catat kunjungan detail lebih dulu. Fungsi penghitung view menggunakan
-      // telemetry ini untuk mencegah satu pengunjung menaikkan view berulang
-      // dalam jendela deduplikasi yang sama.
+      // Hitung pembacaan artikel lebih dulu. Fungsi increment_news_view
+      // menggunakan site_visits sebagai jendela deduplikasi 30 menit.
+      // Karena itu site_visits harus dicatat setelah increment; jika dibalik,
+      // setiap pembacaan akan selalu terlihat sebagai duplikat dan views tidak naik.
+      const visitorId = getVisitorId();
+      await registerArticleView(data.id, visitorId);
       await registerSiteVisit(window.location.pathname, data.id);
-      await registerArticleView(data.id, getVisitorId());
 
       await loadRelated(
         data.kategori,
