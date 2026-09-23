@@ -1313,9 +1313,12 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
           try {
 
-            await navigator.clipboard.writeText(
-                new URL(baseUrl + "&utm_source=copy&utm_medium=share&utm_campaign=berita").toString()
-              );
+            const copyUrl = new URL(PUBLIC_ORIGIN + "/detail.html");
+            copyUrl.searchParams.set("id", String(articleId || ""));
+            copyUrl.searchParams.set("utm_source", "copy");
+            copyUrl.searchParams.set("utm_medium", "share");
+            copyUrl.searchParams.set("utm_campaign", "berita");
+            await navigator.clipboard.writeText(copyUrl.toString());
 
             alert(
               "Link berita berhasil disalin."
