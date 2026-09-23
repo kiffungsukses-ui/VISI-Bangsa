@@ -35,6 +35,13 @@ export default async function handler(req, res) {
     const image = article.gambar ? new URL(article.gambar, origin).href : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
     const category = String(article.kategori || "Berita");
+    const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
+    const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
+    const redirectUrl = new URL(detailUrl);
+    for (const key of ["utm_source","utm_medium","utm_campaign","share_token"]) {
+      const value = String(req.query?.[key] || "").trim();
+      if (value) redirectUrl.searchParams.set(key, value);
+    }
 
     res.status(200);
     res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -53,7 +60,7 @@ export default async function handler(req, res) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(detailUrl)}">
-<meta property="og:image" content="${esc(image)}">
+<meta property="og:image" content="${esc(image)}">\n<meta property="og:image:secure_url" content="${esc(image)}">\n<meta property="og:image:type" content="${esc(imageType)}">
 <meta property="og:image:alt" content="${esc(title)}">
 <meta property="og:image:type" content="image/jpeg">
 <meta name="twitter:card" content="summary_large_image">
