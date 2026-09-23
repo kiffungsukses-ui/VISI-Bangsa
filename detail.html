@@ -601,6 +601,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
       }
     }
 
+    function getUserAgent() {
+      try { return String(navigator.userAgent || "").slice(0, 500); }
+      catch { return ""; }
+    }
+
     async function registerSiteVisit(path, newsId = null) {
       try {
         const a = getRadarAttribution();
@@ -612,7 +617,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
           p_referrer_host: a.referrerHost,
           p_utm_source: a.utmSource,
           p_utm_medium: a.utmMedium,
-          p_utm_campaign: a.utmCampaign
+          p_utm_campaign: a.utmCampaign,
+          p_user_agent: getUserAgent()
         });
       } catch (error) {
         console.warn("Statistik kunjungan tidak tercatat:", error);
@@ -927,16 +933,20 @@ input,select,textarea,button{max-width:100%;font:inherit}
     async function registerArticleView(id, visitorId) {
       if (!id || !visitorId) return;
       try {
+        const attribution = getRadarAttribution();
         const { error } = await supabaseClient.rpc(
           "increment_news_view",
           {
             p_news_id: String(id),
-            p_visitor_id: String(visitorId)
+            p_visitor_id: String(visitorId),
+            p_source: attribution.source,
+            p_referrer_host: attribution.referrerHost,
+            p_user_agent: getUserAgent()
           }
         );
-        if (error) console.error("Gagal mencatat view:", error);
+        if (error) console.error("Gagal mencatat pembacaan artikel:", error);
       } catch (error) {
-        console.error("Gagal mencatat view:", error);
+        console.error("Gagal mencatat pembacaan artikel:", error);
       }
     }
 
@@ -977,10 +987,9 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       renderArticle(data);
 
-      // Hitung pembacaan artikel lebih dulu. Fungsi increment_news_view
-      // menggunakan site_visits sebagai jendela deduplikasi 30 menit.
-      // Karena itu site_visits harus dicatat setelah increment; jika dibalik,
-      // setiap pembacaan akan selalu terlihat sebagai duplikat dan views tidak naik.
+      // Catat kunjungan halaman dan pembacaan artikel sebagai dua event berbeda.
+      // Event pembacaan memiliki deduplikasi 30 menit dan dapat menyaring bot;
+      // site_visits tetap menjadi telemetry navigasi/kunjungan website.
       const visitorId = getVisitorId();
       await registerArticleView(data.id, visitorId);
       await registerSiteVisit(window.location.pathname, data.id);
