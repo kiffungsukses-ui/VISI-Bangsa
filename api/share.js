@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   if (!/^\d+$/.test(id)) {
     res.status(400).setHeader("Content-Type", "text/html; charset=utf-8");
-    return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"0;url=" + origin + "/\"></head><body>VISI Bangsa</body></html>");
+    return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex\"></head><body><a href=\"" + origin + "/\">VISI Bangsa</a></body></html>");
   }
 
   const supabaseUrl = "https://vupvgdfdnpqactlqufbu.supabase.co";
@@ -19,24 +19,30 @@ export default async function handler(req, res) {
         Authorization: "Bearer " + supabaseKey
       }
     });
+
+    if (!response.ok) {
+      throw new Error("Supabase returned HTTP " + response.status);
+    }
+
     const rows = await response.json();
     const article = Array.isArray(rows) ? rows[0] : null;
 
     if (!article) {
       res.status(404).setHeader("Content-Type", "text/html; charset=utf-8");
-      return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"0;url=" + origin + "/\"></head><body>Berita tidak ditemukan.</body></html>");
+      return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex\"></head><body>Berita tidak ditemukan.</body></html>");
     }
 
     const esc = (v) => String(v ?? "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;")
       .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
     const clean = String(article.isi || "").replace(/\s+/g, " ").trim();
     const description = clean.length > 160 ? clean.slice(0, 157) + "..." : clean || "Berita terbaru dan informasi terkini dari VISI Bangsa.";
     const image = article.gambar ? new URL(article.gambar, origin).href : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
-    const category = String(article.kategori || "Berita");
     const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
+
     const redirectUrl = new URL(detailUrl);
     for (const key of ["utm_source","utm_medium","utm_campaign","share_token"]) {
       const value = String(req.query?.[key] || "").trim();
@@ -60,24 +66,28 @@ export default async function handler(req, res) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(detailUrl)}">
-<meta property="og:image" content="${esc(image)}">\n<meta property="og:image:secure_url" content="${esc(image)}">\n<meta property="og:image:type" content="${esc(imageType)}">
+<meta property="og:image" content="${esc(image)}">
+<meta property="og:image:secure_url" content="${esc(image)}">
+<meta property="og:image:type" content="${esc(imageType)}">
 <meta property="og:image:alt" content="${esc(title)}">
-<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(image)}">
 <meta name="twitter:image:alt" content="${esc(title)}">
-<meta http-equiv="refresh" content="0;url=${esc(detailUrl)}">
-<script>location.replace(${JSON.stringify(detailUrl)});</script>
 </head>
 <body>
-<p><a href="${esc(detailUrl)}">${esc(title)}</a></p>
+<p><a href="${esc(redirectUrl.toString())}">${esc(title)}</a></p>
+<script>
+setTimeout(function(){ location.replace(${JSON.stringify(redirectUrl.toString())}); }, 80);
+</script>
 </body>
 </html>`);
   } catch (error) {
     console.error("VISI Bangsa share resolver error:", error);
     res.status(500).setHeader("Content-Type", "text/html; charset=utf-8");
-    res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"0;url=" + detailUrl + "\"></head><body>VISI Bangsa</body></html>");
+    res.end("<!doctype html><html><head><meta charset=\"utf-8\"></head><body><a href=\"" + detailUrl + "\">VISI Bangsa</a></body></html>");
   }
 }
