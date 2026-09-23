@@ -930,23 +930,26 @@ input,select,textarea,button{max-width:100%;font:inherit}
       document.head.appendChild(breadcrumbScript);
     }
 
-    async function registerArticleView(id, visitorId) {
+    async function registerArticleEntry(id, visitorId) {
       if (!id || !visitorId) return;
       try {
-        const attribution = getRadarAttribution();
-        const { error } = await supabaseClient.rpc(
-          "increment_news_view",
-          {
-            p_news_id: String(id),
-            p_visitor_id: String(visitorId),
-            p_source: attribution.source,
-            p_referrer_host: attribution.referrerHost,
-            p_user_agent: getUserAgent()
-          }
-        );
-        if (error) console.error("Gagal mencatat pembacaan artikel:", error);
+        const a = getRadarAttribution();
+        const { data, error } = await supabaseClient.rpc("record_article_entry", {
+          p_path: window.location.pathname,
+          p_news_id: String(id),
+          p_visitor_id: String(visitorId),
+          p_source: a.source,
+          p_referrer_host: a.referrerHost,
+          p_utm_source: a.utmSource,
+          p_utm_medium: a.utmMedium,
+          p_utm_campaign: a.utmCampaign,
+          p_user_agent: getUserAgent()
+        });
+        if (error) console.error("Gagal mencatat kunjungan/pembacaan:", error);
+        return data;
       } catch (error) {
-        console.error("Gagal mencatat pembacaan artikel:", error);
+        console.error("Gagal mencatat kunjungan/pembacaan:", error);
+        return null;
       }
     }
 
@@ -987,12 +990,10 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       renderArticle(data);
 
-      // Catat kunjungan halaman dan pembacaan artikel sebagai dua event berbeda.
-      // Event pembacaan memiliki deduplikasi 30 menit dan dapat menyaring bot;
-      // site_visits tetap menjadi telemetry navigasi/kunjungan website.
+      // Satu RPC atomik mencatat kunjungan website + pembacaan artikel.
+      // Ini mencegah dua event terpisah menjadi tidak sinkron.
       const visitorId = getVisitorId();
-      await registerArticleView(data.id, visitorId);
-      await registerSiteVisit(window.location.pathname, data.id);
+      await registerArticleEntry(data.id, visitorId);
 
       await loadRelated(
         data.kategori,
