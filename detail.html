@@ -1249,13 +1249,24 @@ input,select,textarea,button{max-width:100%;font:inherit}
       }
     }
 
+    function makeArticleSlug(title) {
+      return String(title || "")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 110);
+    }
+
     function makeTrackedShareUrl(source, shareToken) {
-      const url = new URL(PUBLIC_ORIGIN + "/api/share");
-      url.searchParams.set("id", String(articleId || ""));
-      url.searchParams.set("utm_source", source);
-      url.searchParams.set("utm_medium", "share");
-      url.searchParams.set("utm_campaign", "berita");
-      if (shareToken) url.searchParams.set("share_token", String(shareToken));
+      const slug = makeArticleSlug(titleElement.textContent.trim());
+      const url = new URL(PUBLIC_ORIGIN + "/" + slug);
+      if (source && shareToken) {
+        url.searchParams.set("utm_source", source);
+        url.searchParams.set("utm_medium", "share");
+        url.searchParams.set("utm_campaign", "berita");
+        url.searchParams.set("share_token", String(shareToken));
+      }
       return url.toString();
     }
 
