@@ -3018,6 +3018,24 @@ input,select,textarea,button{max-width:100%;font:inherit}
       }
 
       beritaData = result.data || [];
+
+      // Statistik daftar berita memakai sumber yang sama dengan Dashboard:
+      // article_view_events (bukan kolom views legacy), sehingga angka tidak lagi berbeda.
+      try {
+        const statsResult = await supabaseClient.rpc("get_article_view_counts");
+        if (!statsResult.error && Array.isArray(statsResult.data)) {
+          const verifiedMap = new Map(
+            statsResult.data.map(row => [String(row.news_id), Number(row.verified_views) || 0])
+          );
+          beritaData = beritaData.map(item => ({
+            ...item,
+            verified_views: verifiedMap.get(String(item.id)) || 0
+          }));
+        }
+      } catch (statsError) {
+        console.warn("Statistik pembacaan terverifikasi tidak dapat dimuat:", statsError);
+      }
+
       renderPendingFolder();
       renderNewsCategoryTabs();
 
@@ -3184,8 +3202,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
               <div class="news-actions">
 
-                <span class="news-view-count" title="Jumlah pembacaan artikel">
-                  👁 ${Number(item.views || 0).toLocaleString("id-ID")} pembaca
+                <span class="news-view-count" title="Jumlah pembacaan artikel terverifikasi">
+                  👁 ${Number(item.verified_views || 0).toLocaleString("id-ID")} pembacaan
                 </span>
 
                 <button
