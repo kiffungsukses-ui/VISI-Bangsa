@@ -606,26 +606,6 @@ input,select,textarea,button{max-width:100%;font:inherit}
       catch { return ""; }
     }
 
-    async function registerSiteVisit(path, newsId = null) {
-      try {
-        const a = getRadarAttribution();
-        await supabaseClient.rpc("track_site_visit_v2", {
-          p_path: path,
-          p_news_id: newsId ? String(newsId) : null,
-          p_visitor_id: getVisitorId(),
-          p_source: a.source,
-          p_referrer_host: a.referrerHost,
-          p_utm_source: a.utmSource,
-          p_utm_medium: a.utmMedium,
-          p_utm_campaign: a.utmCampaign,
-          p_user_agent: getUserAgent()
-        });
-      } catch (error) {
-        console.warn("Statistik kunjungan tidak tercatat:", error);
-      }
-    }
-
-
     async function loadSiteLogo() {
       try {
         const { data, error } = await supabaseClient
@@ -1251,16 +1231,22 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     function openSocialShare(channel) {
-      const url = PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "");
+      const baseUrl = PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "");
       const title = titleElement.textContent.trim() || document.title;
       const text = title + " — VISI Bangsa";
-      const encodedUrl = encodeURIComponent(url);
+      const makeShareUrl = (source) => {
+        const url = new URL(baseUrl);
+        url.searchParams.set("utm_source", source);
+        url.searchParams.set("utm_medium", "share");
+        url.searchParams.set("utm_campaign", "berita");
+        return url.toString();
+      };
       const encodedText = encodeURIComponent(text);
       const links = {
-        whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + url),
-        telegram: "https://t.me/share/url?url=" + encodedUrl + "&text=" + encodedText,
-        facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodedUrl,
-        x: "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodedUrl
+        whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + makeShareUrl("whatsapp")),
+        telegram: "https://t.me/share/url?url=" + encodeURIComponent(makeShareUrl("telegram")) + "&text=" + encodedText,
+        facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(makeShareUrl("facebook")),
+        x: "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodeURIComponent(makeShareUrl("x"))
       };
       if (!links[channel]) return;
       logShare(channel);
@@ -1288,7 +1274,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
               titleElement.textContent,
 
             url:
-              PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
+              new URL(baseUrl + "&utm_source=share&utm_medium=share&utm_campaign=berita").toString()
           };
 
           try {
@@ -1304,7 +1290,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             } else {
 
               await navigator.clipboard.writeText(
-                PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
+                new URL(baseUrl + "&utm_source=copy&utm_medium=share&utm_campaign=berita").toString()
               );
 
               alert(
@@ -1328,8 +1314,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
           try {
 
             await navigator.clipboard.writeText(
-              PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
-            );
+                new URL(baseUrl + "&utm_source=copy&utm_medium=share&utm_campaign=berita").toString()
+              );
 
             alert(
               "Link berita berhasil disalin."
