@@ -736,7 +736,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           "Berita terbaru dan informasi terkini dari VISI Bangsa."
         );
 
-      const url = new URL(window.location.origin + "/detail.html");
+      const url = new URL(PUBLIC_ORIGIN + "/detail.html");
       url.searchParams.set("id", String(article.id));
       const canonicalUrl = url.toString();
 
@@ -864,7 +864,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             "VISI Bangsa",
 
           "url":
-            window.location.origin + "/"
+            PUBLIC_ORIGIN + "/"
         },
 
         "articleSection":
@@ -1235,7 +1235,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     function openSocialShare(channel) {
-      const url = window.location.href;
+      const url = PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "");
       const title = titleElement.textContent.trim() || document.title;
       const text = title + " — VISI Bangsa";
       const encodedUrl = encodeURIComponent(url);
@@ -1288,7 +1288,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             } else {
 
               await navigator.clipboard.writeText(
-                window.location.href
+                PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
               );
 
               alert(
