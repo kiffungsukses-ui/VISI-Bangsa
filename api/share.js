@@ -91,3 +91,5 @@ setTimeout(function(){ location.replace(${JSON.stringify(redirectUrl.toString())
     res.end("<!doctype html><html><head><meta charset=\"utf-8\"></head><body><a href=\"" + detailUrl + "\">VISI Bangsa</a></body></html>");
   }
 }
+
+// Production deployment trigger: keep social-preview resolver synchronized with main.
