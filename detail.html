@@ -914,6 +914,17 @@ input,select,textarea,button{max-width:100%;font:inherit}
       if (!id || !visitorId) return;
       try {
         const a = getRadarAttribution();
+        let shareEventId = null;
+        const shareToken = params.get("share_token");
+        if (shareToken) {
+          const { data: shareRow } = await supabaseClient
+            .from("share_events")
+            .select("id,news_id,share_token")
+            .eq("share_token", shareToken)
+            .eq("news_id", Number(id))
+            .maybeSingle();
+          if (shareRow?.id) shareEventId = shareRow.id;
+        }
         const { data, error } = await supabaseClient.rpc("record_article_entry", {
           p_path: window.location.pathname,
           p_news_id: String(id),
@@ -923,7 +934,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
           p_utm_source: a.utmSource,
           p_utm_medium: a.utmMedium,
           p_utm_campaign: a.utmCampaign,
-          p_user_agent: getUserAgent()
+          p_user_agent: getUserAgent(),
+          p_share_event_id: shareEventId
         });
         if (error) console.error("Gagal mencatat kunjungan/pembacaan:", error);
         return data;
