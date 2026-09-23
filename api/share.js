@@ -1,9 +1,10 @@
 export default async function handler(req, res) {
   const id = String(req.query?.id || "").trim();
+  const requestedSlug = String(req.query?.slug || "").trim().toLowerCase();
   const origin = "https://visibangsa.id";
   const detailUrl = id ? origin + "/detail.html?id=" + encodeURIComponent(id) : origin + "/";
 
-  if (!/^\d+$/.test(id)) {
+  if (id && !/^\d+$/.test(id)) {
     res.status(400).setHeader("Content-Type", "text/html; charset=utf-8");
     return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex\"></head><body><a href=\"" + origin + "/\">VISI Bangsa</a></body></html>");
   }
@@ -12,7 +13,9 @@ export default async function handler(req, res) {
   const supabaseKey = "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
 
   try {
-    const apiUrl = supabaseUrl + "/rest/v1/berita?select=id,judul,isi,gambar,kategori,penulis,tanggal,updated_at,status&id=eq." + encodeURIComponent(id) + "&status=eq.terbit";
+    const apiUrl = id
+      ? supabaseUrl + "/rest/v1/berita?select=id,judul,isi,gambar,kategori,penulis,tanggal,updated_at,status&id=eq." + encodeURIComponent(id) + "&status=eq.terbit"
+      : supabaseUrl + "/rest/v1/berita?select=id,judul,isi,gambar,kategori,penulis,tanggal,updated_at,status&status=eq.terbit&order=tanggal.desc&limit=1000";
     const response = await fetch(apiUrl, {
       headers: {
         apikey: supabaseKey,
@@ -25,7 +28,14 @@ export default async function handler(req, res) {
     }
 
     const rows = await response.json();
-    const article = Array.isArray(rows) ? rows[0] : null;
+    const slugify = (value) => String(value || "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+      .slice(0, 110);
+    const article = id
+      ? (Array.isArray(rows) ? rows[0] : null)
+      : (Array.isArray(rows) ? rows.find(row => slugify(row.judul) === requestedSlug) : null);
 
     if (!article) {
       res.status(404).setHeader("Content-Type", "text/html; charset=utf-8");
@@ -38,7 +48,10 @@ export default async function handler(req, res) {
 
     const clean = String(article.isi || "").replace(/\s+/g, " ").trim();
     const description = clean.length > 160 ? clean.slice(0, 157) + "..." : clean || "Berita terbaru dan informasi terkini dari VISI Bangsa.";
-    const image = article.gambar ? origin + "/api/og-image?id=" + encodeURIComponent(id) : origin + "/favicon.ico";
+    const articleId = String(article.id);
+    const canonicalSlug = slugify(article.judul);
+    const publicUrl = canonicalSlug ? origin + "/" + canonicalSlug : origin + "/detail.html?id=" + encodeURIComponent(articleId);
+    const image = article.gambar ? origin + "/api/og-image?id=" + encodeURIComponent(articleId) : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
     const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
@@ -60,12 +73,12 @@ export default async function handler(req, res) {
 <title>${esc(title)} | VISI Bangsa</title>
 <meta name="description" content="${esc(description)}">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="canonical" href="${esc(detailUrl)}">
+<link rel="canonical" href="${esc(publicUrl)}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="VISI Bangsa">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:url" content="${esc(detailUrl)}">
+<meta property="og:url" content="${esc(publicUrl)}">
 <meta property="og:image" content="${esc(image)}">
 <meta property="og:image:secure_url" content="${esc(image)}">
 <meta property="og:image:type" content="${esc(imageType)}">
