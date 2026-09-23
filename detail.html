@@ -745,7 +745,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
       const canonicalUrl = url.toString();
 
       const image = article.gambar
-        ? new URL(article.gambar, window.location.origin).href
+        ? new URL(article.gambar, PUBLIC_ORIGIN).href
         : "";
 
       document.title =
@@ -910,8 +910,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-          {"@type":"ListItem","position":1,"name":"VISI Bangsa","item":window.location.origin+"/"},
-          {"@type":"ListItem","position":2,"name":article.kategori || "Berita","item":window.location.origin+"/?kategori="+encodeURIComponent(article.kategori || "")},
+          {"@type":"ListItem","position":1,"name":"VISI Bangsa","item":PUBLIC_ORIGIN+"/"},
+          {"@type":"ListItem","position":2,"name":article.kategori || "Berita","item":PUBLIC_ORIGIN+"/?kategori="+encodeURIComponent(article.kategori || "")},
           {"@type":"ListItem","position":3,"name":title,"item":canonicalUrl}
         ]
       };
@@ -1276,7 +1276,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
               titleElement.textContent,
 
             url:
-              window.location.href
+              PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "")
           };
 
           try {
