@@ -973,8 +973,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       renderArticle(data);
 
-      await registerArticleView(data.id, getVisitorId());
+      // Catat kunjungan detail lebih dulu. Fungsi penghitung view menggunakan
+      // telemetry ini untuk mencegah satu pengunjung menaikkan view berulang
+      // dalam jendela deduplikasi yang sama.
       await registerSiteVisit(window.location.pathname, data.id);
+      await registerArticleView(data.id, getVisitorId());
 
       await loadRelated(
         data.kategori,
