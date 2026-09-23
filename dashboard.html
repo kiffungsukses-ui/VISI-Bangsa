@@ -1262,12 +1262,14 @@ input,select,textarea,button{max-width:100%;font:inherit}
                 <tr><td>Total Berita</td><td id="statTotal">—</td></tr>
                 <tr><td>Total Kunjungan Website</td><td id="statViews">—</td></tr>
                 <tr><td>Kunjungan Website Hari Ini</td><td id="statTodayVisits">—</td></tr>
+                <tr><td>Pengunjung Unik Hari Ini</td><td id="statUniqueToday">—</td></tr>
+                <tr><td>Pembacaan Artikel Hari Ini</td><td id="statTodayArticleViews">—</td></tr>
                 <tr><td>Tayangan Iklan</td><td id="statAdImpressions">—</td></tr>
               </tbody>
             </table>
           </div>
           <div class="stats-charts">
-            <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Aktivitas Kunjungan</h3><span>Kunjungan website dipisahkan dari pembacaan setiap artikel.</span></div></div><div id="readerChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
+            <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Aktivitas Pengunjung & Pembaca</h3><span>Kunjungan website, pengunjung unik, dan pembacaan artikel ditampilkan sebagai metrik terpisah.</span></div></div><div id="readerChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
             <div class="stats-chart-card"><div class="stats-chart-head"><div><h3>Diagram Tayangan Iklan</h3><span>Total tayangan dan aktivitas hari ini.</span></div></div><div id="adChart" class="stats-bar-chart"><div class="loading">Memuat diagram...</div></div></div>
           </div>
           <div class="top-articles">
@@ -3873,6 +3875,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         set("statViews", Number(stats.total_visits) || 0);
         set("statTodayVisits", Number(stats.today_visits) || 0);
         set("statUniqueToday", Number(stats.unique_today) || 0);
+        set("statTodayArticleViews", Number(stats.today_article_views) || 0);
         set("statOnline", Number(stats.online) || 0);
         set("statAdImpressions", Number(stats.ad_impressions_total) || 0);
         set("statAdToday", Number(stats.ad_impressions_today) || 0);
@@ -3893,6 +3896,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           {label:"Total kunjungan",value:Number(stats.total_visits)||0},
           {label:"Kunjungan hari ini",value:Number(stats.today_visits)||0},
           {label:"Pengunjung unik hari ini",value:Number(stats.unique_today)||0},
+          {label:"Pembacaan artikel hari ini",value:Number(stats.today_article_views)||0},
           {label:"Sedang online",value:Number(stats.online)||0}
         ]);
         renderBarChart("adChart",[
