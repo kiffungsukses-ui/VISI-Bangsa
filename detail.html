@@ -1219,38 +1219,51 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
     async function logShare(channel) {
       try {
-        await supabaseClient.from("share_events").insert({
-          news_id: articleId ? Number(articleId) : null,
-          channel: channel,
-          visitor_id: getVisitorId(),
-          path: window.location.pathname + window.location.search
-        });
+        const { data, error } = await supabaseClient
+          .from("share_events")
+          .insert({
+            news_id: articleId ? Number(articleId) : null,
+            channel: channel,
+            visitor_id: getVisitorId(),
+            path: window.location.pathname + window.location.search
+          })
+          .select("id,share_token")
+          .single();
+        if (error) throw error;
+        return data;
       } catch (error) {
         console.warn("Pencatatan share tidak mengganggu proses berbagi:", error);
+        return null;
       }
     }
 
+    function makeTrackedShareUrl(source, shareToken) {
+      const url = new URL(PUBLIC_ORIGIN + "/detail.html");
+      url.searchParams.set("id", String(articleId || ""));
+      url.searchParams.set("utm_source", source);
+      url.searchParams.set("utm_medium", "share");
+      url.searchParams.set("utm_campaign", "berita");
+      if (shareToken) url.searchParams.set("share_token", String(shareToken));
+      return url.toString();
+    }
+
     function openSocialShare(channel) {
-      const baseUrl = PUBLIC_ORIGIN + "/detail.html?id=" + encodeURIComponent(articleId || "");
       const title = titleElement.textContent.trim() || document.title;
       const text = title + " — VISI Bangsa";
-      const makeShareUrl = (source) => {
-        const url = new URL(baseUrl);
-        url.searchParams.set("utm_source", source);
-        url.searchParams.set("utm_medium", "share");
-        url.searchParams.set("utm_campaign", "berita");
-        return url.toString();
-      };
-      const encodedText = encodeURIComponent(text);
-      const links = {
-        whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + makeShareUrl("whatsapp")),
-        telegram: "https://t.me/share/url?url=" + encodeURIComponent(makeShareUrl("telegram")) + "&text=" + encodedText,
-        facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(makeShareUrl("facebook")),
-        x: "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodeURIComponent(makeShareUrl("x"))
-      };
-      if (!links[channel]) return;
-      logShare(channel);
-      window.open(links[channel], "_blank", "noopener,noreferrer");
+      if (!["whatsapp","telegram","facebook","x"].includes(channel)) return;
+
+      logShare(channel).then((share) => {
+        const trackedUrl = makeTrackedShareUrl(channel, share?.share_token);
+        const encodedText = encodeURIComponent(text);
+        const links = {
+          whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + trackedUrl),
+          telegram: "https://t.me/share/url?url=" + encodeURIComponent(trackedUrl) + "&text=" + encodedText,
+          facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(trackedUrl),
+          x: "https://twitter.com/intent/tweet?text=" + encodedText + "&url=" + encodeURIComponent(trackedUrl)
+        };
+        if (!links[channel]) return;
+        window.open(links[channel], "_blank", "noopener,noreferrer");
+      });
     }
 
     document.querySelectorAll(".social-share").forEach((button) => {
@@ -1264,42 +1277,22 @@ input,select,textarea,button{max-width:100%;font:inherit}
       .addEventListener(
         "click",
         async () => {
-
-          const shareData = {
-
-            title:
-              document.title,
-
-            text:
-              titleElement.textContent,
-
-            url:
-              (() => { const u = new URL(PUBLIC_ORIGIN + "/detail.html"); u.searchParams.set("id", String(articleId || "")); u.searchParams.set("utm_source","share"); u.searchParams.set("utm_medium","share"); u.searchParams.set("utm_campaign","berita"); return u.toString(); })()
-          };
-
           try {
+            const share = await logShare("share");
+            const trackedUrl = makeTrackedShareUrl("share", share?.share_token);
+            const shareData = {
+              title: document.title,
+              text: titleElement.textContent,
+              url: trackedUrl
+            };
 
-            if (
-              navigator.share
-            ) {
-
-              await navigator.share(
-                shareData
-              );
-
+            if (navigator.share) {
+              await navigator.share(shareData);
             } else {
-
-              await navigator.clipboard.writeText(
-                (() => { const u = new URL(PUBLIC_ORIGIN + "/detail.html"); u.searchParams.set("id", String(articleId || "")); u.searchParams.set("utm_source","copy"); u.searchParams.set("utm_medium","share"); u.searchParams.set("utm_campaign","berita"); return u.toString(); })()
-              );
-
-              alert(
-                "Link berita berhasil disalin."
-              );
+              await navigator.clipboard.writeText(trackedUrl);
+              alert("Link berita berhasil disalin.");
             }
-
           } catch (error) {
-
             console.log(error);
           }
         }
@@ -1310,25 +1303,13 @@ input,select,textarea,button{max-width:100%;font:inherit}
       .addEventListener(
         "click",
         async () => {
-
           try {
-
-            const copyUrl = new URL(PUBLIC_ORIGIN + "/detail.html");
-            copyUrl.searchParams.set("id", String(articleId || ""));
-            copyUrl.searchParams.set("utm_source", "copy");
-            copyUrl.searchParams.set("utm_medium", "share");
-            copyUrl.searchParams.set("utm_campaign", "berita");
-            await navigator.clipboard.writeText(copyUrl.toString());
-
-            alert(
-              "Link berita berhasil disalin."
-            );
-
+            const share = await logShare("copy");
+            const copyUrl = makeTrackedShareUrl("copy", share?.share_token);
+            await navigator.clipboard.writeText(copyUrl);
+            alert("Link berita berhasil disalin.");
           } catch (error) {
-
-            alert(
-              "Gagal menyalin link."
-            );
+            alert("Gagal menyalin link.");
           }
         }
       );
