@@ -1918,9 +1918,10 @@ async function loadBerita() {
   try {
     const result = await supabaseClient
       .from("berita")
-      .select("*")
+      .select("id,judul,isi,gambar,kategori,penulis,tanggal")
       .eq("status", "terbit")
-      .order("tanggal", { ascending: false });
+      .order("tanggal", { ascending: false })
+      .limit(12);
 
     if (result.error) {
       throw result.error;
@@ -2020,6 +2021,9 @@ function renderHeadline() {
           class="headline-image"
           src="${escapeAttribute(gambar)}"
           alt="${escapeAttribute(item.judul)}"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
           onerror="this.style.display='none';this.closest('.headline-card')?.classList.add('no-image')"
         >
       `
