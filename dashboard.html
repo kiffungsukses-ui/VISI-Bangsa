@@ -4361,6 +4361,32 @@ input,select,textarea,button{max-width:100%;font:inherit}
       if (event === "SIGNED_OUT") window.location.replace("login.html");
     });
 
+    // Uji internal Radar dari sesi Dashboard Admin yang sudah tervalidasi.
+    // Hanya aktif jika URL memuat ?radar_test=1 dan akun adalah Admin.
+    async function runAuthenticatedRadarTest() {
+      if (currentUserRole !== "admin" || !new URLSearchParams(window.location.search).has("radar_test")) return;
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if (error || !data?.session?.access_token) throw error || new Error("Sesi Admin tidak tersedia.");
+        const response = await fetch(SUPABASE_URL + "/functions/v1/radar-collect", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + data.session.access_token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ trigger: "authenticated-dashboard-test" })
+        });
+        const bodyText = await response.text();
+        if (!response.ok) throw new Error("Radar HTTP " + response.status + ": " + bodyText);
+        console.info("RADAR_TEST_RESULT", bodyText);
+        window.alert("Uji Radar selesai. Hasil dikirim ke console browser.");
+      } catch (error) {
+        console.error("RADAR_TEST_FAILED", error);
+        window.alert("Uji Radar gagal: " + (error?.message || error));
+      }
+    }
+
     initializeVISIBangsaDashboard();
+    setTimeout(runAuthenticatedRadarTest, 300);
 
   </script>
