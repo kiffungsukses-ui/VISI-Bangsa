@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>VISI Bangsa — Radar Test</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;padding:24px;color:#17212b}
+main{max-width:720px;margin:auto;background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+h1{font-size:20px;margin-top:0}.status{padding:12px;border-radius:8px;background:#f2f4f7;white-space:pre-wrap;line-height:1.5}
+.ok{background:#eaf8ee;color:#176b34}.err{background:#fff0f0;color:#9a0000}
+</style>
+</head>
+<body>
+<main>
+<h1>Radar VISI Bangsa — Uji Internal</h1>
+<div id="status" class="status">Memeriksa sesi Admin...</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://vupvgdfdnpqactlqufbu.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REjV";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const statusEl=document.getElementById("status");
+const setStatus=(text,cls="")=>{statusEl.textContent=text;statusEl.className="status "+cls;};
+(async()=>{
+ try{
+   const {data,error}=await supabaseClient.auth.getSession();
+   if(error) throw error;
+   const session=data?.session;
+   if(!session?.access_token) throw new Error("Sesi Admin tidak ditemukan. Login ulang lalu buka halaman ini.");
+   setStatus("Sesi ditemukan. Menjalankan Radar...");
+   const response=await fetch(SUPABASE_URL+"/functions/v1/radar-collect",{
+     method:"POST",
+     headers:{
+       "Authorization":"Bearer "+session.access_token,
+       "Content-Type":"application/json"
+     },
+     body:JSON.stringify({trigger:"authenticated-admin-test"})
+   });
+   const text=await response.text();
+   let payload;
+   try{payload=JSON.parse(text)}catch{payload={raw:text}}
+   if(!response.ok){
+     throw new Error("HTTP "+response.status+"\n"+JSON.stringify(payload,null,2));
+   }
+   setStatus("UJI RADAR SELESAI\n\n"+JSON.stringify(payload,null,2),"ok");
+ }catch(error){
+   console.error(error);
+   setStatus("UJI RADAR GAGAL\n\n"+(error?.message||String(error)),"err");
+ }
+})();
+</script>
+</body>
+</html>
