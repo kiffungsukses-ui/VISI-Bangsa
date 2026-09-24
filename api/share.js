@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     const articleId = String(article.id);
     const canonicalSlug = slugify(article.judul);
     const publicUrl = canonicalSlug ? origin + "/" + canonicalSlug : origin + "/detail.html?id=" + encodeURIComponent(articleId);
-    const image = article.gambar ? origin + "/api/og-image?id=" + encodeURIComponent(articleId) : origin + "/favicon.ico";
+    const image = article.gambar ? String(article.gambar) : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
     const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
