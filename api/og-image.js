@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   const supabaseUrl = "https://vupvgdfdnpqactlqufbu.supabase.co";
-  const supabaseKey = "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REJv";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1cHZnZGZkbnBxYWN0bHF1ZmJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3MjA3MTYsImV4cCI6MjEwNTI5NjcxNn0.oLRboSbdbzFQcKWtqz1PDpU9fEdDTzggh2y17RMoiAg";
 
   try {
     const apiUrl =
