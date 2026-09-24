@@ -4437,10 +4437,21 @@ input,select,textarea,button{max-width:100%;font:inherit}
         "<div style='margin-top:6px;font-size:12px;color:#667788'>Run #" + (run.id ?? "—") +
         " · " + (directions.length) + " arah terdeteksi.</div>" +
         (directions.length ? "<div class='radar-direction-list'>" +
-          directions.slice(0,12).map((d,i) => "<div class='radar-direction'><strong>" +
-            (d.title || d.direction || d.area || ("Arah " + (i+1))) +
-            "</strong><span>" + (d.summary || d.reason || d.description || "") + "</span></div>").join("") +
+          directions.slice(0,12).map((d,i) => {
+            const headline = d.headline || d.title || d.direction || d.area || ("Arah " + (i+1));
+            const why = d.why || d.summary || d.reason || d.description || "";
+            const priority = d.priority ? " · Prioritas: " + d.priority : "";
+            return "<div class='radar-direction'><strong>" + headline + priority +
+              "</strong><span>" + why + "</span></div>";
+          }).join("") +
           "</div>" : "");
+    }
+
+    function setRadarDiag(id, status, detail) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = status + (detail ? " · " + detail : "");
+      el.style.fontWeight = "700";
     }
 
     async function runRadarFromMenu() {
@@ -4455,7 +4466,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
       try {
         const sessionResult = await supabaseClient.auth.getSession();
         const session = sessionResult?.data?.session;
-        if (sessionResult?.error || !session?.access_token) throw new Error("Sesi Supabase tidak tersedia. Silakan login ulang.");
+        if (sessionResult?.error || !session?.access_token) {
+          setRadarDiag("radarDiagSession","GAGAL","token tidak tersedia");
+          throw new Error("Sesi Supabase tidak tersedia. Silakan login ulang.");
+        }
+        setRadarDiag("radarDiagSession","OK","token tersedia");
         const response = await fetch("/api/radar-proxy", {
           method:"POST", cache:"no-store",
           headers:{"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},
@@ -4463,15 +4478,31 @@ input,select,textarea,button{max-width:100%;font:inherit}
         });
         const bodyText = await response.text();
         let body; try { body=JSON.parse(bodyText); } catch { body={raw:bodyText}; }
-        if(!response.ok) throw new Error("Radar proxy HTTP "+response.status+": "+(body?.error||body?.raw||bodyText));
+        if(!response.ok) {
+          setRadarDiag("radarDiagProxy","GAGAL","HTTP "+response.status);
+          setRadarDiag("radarDiagCollect","GAGAL",body?.stage || "proxy");
+          throw new Error("Radar proxy HTTP "+response.status+": "+(body?.error||body?.raw||bodyText));
+        }
+        setRadarDiag("radarDiagProxy","OK","HTTP "+response.status);
+        if (body?.data?.ok === false) {
+          setRadarDiag("radarDiagCollect","GAGAL",body?.data?.error || "collect gagal");
+        } else {
+          setRadarDiag("radarDiagCollect","OK","collection selesai");
+        }
 
         // Hasil collection + query sekarang dikembalikan oleh proxy server.
         // Jangan memanggil radar-query langsung dari browser karena jalur CORS/mobile
         // dapat menghasilkan "Failed to fetch" walaupun Radar sebenarnya berhasil.
         const queryBody = body?.radar;
         if (!queryBody?.ok) {
+          setRadarDiag("radarDiagQuery","GAGAL","hasil query tidak valid");
+          setRadarDiag("radarDiagDatabase","GAGAL","run/directions tidak terbaca");
           throw new Error("Radar query tidak mengembalikan hasil yang valid.");
         }
+        const verifiedRunId = queryBody?.run?.id ?? "—";
+        const verifiedDirections = Array.isArray(queryBody?.directions) ? queryBody.directions.length : 0;
+        setRadarDiag("radarDiagQuery","OK",verifiedDirections + " arah");
+        setRadarDiag("radarDiagDatabase","OK","Run #" + verifiedRunId);
 
         radarStatusBadge.className = "radar-status-badge ok";
         radarStatusBadge.textContent = "Radar aktif";
