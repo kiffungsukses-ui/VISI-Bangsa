@@ -4369,24 +4369,29 @@ input,select,textarea,button{max-width:100%;font:inherit}
     async function runAuthenticatedRadarTest() {
       if (currentUserRole !== "admin" || !new URLSearchParams(window.location.search).has("radar_test")) return;
       try {
-        // Gunakan helper Functions milik Supabase JS agar token/session ditangani
-        // oleh client yang sama dengan login Dashboard, bukan fetch manual.
-        if (!supabaseClient?.functions?.invoke) {
-          throw new Error("Supabase Functions client tidak tersedia.");
-        }
+        if (!currentSession?.access_token) throw new Error("Sesi Admin belum memiliki access token.");
 
-        const { data, error } = await supabaseClient.functions.invoke("radar-collect", {
-          body: { trigger: "authenticated-dashboard-test", ts: Date.now() }
+        // Jalur same-origin: browser -> Vercel -> Supabase.
+        // Ini menghilangkan kegagalan CORS/preflight yang terjadi pada sebagian perangkat.
+        const response = await fetch("/api/radar-proxy", {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            "Authorization": "Bearer " + currentSession.access_token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ trigger: "authenticated-dashboard-test", ts: Date.now() })
         });
 
-        if (error) {
-          const detail = error?.context?.response
-            ? " HTTP " + error.context.response.status
-            : "";
-          throw new Error((error.message || "Radar Functions invoke gagal") + detail);
+        const bodyText = await response.text();
+        let body;
+        try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+
+        if (!response.ok) {
+          throw new Error("Radar proxy HTTP " + response.status + ": " + (body?.error || body?.raw || bodyText));
         }
 
-        console.info("RADAR_TEST_RESULT", data);
+        console.info("RADAR_TEST_RESULT", body);
         window.alert("Uji Radar BERHASIL. Radar sudah menerima perintah.");
       } catch (error) {
         console.error("RADAR_TEST_FAILED", error);
