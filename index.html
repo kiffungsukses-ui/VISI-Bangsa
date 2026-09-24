@@ -1716,8 +1716,7 @@ const SUPABASE_ANON_KEY =
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-    { global: { fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }) } }
+    SUPABASE_ANON_KEY
   );
     
     function getVisitorId() {
@@ -1781,11 +1780,9 @@ const supabaseClient =
         console.warn("Statistik kunjungan tidak tercatat:", error);
       }
     }
-
-    registerSiteVisit();
-
-
-
+// Statistik kunjungan tidak boleh menahan pemuatan halaman utama.
+const scheduleIdle = window.requestIdleCallback || function (cb) { return setTimeout(cb, 1200); };
+scheduleIdle(() => registerSiteVisit());
 let semuaBerita = [];
 
 let kategoriAktif = "Semua";
@@ -2393,7 +2390,19 @@ if (searchInput) {
 }
 
 
-Promise.allSettled([loadSiteSettings(), loadBerita(), loadAds()]);
+// Prioritas: berita tampil lebih dulu. Pengaturan dan iklan dijalankan sesudahnya
+// agar latensi layanan pendukung tidak menahan render konten utama.
+loadBerita().then(() => {
+  scheduleIdle(() => {
+    loadSiteSettings().catch(() => {});
+    loadAds().catch(() => {});
+  });
+}).catch(() => {
+  scheduleIdle(() => {
+    loadSiteSettings().catch(() => {});
+    loadAds().catch(() => {});
+  });
+});
 
 const adRotators = {};
 const adImpressionLastSent = new Map();
@@ -2450,7 +2459,8 @@ async function loadAds(){
     .select("id,nama_pengiklan,judul,gambar,link_url,mulai,selesai,posisi")
     .eq("status","aktif")
     .not("gambar","is",null)
-    .order("created_at",{ascending:false});
+    .order("created_at",{ascending:false})
+    .limit(20);
   if(r.error){slotIds.forEach(id=>renderAdSlot(id,[],0));return;}
   const today=new Date();today.setHours(0,0,0,0);
   const active=(r.data||[]).filter(a=>{
