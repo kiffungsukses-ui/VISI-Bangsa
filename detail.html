@@ -1008,8 +1008,23 @@ input,select,textarea,button{max-width:100%;font:inherit}
     function loadArticleImage(imageElement, imageUrl, altText) {
       if (!imageElement) return;
       const cleanUrl = String(imageUrl || "").trim();
+      const fallbackUrl = ARTICLE_IMAGE_FALLBACK;
       imageElement.alt = altText || "Foto berita VISI Bangsa";
       imageElement.dataset.imageRetry = "0";
+      imageElement.dataset.imageSource = cleanUrl;
+
+      const showFallback = () => {
+        imageElement.onerror = null;
+        imageElement.onload = null;
+        imageElement.src = fallbackUrl;
+        imageElement.alt = "Logo VISI Bangsa — foto berita sementara tidak tersedia";
+        imageElement.classList.add("image-fallback");
+      };
+
+      imageElement.onload = function () {
+        this.classList.remove("image-fallback");
+      };
+
       imageElement.onerror = function () {
         const retry = Number(this.dataset.imageRetry || "0");
         if (retry < 2 && cleanUrl) {
@@ -1018,14 +1033,15 @@ input,select,textarea,button{max-width:100%;font:inherit}
           this.src = cleanUrl + separator + "vb_image_retry=" + Date.now();
           return;
         }
-        this.onerror = null;
-        this.src = ARTICLE_IMAGE_FALLBACK;
-        this.alt = "Logo VISI Bangsa — foto berita sementara tidak tersedia";
-        this.classList.add("image-fallback");
+        showFallback();
       };
-      imageElement.onload = function () { this.classList.remove("image-fallback"); };
-      imageElement.src = cleanUrl || ARTICLE_IMAGE_FALLBACK;
-      if (!cleanUrl) imageElement.classList.add("image-fallback");
+
+      if (!cleanUrl) {
+        showFallback();
+        return;
+      }
+
+      imageElement.src = cleanUrl;
     }
     function renderArticle(article) {
 
