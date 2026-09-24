@@ -1294,13 +1294,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          const { data, error } = await supabaseClient
+          const { error } = await supabaseClient
             .from("share_events")
-            .insert(payload)
-            .select("id")
-            .single();
+            .insert(payload);
           if (error) throw error;
-          return { id: data?.id || null, share_token: shareToken };
+          return { id: null, share_token: shareToken };
         } catch (error) {
           if (attempt === 2) {
             console.warn("Pencatatan share gagal setelah percobaan ulang:", error);
@@ -1325,9 +1323,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
       // URL berbagi dibuat singkat agar nyaman dikirim melalui WhatsApp.
       // Format /b/ID tetap diselesaikan server-side ke artikel yang tepat.
       const url = new URL(PUBLIC_ORIGIN + "/b/" + encodeURIComponent(String(articleId)));
-      const eventId = Number(shareToken);
-      if (Number.isSafeInteger(eventId) && eventId > 0) {
-        url.searchParams.set("s", String(eventId));
+      if (shareToken) {
+        url.searchParams.set("share_token", String(shareToken));
       }
       return url.toString();
     }
