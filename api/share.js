@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
 
     const redirectUrl = new URL(detailUrl);
-    for (const key of ["utm_source","utm_medium","utm_campaign","share_token"]) {
+    for (const key of ["utm_source","utm_medium","utm_campaign","share_token","s"]) {
       const value = String(req.query?.[key] || "").trim();
       if (value) redirectUrl.searchParams.set(key, value);
     }
