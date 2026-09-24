@@ -954,6 +954,23 @@ input,select,textarea,button{max-width:100%;font:inherit}
             }
           }
         }
+        if (shareToken && /^[0-9a-f-]{36}$/i.test(shareToken)) {
+          const { data, error } = await supabaseClient.rpc("record_shared_article_entry", {
+            p_path: window.location.pathname,
+            p_news_id: Number(id),
+            p_visitor_id: String(visitorId),
+            p_source: a.source,
+            p_referrer_host: a.referrerHost,
+            p_utm_source: a.utmSource,
+            p_utm_medium: a.utmMedium,
+            p_utm_campaign: a.utmCampaign,
+            p_user_agent: getUserAgent(),
+            p_share_token: shareToken
+          });
+          if (error) console.error("Gagal mencatat kunjungan share:", error);
+          return data;
+        }
+
         const trackedSource = shareChannel || a.source;
         const { data, error } = await supabaseClient.rpc("record_article_entry", {
           p_path: window.location.pathname,
