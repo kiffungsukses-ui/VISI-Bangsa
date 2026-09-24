@@ -3886,7 +3886,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         set("statAdToday", Number(stats.ad_impressions_today) || 0);
         set("statAdUniqueToday", Number(stats.ad_unique_today) || 0);
 
-        const top = Array.isArray(stats.top_articles) ? stats.top_articles.slice(0, 3) : [];
+        const top = Array.isArray(stats.top_articles_7d) ? stats.top_articles_7d.slice(0, 3) : [];
         const todayTop = Array.isArray(stats.top_articles_today) ? stats.top_articles_today.slice(0, 3) : [];
         const todayMap = new Map(todayTop.map(item => [String(item.news_id), Number(item.visits_today) || 0]));
         const renderBarChart = (id, rows) => {
@@ -3917,7 +3917,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         if (list) {
           list.innerHTML = top.length
             ? top.map((n, i) => {
-                const views = Number(n.visits) || 0;
+                const views = Number(n.reads) || Number(n.visits) || 0;
                 return '<div class="top-article"><span class="top-article-rank">' +
                   (i + 1) +
                   '</span><div class="top-article-main"><div class="top-article-title">' +
