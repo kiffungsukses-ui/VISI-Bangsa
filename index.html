@@ -559,7 +559,7 @@ footer{margin-top:50px;background:#082c52}
 body{background:var(--vb-bg);color:var(--vb-ink)}
 .topbar{background:linear-gradient(90deg,var(--vb-blue-dark),var(--vb-blue));font-size:12px}
 .topbar-inner{max-width:1320px;padding:8px 24px;min-height:36px}
-.topbar-links{gap:14px}.running-tagline{flex:1;min-width:0;overflow:hidden;white-space:nowrap}.running-tagline-track{display:inline-flex;min-width:max-content;animation:vbTicker 18s linear infinite;font-weight:700;letter-spacing:.1px}.running-tagline-track span{display:inline-block;padding-right:80px}.running-tagline-track span:last-child{padding-right:80px}.topbar a{text-decoration:none}.topbar a:hover{text-decoration:underline}
+.topbar-links{gap:14px}.running-tagline{flex:1;min-width:0;overflow:hidden;white-space:nowrap}.running-tagline-track{display:inline-flex;min-width:max-content;animation:vbTicker 14s linear infinite;font-weight:700;letter-spacing:.1px}.running-tagline-track span{display:inline-block;padding-right:80px}.running-tagline-track span:last-child{padding-right:80px}.topbar a{text-decoration:none}.topbar a:hover{text-decoration:underline}
 .brand-header{background:#fff;border-bottom:1px solid var(--vb-line)}
 .brand-inner{max-width:1320px;padding:10px 24px;min-height:178px;gap:22px}
 .brand-logo{width:340px;height:auto;max-width:42vw;object-fit:contain;object-position:left center}
@@ -578,7 +578,7 @@ main{max-width:1320px;margin:0 auto;padding:0 24px}
 .berita-grid{grid-template-columns:repeat(3,1fr);gap:16px}.berita{border-radius:7px;box-shadow:0 2px 9px rgba(23,36,51,.07)}.berita:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(23,36,51,.12)}.gambar{height:185px}.isi{padding:14px}.kategori{color:var(--vb-red);font-size:11px}.judul{font-size:17px}.ringkasan{font-size:13px;color:#697582}.meta{font-size:10px}
 footer{margin-top:42px;background:#082f58}.footer-inner{max-width:1320px}.copyright{max-width:1320px}
 @media(max-width:950px){.brand-inner{min-height:145px}.brand-logo{width:290px}.hero-layout{grid-template-columns:1fr}.headline-card,.headline-image{height:auto;min-height:0}.category-tiles{grid-template-columns:repeat(3,1fr)}}
-@keyframes vbTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes vbTicker{from{transform:translateX(100%)}to{transform:translateX(-50%)}}
 @media(max-width:600px){.topbar-inner{min-height:32px}.brand-inner{min-height:118px;padding:7px 12px}.brand-logo{width:205px;max-width:56vw}.login{padding:8px 10px;font-size:11px}.nav-inner{padding:0 6px}.nav-inner a{font-size:13px;padding:12px 10px}.breaking-bar{margin:10px 10px 0;padding:0 8px;height:38px}.breaking-label{font-size:10px;padding:7px 9px}.breaking-text{font-size:12px}.hero-layout{margin-top:10px}.headline-card,.headline-image{min-height:320px;height:320px}.headline-content{padding:15px}.headline-content h2{font-size:22px}.latest-panel{padding:12px}.category-tiles{grid-template-columns:repeat(2,1fr);gap:9px}.category-tile{height:105px}.berita-grid{grid-template-columns:1fr}.gambar{height:205px}}
 
 /* ===== RECOMMENDED VISITOR MOCKUP MATCH ===== */
@@ -1589,7 +1589,7 @@ main>*,
 
 <body>
 
-<div class="topbar"><div class="topbar-inner"><div class="running-tagline"><span class="running-tagline-track"><span id="siteTagline"></span></span></div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
+<div class="topbar"><div class="topbar-inner"><div class="running-tagline"><span class="running-tagline-track"><span id="siteTagline"></span><span aria-hidden="true" class="siteTaglineClone"></span></span></div><div class="topbar-links"><span id="currentDate">Memuat tanggal...</span><span>|</span><span id="currentTime">--:-- WIB</span><span>|</span><a href="/tentang.html">Tentang Kami</a><span>|</span><a href="/hubungi.html">Kontak</a></div></div></div>
 <header class="brand-header"><div class="brand-inner">
 <button type="button" id="menuToggle" class="menu-toggle" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="vbMenuDrawer">
   <span></span><span></span><span></span>
@@ -1798,7 +1798,9 @@ async function loadSiteSettings() {
 
   const defaultTagline = "TERDEPAN DALAM MENCERAHKAN";
   const tagline = document.getElementById("siteTagline");
+  const taglineClone = document.querySelector(".siteTaglineClone");
   if (tagline) tagline.textContent = defaultTagline;
+  if (taglineClone) taglineClone.textContent = defaultTagline;
 
   if (result.error || !result.data) return;
 
@@ -1812,6 +1814,7 @@ async function loadSiteSettings() {
 
   const savedTagline = String(s.tagline || "").trim() || defaultTagline;
   if (tagline) tagline.textContent = savedTagline;
+  if (taglineClone) taglineClone.textContent = savedTagline;
 
   const profile = document.getElementById("siteProfile");
   if (profile && s.profile) {
