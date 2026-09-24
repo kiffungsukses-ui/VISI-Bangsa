@@ -1266,6 +1266,19 @@ input,select,textarea,button{max-width:100%;font:inherit}
               <button id="runRadarButton" type="button" class="primary">🛰️ Uji Radar</button>
             </div>
           </div>
+          <div class="radar-diagnostics" style="margin-top:14px">
+            <strong>Diagnostik Jalur Radar</strong>
+            <table class="stats-data-table" style="margin-top:8px">
+              <thead><tr><th>Tahap</th><th>Status</th><th>Detail</th></tr></thead>
+              <tbody>
+                <tr><td>Sesi Admin</td><td id="radarDiagSession">—</td><td>Token autentikasi</td></tr>
+                <tr><td>Vercel Proxy</td><td id="radarDiagProxy">—</td><td>/api/radar-proxy</td></tr>
+                <tr><td>Radar Collect</td><td id="radarDiagCollect">—</td><td>Pengumpulan sinyal</td></tr>
+                <tr><td>Radar Query</td><td id="radarDiagQuery">—</td><td>Arah Redaksi terbaru</td></tr>
+                <tr><td>Database</td><td id="radarDiagDatabase">—</td><td>Run dan directions</td></tr>
+              </tbody>
+            </table>
+          </div>
           <div id="radarResult" class="radar-result" style="display:none"></div>
         </div>
       </details>
@@ -4452,20 +4465,19 @@ input,select,textarea,button{max-width:100%;font:inherit}
         let body; try { body=JSON.parse(bodyText); } catch { body={raw:bodyText}; }
         if(!response.ok) throw new Error("Radar proxy HTTP "+response.status+": "+(body?.error||body?.raw||bodyText));
 
-        // Setelah collection selesai, baca hasil terbaru melalui endpoint Radar yang
-        // memang khusus mengembalikan run + Arah Redaksi. Tetap memakai access token
-        // yang sama agar tidak memicu refresh-token race pada perangkat tertentu.
-        const queryResponse = await fetch("https://vupvgdfdnpqactlqufbu.supabase.co/functions/v1/radar-query", {
-          method:"GET", cache:"no-store",
-          headers:{"Authorization":"Bearer "+session.access_token}
-        });
-        const queryText = await queryResponse.text();
-        let queryBody; try { queryBody=JSON.parse(queryText); } catch { queryBody={raw:queryText}; }
-        if(!queryResponse.ok) throw new Error("Radar query HTTP "+queryResponse.status+": "+(queryBody?.error||queryBody?.raw||queryText));
+        // Hasil collection + query sekarang dikembalikan oleh proxy server.
+        // Jangan memanggil radar-query langsung dari browser karena jalur CORS/mobile
+        // dapat menghasilkan "Failed to fetch" walaupun Radar sebenarnya berhasil.
+        const queryBody = body?.radar;
+        if (!queryBody?.ok) {
+          throw new Error("Radar query tidak mengembalikan hasil yang valid.");
+        }
 
         radarStatusBadge.className = "radar-status-badge ok";
         radarStatusBadge.textContent = "Radar aktif";
-        radarStatusDetail.textContent = "Collection selesai. Arah Redaksi terbaru berhasil dibaca dari Radar.";
+        const runId = queryBody?.run?.id ?? "—";
+        const directionCount = Array.isArray(queryBody?.directions) ? queryBody.directions.length : 0;
+        radarStatusDetail.textContent = "Collection dan Query selesai melalui server. Run #" + runId + " · " + directionCount + " arah redaksi.";
         renderRadarResult(queryBody);
         radarMessage.textContent = "Uji Radar berhasil. Radar menerima perintah dan hasil Arah Redaksi sudah tersedia.";
         radarMessage.className = "message success";
