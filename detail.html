@@ -1253,22 +1253,24 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     async function logShare(channel) {
+      const shareToken = (window.crypto && typeof window.crypto.randomUUID === "function")
+        ? window.crypto.randomUUID()
+        : null;
       const payload = {
         news_id: articleId ? Number(articleId) : null,
         channel: channel,
         visitor_id: getVisitorId(),
         path: window.location.pathname + window.location.search
       };
+      if (shareToken) payload.share_token = shareToken;
+
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          const { data, error } = await supabaseClient
+          const { error } = await supabaseClient
             .from("share_events")
-            .insert(payload)
-            .select("id,share_token")
-            .single();
+            .insert(payload);
           if (error) throw error;
-          if (data?.share_token) return data;
-          throw new Error("Share event tidak mengembalikan share_token.");
+          return { id: null, share_token: shareToken };
         } catch (error) {
           if (attempt === 2) {
             console.warn("Pencatatan share gagal setelah percobaan ulang:", error);
