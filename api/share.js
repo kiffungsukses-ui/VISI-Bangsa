@@ -92,9 +92,9 @@ export default async function handler(req, res) {
 <meta name="twitter:image:alt" content="${esc(title)}">
 </head>
 <body>
-<p><a href="${esc(redirectUrl.toString())}">${esc(title)}</a></p>
+<p style="display:none"><a href="${esc(redirectUrl.toString())}">${esc(title)}</a></p>
 <script>
-setTimeout(function(){ location.replace(${JSON.stringify(redirectUrl.toString())}); }, 80);
+setTimeout(function(){ location.replace(${JSON.stringify(redirectUrl.toString())}); }, 0);
 </script>
 </body>
 </html>`);
