@@ -105,6 +105,14 @@
       background: rgba(255,255,255,.2);
     }
 
+    .radar-status-card{margin-top:12px;padding:14px;border:1px solid #dbe7f1;border-radius:12px;background:#f8fbfe;display:grid;gap:10px}
+    .radar-status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .radar-status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#fff4df;color:#8a5a00;font-size:12px;font-weight:900}
+    .radar-status-badge.ok{background:#e8f7ee;color:#176b34}
+    .radar-result{margin-top:12px;padding:12px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;line-height:1.55}
+    .radar-direction-list{display:grid;gap:8px;margin-top:10px}.radar-direction{padding:10px;border:1px solid #e8eef4;border-radius:9px;background:#fafcff}
+    .radar-direction strong{display:block;color:#173d60}.radar-direction span{display:block;color:#667788;font-size:12px;margin-top:3px}
+
     .container {
       max-width: 1200px;
       margin: auto;
@@ -1232,6 +1240,33 @@ input,select,textarea,button{max-width:100%;font:inherit}
             <button id="refreshSettingsButton" type="button" class="secondary">Muat Ulang</button>
           </div>
         </form>
+        </div>
+      </details>
+
+      <details id="radarFolder" class="panel admin-folder radar-folder">
+        <summary>
+          <div class="folder-summary-icon" aria-hidden="true">🛰️</div>
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Radar VISI Bangsa</h2>
+              <div class="panel-subtitle">Uji koneksi Radar dan lihat arah perkembangan yang dapat menjadi bahan pertimbangan redaksi.</div>
+            </div>
+          </div>
+          <span class="folder-chevron">＋</span>
+        </summary>
+        <div class="admin-folder-body">
+          <div id="radarMessage" class="message"></div>
+          <div class="radar-status-card">
+            <div class="radar-status-row">
+              <strong>Status Radar</strong>
+              <span id="radarStatusBadge" class="radar-status-badge">Belum diuji</span>
+            </div>
+            <div id="radarStatusDetail" class="panel-subtitle">Klik “Uji Radar” untuk memeriksa jalur dashboard → proxy → Radar.</div>
+            <div class="form-actions">
+              <button id="runRadarButton" type="button" class="primary">🛰️ Uji Radar</button>
+            </div>
+          </div>
+          <div id="radarResult" class="radar-result" style="display:none"></div>
         </div>
       </details>
 
@@ -4373,6 +4408,67 @@ input,select,textarea,button{max-width:100%;font:inherit}
     supabaseClient.auth.onAuthStateChange((event) => {
       if (event === "SIGNED_OUT") window.location.replace("login.html");
     });
+
+    const radarFolder = document.getElementById("radarFolder");
+    const runRadarButton = document.getElementById("runRadarButton");
+    const radarStatusBadge = document.getElementById("radarStatusBadge");
+    const radarStatusDetail = document.getElementById("radarStatusDetail");
+    const radarResult = document.getElementById("radarResult");
+    const radarMessage = document.getElementById("radarMessage");
+
+    function renderRadarResult(body) {
+      const run = body?.run || {};
+      const directions = Array.isArray(body?.directions) ? body.directions : [];
+      radarResult.style.display = "block";
+      radarResult.innerHTML = "<strong>Radar menerima perintah.</strong>" +
+        "<div style='margin-top:6px;font-size:12px;color:#667788'>Run #" + (run.id ?? "—") +
+        " · " + (directions.length) + " arah terdeteksi.</div>" +
+        (directions.length ? "<div class='radar-direction-list'>" +
+          directions.slice(0,12).map((d,i) => "<div class='radar-direction'><strong>" +
+            (d.title || d.direction || d.area || ("Arah " + (i+1))) +
+            "</strong><span>" + (d.summary || d.reason || d.description || "") + "</span></div>").join("") +
+          "</div>" : "");
+    }
+
+    async function runRadarFromMenu() {
+      if (!runRadarButton) return;
+      runRadarButton.disabled = true;
+      runRadarButton.textContent = "Memeriksa...";
+      radarStatusBadge.className = "radar-status-badge";
+      radarStatusBadge.textContent = "Sedang diuji";
+      radarStatusDetail.textContent = "Mengirim perintah melalui jalur aman dashboard.";
+      radarMessage.textContent = "";
+      radarMessage.className = "message";
+      try {
+        const sessionResult = await supabaseClient.auth.getSession();
+        const session = sessionResult?.data?.session;
+        if (sessionResult?.error || !session?.access_token) throw new Error("Sesi Supabase tidak tersedia. Silakan login ulang.");
+        const response = await fetch("/api/radar-proxy", {
+          method:"POST", cache:"no-store",
+          headers:{"Authorization":"Bearer "+session.access_token,"Content-Type":"application/json"},
+          body:JSON.stringify({trigger:"dashboard-radar-menu-test",ts:Date.now()})
+        });
+        const bodyText = await response.text();
+        let body; try { body=JSON.parse(bodyText); } catch { body={raw:bodyText}; }
+        if(!response.ok) throw new Error("Radar proxy HTTP "+response.status+": "+(body?.error||body?.raw||bodyText));
+        radarStatusBadge.className = "radar-status-badge ok";
+        radarStatusBadge.textContent = "Radar aktif";
+        radarStatusDetail.textContent = "Perintah diterima Radar. Data hasil dapat digunakan sebagai bahan pemantauan dan arah redaksi.";
+        renderRadarResult(body);
+        radarMessage.textContent = "Uji Radar berhasil. Radar sudah menerima perintah.";
+        radarMessage.className = "message success";
+      } catch(error) {
+        radarStatusBadge.className = "radar-status-badge";
+        radarStatusBadge.textContent = "Uji gagal";
+        radarStatusDetail.textContent = error?.message || String(error);
+        radarMessage.textContent = "Uji Radar gagal: " + (error?.message || error);
+        radarMessage.className = "message error";
+      } finally {
+        runRadarButton.disabled = false;
+        runRadarButton.textContent = "🛰️ Uji Radar";
+      }
+    }
+    runRadarButton?.addEventListener("click", runRadarFromMenu);
 
     // Uji internal Radar memakai sesi yang SUDAH berhasil diperoleh oleh auth gate.
     // Ini mencegah getSession() kedua berebut lock/storage Auth pada sebagian HP.
