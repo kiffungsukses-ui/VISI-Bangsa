@@ -4451,11 +4451,23 @@ input,select,textarea,button{max-width:100%;font:inherit}
         const bodyText = await response.text();
         let body; try { body=JSON.parse(bodyText); } catch { body={raw:bodyText}; }
         if(!response.ok) throw new Error("Radar proxy HTTP "+response.status+": "+(body?.error||body?.raw||bodyText));
+
+        // Setelah collection selesai, baca hasil terbaru melalui endpoint Radar yang
+        // memang khusus mengembalikan run + Arah Redaksi. Tetap memakai access token
+        // yang sama agar tidak memicu refresh-token race pada perangkat tertentu.
+        const queryResponse = await fetch("https://vupvgdfdnpqactlqufbu.supabase.co/functions/v1/radar-query", {
+          method:"GET", cache:"no-store",
+          headers:{"Authorization":"Bearer "+session.access_token}
+        });
+        const queryText = await queryResponse.text();
+        let queryBody; try { queryBody=JSON.parse(queryText); } catch { queryBody={raw:queryText}; }
+        if(!queryResponse.ok) throw new Error("Radar query HTTP "+queryResponse.status+": "+(queryBody?.error||queryBody?.raw||queryText));
+
         radarStatusBadge.className = "radar-status-badge ok";
         radarStatusBadge.textContent = "Radar aktif";
-        radarStatusDetail.textContent = "Perintah diterima Radar. Data hasil dapat digunakan sebagai bahan pemantauan dan arah redaksi.";
-        renderRadarResult(body);
-        radarMessage.textContent = "Uji Radar berhasil. Radar sudah menerima perintah.";
+        radarStatusDetail.textContent = "Collection selesai. Arah Redaksi terbaru berhasil dibaca dari Radar.";
+        renderRadarResult(queryBody);
+        radarMessage.textContent = "Uji Radar berhasil. Radar menerima perintah dan hasil Arah Redaksi sudah tersedia.";
         radarMessage.className = "message success";
       } catch(error) {
         radarStatusBadge.className = "radar-status-badge";
