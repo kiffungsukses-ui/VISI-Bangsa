@@ -1337,7 +1337,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
       if (!["whatsapp","telegram","facebook","x"].includes(channel)) return;
 
       logShare(channel).then((share) => {
-        const trackedUrl = makeTrackedShareUrl(channel, share?.share_token);
+        const trackedUrl = makeTrackedShareUrl(channel, share?.id);
         const encodedText = encodeURIComponent(text);
         const links = {
           whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + trackedUrl),
