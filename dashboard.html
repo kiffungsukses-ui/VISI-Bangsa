@@ -4188,6 +4188,8 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
     // The auth gate is deliberately the last step: a valid Supabase session
     // immediately reveals the dashboard instead of leaving "Memeriksa sesi login".
+    let currentSession = null;
+
     async function initializeVISIBangsaDashboard() {
       // Inisialisasi dibuat anti-macet: dashboard tidak boleh berhenti di
       // "Memeriksa sesi login". Sesi dicoba beberapa kali dengan batas waktu,
@@ -4239,6 +4241,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           return;
         }
 
+        currentSession = session;
         currentUser = session.user;
         userEmail.textContent = currentUser.email || "";
 
@@ -4361,26 +4364,32 @@ input,select,textarea,button{max-width:100%;font:inherit}
       if (event === "SIGNED_OUT") window.location.replace("login.html");
     });
 
-    // Uji internal Radar dari sesi Dashboard Admin yang sudah tervalidasi.
-    // Hanya aktif jika URL memuat ?radar_test=1 dan akun adalah Admin.
+    // Uji internal Radar memakai sesi yang SUDAH berhasil diperoleh oleh auth gate.
+    // Ini mencegah getSession() kedua berebut lock/storage Auth pada sebagian HP.
     async function runAuthenticatedRadarTest() {
       if (currentUserRole !== "admin" || !new URLSearchParams(window.location.search).has("radar_test")) return;
       try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error || !data?.session?.access_token) throw error || new Error("Sesi Admin tidak tersedia.");
+        if (!currentSession?.access_token) {
+          throw new Error("Sesi Admin belum memiliki access token.");
+        }
+
         const response = await fetch(SUPABASE_URL + "/functions/v1/radar-collect", {
           method: "POST",
+          mode: "cors",
+          credentials: "omit",
+          cache: "no-store",
           headers: {
-            "Authorization": "Bearer " + data.session.access_token,
+            "Authorization": "Bearer " + currentSession.access_token,
             "apikey": SUPABASE_KEY,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ trigger: "authenticated-dashboard-test" })
+          body: JSON.stringify({ trigger: "authenticated-dashboard-test", ts: Date.now() })
         });
+
         const bodyText = await response.text();
         if (!response.ok) throw new Error("Radar HTTP " + response.status + ": " + bodyText);
         console.info("RADAR_TEST_RESULT", bodyText);
-        window.alert("Uji Radar selesai. Hasil dikirim ke console browser.");
+        window.alert("Uji Radar BERHASIL. HTTP " + response.status + ".");
       } catch (error) {
         console.error("RADAR_TEST_FAILED", error);
         window.alert("Uji Radar gagal: " + (error?.message || error));
