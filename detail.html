@@ -916,47 +916,19 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     async function registerArticleEntry(id, visitorId) {
-      if (!id || !visitorId) return;
+      if (!id || !visitorId) return null;
       try {
         const a = getRadarAttribution();
-        let shareEventId = null;
-        let shareChannel = "";
-        const shareToken = params.get("share_token");
-        const shareEventParam = params.get("s");
-        if (shareEventParam && /^\\d+$/.test(shareEventParam)) {
-          const { data: shareRow } = await supabaseClient
-            .from("share_events")
-            .select("id,news_id,share_token,channel")
-            .eq("id", Number(shareEventParam))
-            .eq("news_id", Number(id))
-            .maybeSingle();
-          if (shareRow?.id) {
-            shareEventId = shareRow.id;
-            shareChannel = String(shareRow.channel || "").trim().toLowerCase();
-          }
-        } else if (shareToken && /^[0-9a-f-]{36}$/i.test(shareToken)) {
-          const { data: resolvedShareEventId, error: resolveError } = await supabaseClient
-            .rpc("resolve_share_event_id", {
-              p_share_token: shareToken,
-              p_news_id: Number(id)
-            });
-          if (!resolveError && Number.isSafeInteger(Number(resolvedShareEventId)) && Number(resolvedShareEventId) > 0) {
-            shareEventId = Number(resolvedShareEventId);
-          }
-          if (shareEventId) {
-            const { data: resolvedShare, error: resolvedShareError } = await supabaseClient
-              .rpc("resolve_share_event", {
-                p_share_token: shareToken,
-                p_news_id: Number(id)
-              });
-            if (!resolvedShareError) {
-              shareChannel = String(resolvedShare?.channel || "").trim().toLowerCase();
-            }
-          }
-        }
-        if (shareToken && /^[0-9a-f-]{36}$/i.test(shareToken)) {
+        const shareToken = String(params.get("share_token") || "").trim();
+        const hasShareToken = /^[0-9a-f-]{36}$/i.test(shareToken);
+
+        // Shared links use one atomic server-side RPC. It resolves the token,
+        // records the visit, and attaches the same share_event_id to a new read.
+        // Do not pre-query share_events from the browser: that table is private
+        // by design and the extra lookups only add another failure point.
+        if (hasShareToken) {
           const { data, error } = await supabaseClient.rpc("record_shared_article_entry", {
-            p_path: window.location.pathname,
+            p_path: window.location.pathname + window.location.search,
             p_news_id: Number(id),
             p_visitor_id: String(visitorId),
             p_source: a.source,
@@ -967,22 +939,24 @@ input,select,textarea,button{max-width:100%;font:inherit}
             p_user_agent: getUserAgent(),
             p_share_token: shareToken
           });
-          if (error) console.error("Gagal mencatat kunjungan share:", error);
+          if (error) {
+            console.error("Gagal mencatat kunjungan share:", error);
+            return null;
+          }
           return data;
         }
 
-        const trackedSource = shareChannel || a.source;
         const { data, error } = await supabaseClient.rpc("record_article_entry", {
-          p_path: window.location.pathname,
+          p_path: window.location.pathname + window.location.search,
           p_news_id: String(id),
           p_visitor_id: String(visitorId),
-          p_source: trackedSource,
+          p_source: a.source,
           p_referrer_host: a.referrerHost,
           p_utm_source: a.utmSource,
           p_utm_medium: a.utmMedium,
           p_utm_campaign: a.utmCampaign,
           p_user_agent: getUserAgent(),
-          p_share_event_id: shareEventId
+          p_share_event_id: null
         });
         if (error) console.error("Gagal mencatat kunjungan/pembacaan:", error);
         return data;
