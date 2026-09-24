@@ -1674,7 +1674,17 @@ input,select,textarea,button{max-width:100%;font:inherit}
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY,
-        { global: { fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }) } }
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: window.localStorage
+          },
+          global: {
+            fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" })
+          }
+        }
       );
 
     const app = document.getElementById("app");
@@ -4372,10 +4382,17 @@ input,select,textarea,button{max-width:100%;font:inherit}
         // Refresh token tepat sebelum uji. Ini mencegah token lama dari tab/bfcache
         // dikirim ke Edge Function dan menghasilkan 401 Invalid session.
         const refreshed = await supabaseClient.auth.refreshSession();
-        if (refreshed.error) throw refreshed.error;
-        const session = refreshed.data?.session;
-        if (!session?.access_token) throw new Error("Supabase tidak mengembalikan access token setelah refresh.");
-        currentSession = session;
+        if (refreshed.error) {
+          const latest = await supabaseClient.auth.getSession();
+          if (latest.error || !latest.data?.session?.access_token) {
+            throw new Error("Sesi Supabase sudah tidak valid. Silakan login ulang.");
+          }
+          currentSession = latest.data.session;
+        } else {
+          currentSession = refreshed.data?.session || currentSession;
+        }
+        const session = currentSession;
+        if (!session?.access_token) throw new Error("Supabase tidak mengembalikan access token.");
 
         // Jalur same-origin: browser -> Vercel -> Supabase.
         const response = await fetch("/api/radar-proxy", {
