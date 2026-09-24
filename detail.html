@@ -934,16 +934,22 @@ input,select,textarea,button{max-width:100%;font:inherit}
             shareEventId = shareRow.id;
             shareChannel = String(shareRow.channel || "").trim().toLowerCase();
           }
-        } else if (shareToken) {
-          const { data: shareRow } = await supabaseClient
-            .from("share_events")
-            .select("id,news_id,share_token,channel")
-            .eq("share_token", shareToken)
-            .eq("news_id", Number(id))
-            .maybeSingle();
-          if (shareRow?.id) {
-            shareEventId = shareRow.id;
-            shareChannel = String(shareRow.channel || "").trim().toLowerCase();
+        } else if (shareToken && /^[0-9a-f-]{36}$/i.test(shareToken)) {
+          const { data: resolvedShareEventId, error: resolveError } = await supabaseClient
+            .rpc("resolve_share_event_id", {
+              p_share_token: shareToken,
+              p_news_id: Number(id)
+            });
+          if (!resolveError && Number.isSafeInteger(Number(resolvedShareEventId)) && Number(resolvedShareEventId) > 0) {
+            shareEventId = Number(resolvedShareEventId);
+          }
+          if (shareEventId) {
+            const { data: shareRow } = await supabaseClient
+              .from("share_events")
+              .select("channel")
+              .eq("id", shareEventId)
+              .maybeSingle();
+            shareChannel = String(shareRow?.channel || "").trim().toLowerCase();
           }
         }
         const trackedSource = shareChannel || a.source;
@@ -1335,7 +1341,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
       if (!["whatsapp","telegram","facebook","x"].includes(channel)) return;
 
       logShare(channel).then((share) => {
-        const trackedUrl = makeTrackedShareUrl(channel, share?.id);
+        const trackedUrl = makeTrackedShareUrl(channel, share?.share_token);
         const encodedText = encodeURIComponent(text);
         const links = {
           whatsapp: "https://wa.me/?text=" + encodeURIComponent(text + "\n" + trackedUrl),
