@@ -1325,8 +1325,9 @@ input,select,textarea,button{max-width:100%;font:inherit}
       // URL berbagi dibuat singkat agar nyaman dikirim melalui WhatsApp.
       // Format /b/ID tetap diselesaikan server-side ke artikel yang tepat.
       const url = new URL(PUBLIC_ORIGIN + "/b/" + encodeURIComponent(String(articleId)));
-      if (shareToken && /^\\d+$/.test(String(shareToken))) {
-        url.searchParams.set("s", String(shareToken));
+      const eventId = Number(shareToken);
+      if (Number.isSafeInteger(eventId) && eventId > 0) {
+        url.searchParams.set("s", String(eventId));
       }
       return url.toString();
     }
