@@ -51,7 +51,7 @@ export default async function handler(req, res) {
     const articleId = String(article.id);
     const canonicalSlug = slugify(article.judul);
     const publicUrl = canonicalSlug ? origin + "/" + canonicalSlug : origin + "/detail.html?id=" + encodeURIComponent(articleId);
-    const image = article.gambar ? origin + "/api/og-image?id=" + encodeURIComponent(articleId) : origin + "/favicon.ico";
+    const image = article.gambar ? String(article.gambar) : origin + "/favicon.ico";
     const title = String(article.judul || "VISI Bangsa");
     const imagePath = String(article.gambar || "").toLowerCase().split("?")[0];
     const imageType = imagePath.endsWith(".png") ? "image/png" : imagePath.endsWith(".webp") ? "image/webp" : imagePath.endsWith(".avif") ? "image/avif" : "image/jpeg";
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(publicUrl)}">
-<meta property="og:image" content="${esc(image)}">
+<meta property="og:image" content="${esc(image)}">\n<meta property="og:image:url" content="${esc(image)}">
 <meta property="og:image:secure_url" content="${esc(image)}">
 <meta property="og:image:type" content="${esc(imageType)}">
 <meta property="og:image:alt" content="${esc(title)}">
