@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/b/:id(\\d+)",
+      "destination": "/api/share?id=:id"
+    },
+    {
       "source": "/:slug([a-z0-9][a-z0-9-]*)",
       "destination": "/api/share?slug=:slug"
     },
