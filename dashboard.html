@@ -4387,7 +4387,10 @@ input,select,textarea,button{max-width:100%;font:inherit}
       }
     }
 
-    initializeVISIBangsaDashboard();
-    setTimeout(runAuthenticatedRadarTest, 300);
+    initializeVISIBangsaDashboard().then(() => {
+      // Uji Radar dijalankan setelah inisialisasi selesai agar role dan sesi Admin
+      // sudah benar-benar tersedia, bukan berdasarkan timer tetap.
+      runAuthenticatedRadarTest();
+    });
 
   </script>
