@@ -3125,7 +3125,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         const active = selectedNewsCategory === category;
         return '<button type="button" class="news-category-tab' + (active ? ' active' : '') +
           '" data-news-category="' + escapeHtml(category) + '" aria-selected="' + active + '">' +
-          '<span>' + escapeHtml(category) + '</span><b>' + counts[category] + '</b></button>';
+          '<span>' + escapeHtml(category) + '</span><b>' + (counts[category] || 0) + '</b></button>';
       }).join("");
       newsCategoryTabs.querySelectorAll("[data-news-category]").forEach(button => {
         button.addEventListener("click", () => {
