@@ -3888,7 +3888,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
         const top = Array.isArray(stats.top_articles_7d) ? stats.top_articles_7d.slice(0, 3) : [];
         const todayTop = Array.isArray(stats.top_articles_today) ? stats.top_articles_today.slice(0, 3) : [];
-        const todayMap = new Map(todayTop.map(item => [String(item.news_id), Number(item.visits_today) || 0]));
+        const todayMap = new Map(todayTop.map(item => [String(item.news_id), Number(item.reads_today) || 0]));
         const renderBarChart = (id, rows) => {
           const el = document.getElementById(id);
           if (!el) return;
