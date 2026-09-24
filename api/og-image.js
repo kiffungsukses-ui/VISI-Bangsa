@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   const supabaseUrl = "https://vupvgdfdnpqactlqufbu.supabase.co";
-  const supabaseKey = "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REV";
+  const supabaseKey = "sb_publishable_QmG9CJHdYzwxiRRxRmdcxQ_gZi2REJv";
 
   try {
     const apiUrl =
