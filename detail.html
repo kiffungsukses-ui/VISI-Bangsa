@@ -1308,18 +1308,9 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     function makeTrackedShareUrl(source, shareToken) {
-      const slug = makeArticleSlug(titleElement.textContent.trim());
-      const url = new URL(PUBLIC_ORIGIN + "/" + slug);
-      // Sertakan ID artikel agar resolver selalu mengarah ke artikel yang tepat,
-      // meskipun slug pernah bentrok atau berubah.
-      url.searchParams.set("id", String(articleId));
-      if (source && shareToken) {
-        url.searchParams.set("utm_source", source);
-        url.searchParams.set("utm_medium", "share");
-        url.searchParams.set("utm_campaign", "berita");
-        url.searchParams.set("share_token", String(shareToken));
-      }
-      return url.toString();
+      // URL berbagi dibuat singkat agar nyaman dikirim melalui WhatsApp.
+      // Format /b/ID tetap diselesaikan server-side ke artikel yang tepat.
+      return PUBLIC_ORIGIN + "/b/" + encodeURIComponent(String(articleId));
     }
 
     function openSocialShare(channel) {
