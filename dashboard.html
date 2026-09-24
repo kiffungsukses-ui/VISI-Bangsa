@@ -4372,6 +4372,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
           method: "POST",
           headers: {
             "Authorization": "Bearer " + data.session.access_token,
+            "apikey": SUPABASE_KEY,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ trigger: "authenticated-dashboard-test" })
