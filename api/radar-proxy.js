@@ -45,7 +45,41 @@ export default async function handler(req, res) {
       });
     }
 
-    return res.status(200).json({ ok: true, stage: "supabase-edge", data });
+    // Ambil hasil Radar melalui server Vercel, bukan browser langsung ke Supabase.
+    // Ini menghindari kegagalan CORS/network pada perangkat mobile.
+    let radarResult = null;
+    try {
+      const queryUpstream = await fetch(SUPABASE_URL + "/functions/v1/radar-query", {
+        method: "GET",
+        headers: {
+          Authorization: auth,
+          apikey: SUPABASE_KEY
+        },
+        cache: "no-store"
+      });
+      const queryText = await queryUpstream.text();
+      try { radarResult = JSON.parse(queryText); }
+      catch { radarResult = { raw: queryText }; }
+
+      if (!queryUpstream.ok) {
+        console.error("[RADAR_PROXY][QUERY_ERROR]", queryUpstream.status, JSON.stringify(radarResult));
+        return res.status(queryUpstream.status).json({
+          ok: false,
+          stage: "radar-query",
+          upstreamStatus: queryUpstream.status,
+          error: radarResult?.error || radarResult?.message || queryText || "Radar query gagal."
+        });
+      }
+    } catch (queryError) {
+      console.error("[RADAR_PROXY][QUERY_FETCH_ERROR]", queryError);
+      return res.status(502).json({
+        ok: false,
+        stage: "radar-query-fetch",
+        error: String(queryError?.message || queryError)
+      });
+    }
+
+    return res.status(200).json({ ok: true, stage: "supabase-edge", data, radar: radarResult });
   } catch (error) {
     console.error("[RADAR_PROXY][FETCH_ERROR]", error);
     return res.status(502).json({
