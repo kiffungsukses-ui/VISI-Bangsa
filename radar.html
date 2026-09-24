@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar VISI Bangsa — Prototipe</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f7;color:#202124;font-family:Arial,Helvetica,sans-serif}
+header{background:#b40000;color:#fff;padding:22px 20px}header h1{margin:0 0 6px;font-size:25px}header p{margin:0;opacity:.9}
+main{max-width:1100px;margin:22px auto;padding:0 16px}.panel{background:#fff;border-radius:10px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.metric{border:1px solid #ddd;border-radius:8px;padding:14px}.metric b{display:block;font-size:26px;margin-top:5px}
+.cluster{border:1px solid #ddd;border-left:6px solid #b40000;border-radius:8px;padding:15px;margin:12px 0}.cluster h3{margin:0 0 5px}.meta{color:#666;font-size:13px}.score{font-size:23px;font-weight:800}.signal{background:#f8f8f8;border-radius:7px;padding:10px;margin-top:10px}.reason{font-size:14px;line-height:1.5}
+small.badge{display:inline-block;border-radius:12px;padding:4px 9px;background:#eee;margin-left:7px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>RADAR VISI BANGSA</h1>
+  <p>Prototipe mesin pemantauan arah redaksi — bukan sekadar radar cuaca.</p>
+</header>
+<main>
+  <section class="panel">
+    <div class="grid">
+      <div class="metric">Sinyal masuk<b id="total">0</b></div>
+      <div class="metric">Prioritas<b id="priority">0</b></div>
+      <div class="metric">Perlu dipantau<b id="watch">0</b></div>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Arah perhatian redaksi</h2>
+    <div id="clusters"></div>
+  </section>
+  <section class="panel">
+    <h3>Catatan mesin</h3>
+    <p class="reason">Skor hanya menentukan urutan perhatian. Radar tidak boleh mengubah sinyal menjadi berita otomatis. Publikasi tetap membutuhkan verifikasi sumber, waktu, lokasi, dan bukti.</p>
+  </section>
+</main>
+<script type="module">
+import { buildRadar } from "./radar-engine.js";
+
+const signals = [
+  {
+    topic:"Cuaca Sumatera Utara",
+    cluster:"cuaca-sumut",
+    category:"Daerah",
+    locations:["Asahan","Labuhanbatu","Batu Bara","Tanjungbalai"],
+    novelty:82, acceleration:76, impact:88, locality:100,
+    sourceAgreement:70, coverageGap:82, persistence:78,
+    sources:["BMKG","VISI Bangsa"],
+    reason:"Pantau perkembangan aktual di koridor timur; naikkan menjadi berita bila ada bukti lapangan yang terverifikasi."
+  },
+  {
+    topic:"Pendidikan gratis",
+    cluster:"pendidikan",
+    category:"Pendidikan",
+    locations:["Indonesia"],
+    novelty:42, acceleration:35, impact:78, locality:55,
+    sourceAgreement:70, coverageGap:64, persistence:70,
+    sources:["VISI Bangsa"],
+    reason:"Isu sudah pernah diliput; mesin mencari perkembangan baru sebelum menyarankan follow-up."
+  },
+  {
+    topic:"Pesona Danau Toba",
+    cluster:"danau-toba",
+    category:"Pesona & Budaya",
+    locations:["Toba"],
+    novelty:35, acceleration:25, impact:58, locality:82,
+    sourceAgreement:55, coverageGap:70, persistence:65,
+    sources:["VISI Bangsa"],
+    reason:"Layak dipantau untuk sudut baru, tetapi sinyal perubahan masih terbatas."
+  }
+];
+
+const radar = buildRadar(signals);
+document.querySelector("#total").textContent = radar.totalSignals;
+document.querySelector("#priority").textContent = radar.priorityClusters.length;
+document.querySelector("#watch").textContent = radar.watchClusters.length;
+
+document.querySelector("#clusters").innerHTML = radar.clusters.map(c => `
+  <article class="cluster">
+    <h3>${c.topic} <small class="badge">${c.status || (c.score >= 75 ? "PRIORITAS" : c.score >= 55 ? "PANTAU" : "RENDAH")}</small></h3>
+    <div class="score">${c.score}/100 <span class="meta">• keyakinan ${c.confidence}% • ${c.sourceCount} sumber</span></div>
+    <p class="meta">${c.direction}</p>
+    ${c.signals.map(s => `<div class="signal"><b>${s.topic}</b><div class="reason">${s.reason || "Belum ada alasan editorial."}</div></div>`).join("")}
+  </article>
+`).join("");
+</script>
+</body>
+</html>
