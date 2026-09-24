@@ -922,7 +922,19 @@ input,select,textarea,button{max-width:100%;font:inherit}
         let shareEventId = null;
         let shareChannel = "";
         const shareToken = params.get("share_token");
-        if (shareToken) {
+        const shareEventParam = params.get("s");
+        if (shareEventParam && /^\\d+$/.test(shareEventParam)) {
+          const { data: shareRow } = await supabaseClient
+            .from("share_events")
+            .select("id,news_id,share_token,channel")
+            .eq("id", Number(shareEventParam))
+            .eq("news_id", Number(id))
+            .maybeSingle();
+          if (shareRow?.id) {
+            shareEventId = shareRow.id;
+            shareChannel = String(shareRow.channel || "").trim().toLowerCase();
+          }
+        } else if (shareToken) {
           const { data: shareRow } = await supabaseClient
             .from("share_events")
             .select("id,news_id,share_token,channel")
@@ -1282,11 +1294,13 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          const { error } = await supabaseClient
+          const { data, error } = await supabaseClient
             .from("share_events")
-            .insert(payload);
+            .insert(payload)
+            .select("id")
+            .single();
           if (error) throw error;
-          return { id: null, share_token: shareToken };
+          return { id: data?.id || null, share_token: shareToken };
         } catch (error) {
           if (attempt === 2) {
             console.warn("Pencatatan share gagal setelah percobaan ulang:", error);
@@ -1310,7 +1324,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
     function makeTrackedShareUrl(source, shareToken) {
       // URL berbagi dibuat singkat agar nyaman dikirim melalui WhatsApp.
       // Format /b/ID tetap diselesaikan server-side ke artikel yang tepat.
-      return PUBLIC_ORIGIN + "/b/" + encodeURIComponent(String(articleId));
+      const url = new URL(PUBLIC_ORIGIN + "/b/" + encodeURIComponent(String(articleId)));
+      if (shareToken && /^\\d+$/.test(String(shareToken))) {
+        url.searchParams.set("s", String(shareToken));
+      }
+      return url.toString();
     }
 
     function openSocialShare(channel) {
