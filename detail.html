@@ -244,6 +244,11 @@
       line-height: 1.6;
     }
 
+    .hero.image-fallback {
+      object-fit: contain;
+      padding: 24px;
+      background: #f4f5f7;
+    }
     .hero {
       width: 100%;
       max-height: 520px;
@@ -998,6 +1003,30 @@ input,select,textarea,button{max-width:100%;font:inherit}
       );
     }
 
+    const ARTICLE_IMAGE_FALLBACK = "/visi-bangsa-logo.svg";
+
+    function loadArticleImage(imageElement, imageUrl, altText) {
+      if (!imageElement) return;
+      const cleanUrl = String(imageUrl || "").trim();
+      imageElement.alt = altText || "Foto berita VISI Bangsa";
+      imageElement.dataset.imageRetry = "0";
+      imageElement.onerror = function () {
+        const retry = Number(this.dataset.imageRetry || "0");
+        if (retry < 2 && cleanUrl) {
+          this.dataset.imageRetry = String(retry + 1);
+          const separator = cleanUrl.includes("?") ? "&" : "?";
+          this.src = cleanUrl + separator + "vb_image_retry=" + Date.now();
+          return;
+        }
+        this.onerror = null;
+        this.src = ARTICLE_IMAGE_FALLBACK;
+        this.alt = "Logo VISI Bangsa — foto berita sementara tidak tersedia";
+        this.classList.add("image-fallback");
+      };
+      imageElement.onload = function () { this.classList.remove("image-fallback"); };
+      imageElement.src = cleanUrl || ARTICLE_IMAGE_FALLBACK;
+      if (!cleanUrl) imageElement.classList.add("image-fallback");
+    }
     function renderArticle(article) {
 
       const category =
@@ -1057,23 +1086,12 @@ input,select,textarea,button{max-width:100%;font:inherit}
         article.isi ||
         "";
 
-      if (article.gambar) {
-
-        heroElement.src =
-          article.gambar;
-
-        heroElement.alt =
-          article.judul ||
-          "Foto berita VISI Bangsa";
-
-        heroElement.style.display =
-          "block";
-
-      } else {
-
-        heroElement.style.display =
-          "none";
-      }
+      heroElement.style.display = "block";
+      loadArticleImage(
+        heroElement,
+        article.gambar || ARTICLE_IMAGE_FALLBACK,
+        article.judul || "Foto berita VISI Bangsa"
+      );
 
       updateSEO(article);
 
@@ -1235,23 +1253,31 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     async function logShare(channel) {
-      try {
-        const { data, error } = await supabaseClient
-          .from("share_events")
-          .insert({
-            news_id: articleId ? Number(articleId) : null,
-            channel: channel,
-            visitor_id: getVisitorId(),
-            path: window.location.pathname + window.location.search
-          })
-          .select("id,share_token")
-          .single();
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        console.warn("Pencatatan share tidak mengganggu proses berbagi:", error);
-        return null;
+      const payload = {
+        news_id: articleId ? Number(articleId) : null,
+        channel: channel,
+        visitor_id: getVisitorId(),
+        path: window.location.pathname + window.location.search
+      };
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const { data, error } = await supabaseClient
+            .from("share_events")
+            .insert(payload)
+            .select("id,share_token")
+            .single();
+          if (error) throw error;
+          if (data?.share_token) return data;
+          throw new Error("Share event tidak mengembalikan share_token.");
+        } catch (error) {
+          if (attempt === 2) {
+            console.warn("Pencatatan share gagal setelah percobaan ulang:", error);
+            return null;
+          }
+          await new Promise(resolve => setTimeout(resolve, 350));
+        }
       }
+      return null;
     }
 
     function makeArticleSlug(title) {
