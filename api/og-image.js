@@ -17,8 +17,7 @@ export default async function handler(req, res) {
 
     const response = await fetch(apiUrl, {
       headers: {
-        apikey: supabaseKey,
-        Authorization: "Bearer " + supabaseKey
+        apikey: supabaseKey
       }
     });
 
