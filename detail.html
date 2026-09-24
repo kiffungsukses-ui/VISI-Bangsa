@@ -915,21 +915,26 @@ input,select,textarea,button{max-width:100%;font:inherit}
       try {
         const a = getRadarAttribution();
         let shareEventId = null;
+        let shareChannel = "";
         const shareToken = params.get("share_token");
         if (shareToken) {
           const { data: shareRow } = await supabaseClient
             .from("share_events")
-            .select("id,news_id,share_token")
+            .select("id,news_id,share_token,channel")
             .eq("share_token", shareToken)
             .eq("news_id", Number(id))
             .maybeSingle();
-          if (shareRow?.id) shareEventId = shareRow.id;
+          if (shareRow?.id) {
+            shareEventId = shareRow.id;
+            shareChannel = String(shareRow.channel || "").trim().toLowerCase();
+          }
         }
+        const trackedSource = shareChannel || a.source;
         const { data, error } = await supabaseClient.rpc("record_article_entry", {
           p_path: window.location.pathname,
           p_news_id: String(id),
           p_visitor_id: String(visitorId),
-          p_source: a.source,
+          p_source: trackedSource,
           p_referrer_host: a.referrerHost,
           p_utm_source: a.utmSource,
           p_utm_medium: a.utmMedium,
