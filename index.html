@@ -1587,6 +1587,202 @@ main>*,
   }
 }
 </style>
+
+<style id="mobile-touch-responsive-final">
+/* VISI BANGSA — MOBILE TOUCH DEVICE FINAL
+   Mengatasi browser HP yang melaporkan viewport lebih lebar.
+   Tidak mengubah desktop biasa. */
+@media (pointer: coarse) and (hover: none) and (max-width: 1100px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+  }
+  main{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  /* Headline tetap satu kolom pada perangkat sentuh sempit. */
+  .hero-layout{
+    display:block!important;
+    width:100%!important;
+    margin-top:10px!important;
+  }
+  .headline-card,
+  .headline-link{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  .headline-image{
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    aspect-ratio:16/10!important;
+    object-fit:cover!important;
+  }
+  .headline-content{
+    width:100%!important;
+    padding:15px!important;
+  }
+  .headline-content h2{
+    font-size:clamp(20px,5.5vw,24px)!important;
+    line-height:1.18!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  /* Berita Terbaru + Berita Pilihan WAJIB bertumpuk pada HP. */
+  .news-sections{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    gap:14px!important;
+    margin-top:12px!important;
+  }
+  .news-sections>.latest-panel,
+  .news-sections>#berita{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Header kartu tidak boleh terjepit dua kolom. */
+  .news-sections .latest-head,
+  .news-sections #berita .section-header{
+    width:100%!important;
+    min-height:62px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:10px 14px!important;
+    box-sizing:border-box!important;
+  }
+  .news-sections .latest-head h2,
+  .news-sections #berita .section-header h2{
+    font-size:20px!important;
+    line-height:1.12!important;
+  }
+  .news-sections .latest-head a,
+  .news-sections #berita .section-header a{
+    font-size:12px!important;
+    white-space:nowrap!important;
+  }
+
+  /* Isi masing-masing panel satu kolom penuh. */
+  .news-sections #latestList,
+  .news-sections #berita .berita-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:0!important;
+  }
+
+  /* Berita Terbaru: foto kiri, teks kanan, seperti kartu berita mobile. */
+  .news-sections #latestList .latest-item{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:10px 0!important;
+  }
+  .news-sections #latestList .latest-item>.berita-link{
+    display:grid!important;
+    grid-template-columns:105px minmax(0,1fr)!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    padding:0!important;
+    gap:10px!important;
+    align-items:start!important;
+  }
+  .news-sections #latestList .latest-item>.berita-link>img,
+  .news-sections #latestList .latest-item>.berita-link>.gambar,
+  .news-sections #latestList .latest-item>.berita-link>.tanpa-gambar{
+    width:105px!important;
+    height:76px!important;
+    min-width:105px!important;
+    min-height:76px!important;
+    max-width:105px!important;
+    max-height:76px!important;
+    aspect-ratio:auto!important;
+    object-fit:cover!important;
+    margin:0!important;
+  }
+  .news-sections #latestList .latest-item>.berita-link>.isi{
+    width:auto!important;
+    min-width:0!important;
+    min-height:76px!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  /* Berita Pilihan: satu kartu per baris, tidak menyempit menjadi kolom desktop. */
+  .news-sections #berita .berita-link{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    padding:10px 0!important;
+    gap:0!important;
+  }
+  .news-sections #berita .gambar,
+  .news-sections #berita .tanpa-gambar{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    aspect-ratio:16/9!important;
+    object-fit:cover!important;
+    border-radius:8px!important;
+  }
+  .news-sections #berita .isi{
+    width:100%!important;
+    min-width:0!important;
+    padding:8px 0 2px!important;
+    margin:0!important;
+  }
+  .news-sections #berita .judul{
+    width:100%!important;
+    font-size:17px!important;
+    line-height:1.25!important;
+    overflow-wrap:anywhere!important;
+  }
+  .news-sections #berita .ringkasan{
+    width:100%!important;
+    font-size:12px!important;
+    line-height:1.4!important;
+  }
+  .news-sections #berita .meta{
+    width:100%!important;
+    font-size:11px!important;
+  }
+
+  /* Kategori tetap nyaman disentuh di HP. */
+  .category-tiles{
+    width:100%!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .category-tile{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:1.45/1!important;
+  }
+}
+</style>
+
 </head>
 
 <body>
