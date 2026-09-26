@@ -53,7 +53,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
 <section id="contactCard" class="card panel"><p style="margin:0 0 8px;color:#b40000;font-size:12px;font-weight:800;letter-spacing:.08em">KONTAK</p><h2 style="margin:0 0 4px;font-size:24px;color:#17212b">Hubungi VISI Bangsa</h2><p class="muted" style="margin-top:0">Silakan gunakan email atau telepon/WhatsApp untuk menghubungi kami.</p><div id="contactDetails" class="contact-details"></div></section>
 
-<section id="editorialCard" class="card panel editorial-expandable" role="button" tabindex="0" aria-expanded="false" aria-label="Tampilkan Susunan Redaksi selengkapnya"><p style="margin:0 0 8px;color:#b40000;font-size:12px;font-weight:800;letter-spacing:.08em">SUSUNAN REDAKSI</p><div id="editorialNote" class="editorial-note editorial-preview" style="margin-top:0"></div><div id="editorialFullInline" class="editorial-note editorial-full-inline" style="display:none;margin-top:12px"></div><div id="editorialToggle" style="margin-top:10px;color:#b40000;font-size:12px;font-weight:800">Klik untuk melihat selengkapnya</div></section>
+<section id="editorialCard" class="card panel editorial-expandable" role="button" tabindex="0" aria-expanded="false" aria-label="Tampilkan Susunan Redaksi selengkapnya"><p style="margin:0 0 8px;color:#b40000;font-size:12px;font-weight:800;letter-spacing:.08em">SUSUNAN REDAKSI</p><div id="editorialNote" class="editorial-note editorial-preview" style="margin-top:0"></div><div id="editorialFullInline" class="editorial-note editorial-full-inline"></div><div id="editorialToggle" style="margin-top:10px;color:#b40000;font-size:12px;font-weight:800">Klik untuk melihat selengkapnya</div></section>
 
 <section id="berita" class="card panel form"><h2>Kirim Berita</h2><p class="muted">Kirim informasi berita beserta foto kepada redaksi VISI Bangsa.</p><div id="msgBerita" class="msg"></div>
 <form id="formBerita"><div class="grid"><div class="field"><label>Nama Pengirim *</label><input id="bNama" required maxlength="100"></div><div class="field"><label>Email *</label><input id="bEmail" type="email" required maxlength="150"></div><div class="field"><label>No. WhatsApp/Telepon</label><input id="bTelepon" maxlength="30"></div><div class="field"><label>Kategori *</label><select id="bKategori" required><option value="">Pilih kategori</option><option>Nasional</option><option>Daerah</option><option>Ekonomi</option><option>Pendidikan</option><option>Olahraga</option><option>Pesona & Budaya</option><option>Opini</option></select></div></div><div class="field"><label>Judul Berita *</label><input id="bJudul" required maxlength="180"></div><div class="field"><label>Isi Berita *</label><textarea id="bIsi" required></textarea></div><div class="field"><label>Foto Berita</label><input id="bFoto" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="note">JPG, PNG, WEBP atau GIF. Ukuran gambar akan dikompres otomatis sebelum dikirim.</div></div><button class="btn" type="submit">Kirim Berita ke Redaksi</button></form></section>
@@ -111,14 +111,29 @@ formIklan.onsubmit=async e=>{e.preventDefault();const btn=formIklan.querySelecto
 const editorialCard=document.getElementById("editorialCard");
 const editorialFullInline=document.getElementById("editorialFullInline");
 const editorialToggle=document.getElementById("editorialToggle");
+let editorialReturnScrollY=0;
 function toggleEditorial(){
   if(!editorialCard)return;
-  const expanded=editorialCard.classList.toggle("expanded");
-  editorialCard.setAttribute("aria-expanded",expanded?"true":"false");
-  editorialCard.setAttribute("aria-label",expanded?"Tutup Susunan Redaksi":"Tampilkan Susunan Redaksi selengkapnya");
-  if(editorialToggle)editorialToggle.textContent=expanded?"Klik untuk menutup":"Klik untuk melihat selengkapnya";
-  if(expanded && editorialFullInline){
-    requestAnimationFrame(()=>editorialFullInline.scrollIntoView({behavior:"smooth",block:"nearest"}));
+  const willExpand=!editorialCard.classList.contains("expanded");
+  if(willExpand){
+    editorialReturnScrollY=window.scrollY||window.pageYOffset||0;
+    editorialCard.classList.add("expanded");
+    editorialCard.setAttribute("aria-expanded","true");
+    editorialCard.setAttribute("aria-label","Tutup Susunan Redaksi");
+    if(editorialToggle)editorialToggle.textContent="Klik untuk menutup";
+    requestAnimationFrame(()=>{
+      if(editorialFullInline){
+        editorialFullInline.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+    });
+  }else{
+    editorialCard.classList.remove("expanded");
+    editorialCard.setAttribute("aria-expanded","false");
+    editorialCard.setAttribute("aria-label","Tampilkan Susunan Redaksi selengkapnya");
+    if(editorialToggle)editorialToggle.textContent="Klik untuk melihat selengkapnya";
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:editorialReturnScrollY,behavior:"smooth"});
+    });
   }
 }
 if(editorialCard){
