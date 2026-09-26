@@ -3327,3 +3327,36 @@ if(document.readyState==="loading"){
     padding-left:13px!important;
     padding-right:13px!important;
   }
+
+<style id="vb-blue-card-label-full-width">
+/* Label panel berita: penuh dari sudut kiri ke sudut kanan kartu. */
+.news-sections > .latest-panel,
+.news-sections > #berita{
+  overflow:hidden !important;
+}
+.news-sections > .latest-panel > .latest-head,
+.news-sections > #berita > .section-header{
+  width:calc(100% + 28px) !important;
+  margin-left:-14px !important;
+  margin-right:-14px !important;
+  margin-top:0 !important;
+  border-radius:10px 10px 0 0 !important;
+}
+@media (max-width:1199px){
+  .news-sections > .latest-panel > .latest-head,
+  .news-sections > #berita > .section-header{
+    width:calc(100% + 20px) !important;
+    margin-left:-10px !important;
+    margin-right:-10px !important;
+  }
+}
+@media (max-width:699px){
+  .news-sections > .latest-panel > .latest-head,
+  .news-sections > #berita > .section-header{
+    width:calc(100% + 28px) !important;
+    margin-left:-14px !important;
+    margin-right:-14px !important;
+  }
+}
+</style>
+
