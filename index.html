@@ -3377,6 +3377,273 @@ if(document.readyState==="loading"){
 </style>
 
 
+<style id="vb-latest-card-text-alignment">
+/* Berita Terbaru: foto tetap kiri, informasi kanan, dimensi kartu dipertahankan. */
+.news-sections #latestList .latest-item{
+  display:block!important;width:100%!important;min-width:0!important;height:auto!important;
+  padding:0!important;margin:0!important;overflow:visible!important;box-sizing:border-box!important;
+}
+.news-sections #latestList .latest-item > .berita-link{
+  display:grid!important;grid-template-columns:110px minmax(0,1fr)!important;
+  align-items:start!important;column-gap:12px!important;width:100%!important;min-width:0!important;
+  height:auto!important;min-height:0!important;padding:10px 0!important;margin:0!important;
+  box-sizing:border-box!important;overflow:visible!important;
+}
+.news-sections #latestList .latest-item > .berita-link > img,
+.news-sections #latestList .latest-item > .berita-link > .gambar,
+.news-sections #latestList .latest-item > .berita-link > .tanpa-gambar{
+  grid-column:1!important;grid-row:1!important;display:block!important;
+  width:110px!important;height:72px!important;min-width:110px!important;min-height:72px!important;
+  max-width:110px!important;max-height:72px!important;aspect-ratio:auto!important;
+  object-fit:cover!important;object-position:center!important;margin:0!important;padding:0!important;
+  border-radius:7px!important;box-sizing:border-box!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi{
+  grid-column:2!important;grid-row:1!important;display:block!important;width:auto!important;
+  min-width:0!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;
+  box-sizing:border-box!important;overflow:visible!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .kategori{
+  display:block!important;width:100%!important;text-align:left!important;margin:0 0 4px!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul,
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan,
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  display:block!important;width:100%!important;text-align:justify!important;
+  text-justify:inter-word!important;overflow-wrap:anywhere!important;word-break:normal!important;
+  margin-left:0!important;margin-right:0!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul{
+  margin-top:0!important;margin-bottom:4px!important;font-size:14px!important;line-height:1.25!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan{
+  margin-top:0!important;margin-bottom:4px!important;font-size:12px!important;
+  line-height:1.35!important;color:#697582!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  margin-top:0!important;margin-bottom:0!important;font-size:10px!important;
+  line-height:1.3!important;color:#7c8792!important;
+}
+@media(max-width:699px){
+  .news-sections #latestList .latest-item > .berita-link{
+    grid-template-columns:105px minmax(0,1fr)!important;column-gap:10px!important;padding:10px 0!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > img,
+  .news-sections #latestList .latest-item > .berita-link > .gambar,
+  .news-sections #latestList .latest-item > .berita-link > .tanpa-gambar{
+    width:105px!important;min-width:105px!important;max-width:105px!important;
+    height:76px!important;min-height:76px!important;max-height:76px!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .judul{font-size:14px!important;line-height:1.25!important;}
+  .news-sections #latestList .latest-item > .berita-link > .isi .ringkasan{font-size:11px!important;line-height:1.3!important;}
+  .news-sections #latestList .latest-item > .berita-link > .isi .meta{font-size:10px!important;line-height:1.25!important;}
+}
+</style>
+
+<style id="vb-latest-category-under-photo">
+/* Berita Terbaru: kategori berada tepat di bawah foto; teks berita tetap di kolom kanan. */
+.news-sections #latestList .latest-item > .berita-link{
+  display:grid!important;
+  grid-template-columns:110px minmax(0,1fr)!important;
+  column-gap:12px!important;
+  align-items:start!important;
+}
+.news-sections #latestList .latest-item .latest-media{
+  grid-column:1!important;
+  grid-row:1!important;
+  width:110px!important;
+  min-width:110px!important;
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+}
+.news-sections #latestList .latest-item .latest-media .gambar,
+.news-sections #latestList .latest-item .latest-media .tanpa-gambar{
+  display:block!important;
+  width:110px!important;
+  height:72px!important;
+  min-width:110px!important;
+  min-height:72px!important;
+  max-width:110px!important;
+  max-height:72px!important;
+  aspect-ratio:auto!important;
+  object-fit:cover!important;
+  margin:0!important;
+  border-radius:7px!important;
+}
+.news-sections #latestList .latest-item .latest-media .kategori{
+  display:block!important;
+  width:100%!important;
+  margin:5px 0 0!important;
+  padding:0!important;
+  text-align:left!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  color:#c40000!important;
+  font-weight:800!important;
+  text-transform:uppercase!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi{
+  grid-column:2!important;
+  grid-row:1!important;
+  width:auto!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul,
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan,
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  width:100%!important;
+  text-align:justify!important;
+  text-justify:inter-word!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul{
+  margin:0 0 4px!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan{
+  margin:0 0 4px!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  margin:0!important;
+}
+#breakingText:empty{display:none!important;}
+.breaking-bar:has(#breakingText:empty){justify-content:flex-start!important;}
+@media(max-width:699px){
+  .news-sections #latestList .latest-item > .berita-link{
+    grid-template-columns:105px minmax(0,1fr)!important;
+    column-gap:10px!important;
+  }
+  .news-sections #latestList .latest-item .latest-media{
+    width:105px!important;
+    min-width:105px!important;
+  }
+  .news-sections #latestList .latest-item .latest-media .gambar,
+  .news-sections #latestList .latest-item .latest-media .tanpa-gambar{
+    width:105px!important;
+    min-width:105px!important;
+    max-width:105px!important;
+    height:76px!important;
+    min-height:76px!important;
+    max-height:76px!important;
+  }
+}
+</style>
 
 
-
+<style id="vb-latest-photo-above-text-final">
+/* Berita Terkini: foto di atas seluruh teks, lalu kategori, judul, isi, penulis, waktu terbit. */
+.news-sections #latestList .latest-item > .berita-link{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:10px 0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+.news-sections #latestList .latest-item .latest-media{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.news-sections #latestList .latest-item .latest-media .gambar,
+.news-sections #latestList .latest-item .latest-media .tanpa-gambar{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  aspect-ratio:16/9!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  margin:0!important;
+  padding:0!important;
+  border-radius:8px!important;
+  box-sizing:border-box!important;
+}
+.news-sections #latestList .latest-item .latest-media .kategori{
+  display:block!important;
+  width:100%!important;
+  margin:6px 0 5px!important;
+  padding:0!important;
+  text-align:left!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  color:#c40000!important;
+  font-weight:800!important;
+  text-transform:uppercase!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul,
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan,
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  display:block!important;
+  width:100%!important;
+  text-align:justify!important;
+  text-justify:inter-word!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .judul{
+  margin-top:0!important;
+  margin-bottom:6px!important;
+  font-size:17px!important;
+  line-height:1.3!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .ringkasan{
+  margin-top:0!important;
+  margin-bottom:6px!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+  color:#697582!important;
+}
+.news-sections #latestList .latest-item > .berita-link > .isi .meta{
+  margin-top:0!important;
+  margin-bottom:0!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  color:#7c8792!important;
+}
+@media(max-width:699px){
+  .news-sections #latestList .latest-item > .berita-link{
+    padding:10px 0!important;
+  }
+  .news-sections #latestList .latest-item .latest-media .kategori{
+    margin-top:5px!important;
+    margin-bottom:5px!important;
+    font-size:10px!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .judul{
+    font-size:15px!important;
+    line-height:1.3!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .ringkasan{
+    font-size:11px!important;
+    line-height:1.4!important;
+  }
+  .news-sections #latestList .latest-item > .berita-link > .isi .meta{
+    font-size:10px!important;
+    line-height:1.3!important;
+  }
+}
+</style>
