@@ -1783,6 +1783,153 @@ main>*,
 }
 </style>
 
+
+<style id="mobile-viewport-fallback-final">
+/* VISI BANGSA — MOBILE VIEWPORT FALLBACK
+   Dipakai bila browser HP melaporkan viewport desktop.
+   Tidak mengubah desktop sebenarnya. */
+html.vb-mobile-viewport body{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:hidden!important;
+}
+html.vb-mobile-viewport main{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  padding:10px!important;
+  margin:10px 0 0!important;
+}
+html.vb-mobile-viewport .hero-layout{
+  display:block!important;
+  width:100%!important;
+  margin-top:10px!important;
+}
+html.vb-mobile-viewport #headline,
+html.vb-mobile-viewport #headline .headline-card,
+html.vb-mobile-viewport #headline .headline-link{
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+}
+html.vb-mobile-viewport #headline .headline-image{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16/9!important;
+  object-fit:cover!important;
+}
+html.vb-mobile-viewport #headline .headline-content{
+  position:static!important;
+  width:100%!important;
+  height:auto!important;
+  padding:15px!important;
+  margin:0!important;
+  background:#fff!important;
+  color:#172433!important;
+}
+html.vb-mobile-viewport #headline .headline-content h2{
+  width:100%!important;
+  font-size:21px!important;
+  line-height:1.18!important;
+  overflow-wrap:anywhere!important;
+}
+html.vb-mobile-viewport .news-sections{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  gap:14px!important;
+  margin-top:12px!important;
+}
+html.vb-mobile-viewport .news-sections>.latest-panel,
+html.vb-mobile-viewport .news-sections>#berita{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+}
+html.vb-mobile-viewport .news-sections #berita .berita-grid{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  width:100%!important;
+}
+html.vb-mobile-viewport .news-sections #berita .berita-link{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  padding:10px 0!important;
+}
+html.vb-mobile-viewport .news-sections #berita .gambar,
+html.vb-mobile-viewport .news-sections #berita .tanpa-gambar{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:16/9!important;
+  object-fit:cover!important;
+}
+html.vb-mobile-viewport .news-sections #berita .isi{
+  width:100%!important;
+  min-width:0!important;
+  padding:8px 0!important;
+}
+html.vb-mobile-viewport .news-sections #berita .judul{
+  width:100%!important;
+  font-size:17px!important;
+  line-height:1.25!important;
+}
+html.vb-mobile-viewport .news-sections #latestList .latest-item{
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+}
+html.vb-mobile-viewport .news-sections #latestList .latest-item>.berita-link{
+  display:grid!important;
+  grid-template-columns:105px minmax(0,1fr)!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  padding:10px 0!important;
+  gap:10px!important;
+}
+html.vb-mobile-viewport .news-sections #latestList .latest-item>.berita-link>img,
+html.vb-mobile-viewport .news-sections #latestList .latest-item>.berita-link>.gambar,
+html.vb-mobile-viewport .news-sections #latestList .latest-item>.berita-link>.tanpa-gambar{
+  width:105px!important;
+  height:76px!important;
+  min-width:105px!important;
+  min-height:76px!important;
+  max-width:105px!important;
+  max-height:76px!important;
+  object-fit:cover!important;
+}
+html.vb-mobile-viewport .category-tiles{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+</style>
+<script id="mobile-viewport-detection">
+(function(){
+  try{
+    var ua=navigator.userAgent||"";
+    var mobileOS=/Android|iPhone|iPad|iPod/i.test(ua);
+    var touch=(navigator.maxTouchPoints||0)>0;
+    var screenShort=Math.min(
+      Number(window.screen&&window.screen.width)||9999,
+      Number(window.screen&&window.screen.height)||9999
+    );
+    var smallPhone=screenShort<=600;
+    if(mobileOS && touch && smallPhone){
+      document.documentElement.classList.add("vb-mobile-viewport");
+    }
+  }catch(e){}
+})();
+</script>
+
 </head>
 
 <body>
