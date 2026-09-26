@@ -2406,21 +2406,20 @@ function renderLatest(){
     return;
   }
 
-  /* Berita Terkini memakai STRUKTUR KARTU YANG SAMA PERSIS
-     dengan Berita Pilihan. Ini membuat foto, judul, dan garis
-     pembatas mengikuti ritme baris yang sama. */
+  /* Struktur kartu sengaja disamakan dengan Berita Pilihan. */
   el.innerHTML=items.map(item=>{
-    const gambar=item.gambar
+    const gambarHtml=item.gambar
       ? '<img class="gambar" src="'+escapeAttribute(item.gambar)+'" alt="'+escapeAttribute(item.judul)+'" loading="lazy" decoding="async">'
       : '<div class="tanpa-gambar">VISI Bangsa</div>';
 
-    return '<article class="vb-latest-item">'+
-      '<a class="vb-latest-link" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+
-        '<div class="vb-latest-thumb">'+gambar+'</div>'+
-        '<div class="vb-latest-body">'+
-          '<div class="vb-latest-category">'+escapeHtml(item.kategori||"Berita")+'</div>'+
-          '<h3 class="vb-latest-title">'+escapeHtml(item.judul)+'</h3>'+
-          '<div class="vb-latest-meta">'+escapeHtml(item.penulis||"Redaksi VISI Bangsa")+' • '+escapeHtml(formatTanggal(item.tanggal))+'</div>'+
+    return '<article class="latest-item berita">'+
+      '<a class="berita-link" href="/detail.html?id='+encodeURIComponent(item.id)+'">'+
+        gambarHtml+
+        '<div class="isi">'+
+          '<div class="kategori">'+escapeHtml(item.kategori||"Berita")+'</div>'+
+          '<h3 class="judul">'+escapeHtml(item.judul)+'</h3>'+
+          '<div class="ringkasan">'+escapeHtml(ringkas(item.isi))+'</div>'+
+          '<div class="meta">'+escapeHtml(item.penulis||"Redaksi VISI Bangsa")+' • '+escapeHtml(formatTanggal(item.tanggal))+'</div>'+
         '</div>'+
       '</a>'+
     '</article>';
@@ -2428,6 +2427,7 @@ function renderLatest(){
 
   scheduleNewsRowSync();
 }
+
 function renderBreaking(){const el=document.getElementById("breakingText");if(el)el.textContent=semuaBerita.length?semuaBerita[0].judul:"Belum ada berita terbaru.";}
 function renderHeadline() {
 
