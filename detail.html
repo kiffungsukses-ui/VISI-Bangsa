@@ -31,8 +31,21 @@
   <link
     id="canonical"
     rel="canonical"
-    href="/"
+    href="https://visibangsa.id/detail.html"
   >
+
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get("id");
+        if (id && /^\d+$/.test(id)) {
+          var canonical = document.getElementById("canonical");
+          if (canonical) canonical.setAttribute("href", "https://visibangsa.id/detail.html?id=" + encodeURIComponent(id));
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- Open Graph -->
   <meta
@@ -1252,6 +1265,11 @@ input,select,textarea,button{max-width:100%;font:inherit}
     }
 
     function showError(message) {
+
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow, noarchive");
+      const canonical = document.getElementById("canonical");
+      if (canonical) canonical.setAttribute("href", "https://visibangsa.id/");
 
       loadingElement.style.display =
         "none";
