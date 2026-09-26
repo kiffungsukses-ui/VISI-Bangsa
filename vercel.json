@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/detail.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "17"
+        }
+      ],
+      "destination": "/api/share?id=17"
+    },
+    {
       "source": "/b/:id(\\d+)",
       "destination": "/api/share?id=:id"
     },
