@@ -108,6 +108,15 @@ formBerita.onsubmit=e=>{e.preventDefault();submitForm("berita")};formArtikel.ons
 formIklan.onsubmit=async e=>{e.preventDefault();const btn=formIklan.querySelector("button");btn.disabled=true;btn.textContent="Mengirim...";try{const file=iFoto.files[0];if(!file||!file.type.startsWith("image/"))throw new Error("Banner harus berupa gambar.");const ext=file.name.split(".").pop().toLowerCase().replace("jpeg","jpg");const path="public/"+Date.now()+"-"+Math.random().toString(36).slice(2,10)+"."+ext;const up=await sb.storage.from("iklan").upload(path,file,{upsert:false,contentType:file.type});if(up.error)throw up.error;const gambar=sb.storage.from("iklan").getPublicUrl(path).data.publicUrl;const r=await sb.from("iklan").insert({nama_pengiklan:iNama.value.trim(),perusahaan:iPerusahaan.value.trim(),email:iEmail.value.trim(),telepon:iTelepon.value.trim(),judul:iJudul.value.trim(),posisi:iPosisi.value,link_url:iLink.value.trim()||null,mulai:iMulai.value||null,selesai:iSelesai.value||null,gambar,catatan:iCatatan.value.trim(),status:"masuk"});if(r.error)throw r.error;formIklan.reset();msg(msgIklan,"Permintaan iklan berhasil dikirim. Redaksi akan memeriksa materi dan menghubungi Anda.",true)}catch(e){console.error(e);msg(msgIklan,"Permintaan iklan gagal dikirim: "+(e.message||e),false)}finally{btn.disabled=false;btn.textContent="Kirim Permintaan Iklan"}};
 
 </script>
+<script>
+const editorialCard=document.getElementById("editorialCard");
+const editorialModal=document.getElementById("editorialModal");
+const editorialClose=document.getElementById("editorialClose");
+function openEditorial(){if(editorialModal)editorialModal.style.display="flex"}
+function closeEditorial(){if(editorialModal)editorialModal.style.display="none"}
+if(editorialCard){editorialCard.style.cursor="pointer";editorialCard.addEventListener("click",openEditorial);editorialCard.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openEditorial()}})}
+if(editorialClose)editorialClose.addEventListener("click",closeEditorial);
+if(editorialModal)editorialModal.addEventListener("click",function(e){if(e.target===editorialModal)closeEditorial()});
+</script>
 </body>
 </html>
-<script>const editorialCard=document.getElementById("editorialCard"),editorialModal=document.getElementById("editorialModal"),editorialClose=document.getElementById("editorialClose");function openEditorial(){editorialModal.style.display="flex"}function closeEditorial(){editorialModal.style.display="none"}editorialCard.addEventListener("click",openEditorial);editorialCard.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openEditorial()}});editorialClose.addEventListener("click",closeEditorial);editorialModal.addEventListener("click",e=>{if(e.target===editorialModal)closeEditorial});</script>
