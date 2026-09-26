@@ -1218,6 +1218,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             <div class="field"><label for="siteEmail">Email Kontak</label><input id="siteEmail" type="email" maxlength="180" placeholder="Email media"></div>
             <div class="field"><label for="sitePhone">WhatsApp / Telepon</label><input id="sitePhone" type="text" maxlength="50" placeholder="Nomor kontak"></div>
           </div>
+          <div class="field"><label for="siteAddress">Alamat Redaksi</label><textarea id="siteAddress" rows="3" maxlength="500" placeholder="Masukkan alamat lengkap redaksi VISI Bangsa..."></textarea><div class="settings-note">Alamat ini akan tampil pada kartu footer halaman <strong>Hubungi Kami</strong> dengan judul <strong>Alamat Redaksi</strong>.</div></div>
           <div class="field">
             <label>Logo Website</label>
             <div class="image-box">
@@ -1928,6 +1929,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
     const siteProfileInput = document.getElementById("siteProfile");
     const siteEmailInput = document.getElementById("siteEmail");
     const sitePhoneInput = document.getElementById("sitePhone");
+    const siteAddressInput = document.getElementById("siteAddress");
     const siteLogoFile = document.getElementById("siteLogoFile");
     const siteLogoPreview = document.getElementById("siteLogoPreview");
     const siteLogoNote = document.getElementById("siteLogoNote");
@@ -4034,7 +4036,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
       try {
         const { data, error } = await supabaseClient
           .from("site_settings")
-          .select("site_name,tagline,profile,email,phone,logo_url,editorial_note")
+          .select("site_name,tagline,profile,email,phone,logo_url,editorial_note,address")
           .eq("id", 1)
           .maybeSingle();
         if (error) throw error;
@@ -4045,6 +4047,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
         if (siteEditorialNoteInput) siteEditorialNoteInput.value = data.editorial_note || "";
         siteEmailInput.value = data.email || "";
         sitePhoneInput.value = data.phone || "";
+        if (siteAddressInput) siteAddressInput.value = data.address || "";
         const logoUrl = String(data.logo_url || "").trim();
         if (logoUrl) {
           siteLogoPreview.src = logoUrl;
@@ -4129,6 +4132,7 @@ input,select,textarea,button{max-width:100%;font:inherit}
             profile: siteProfileInput.value.trim(),
             email: siteEmailInput.value.trim(),
             phone: sitePhoneInput.value.trim(),
+            address: siteAddressInput ? siteAddressInput.value.trim() : "",
             editorial_note: siteEditorialNoteInput ? siteEditorialNoteInput.value.trim() : "",
             updated_at: new Date().toISOString()
           };
