@@ -39,7 +39,7 @@
       try {
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
-        if (id && /^\\d+$/.test(id)) {
+        if (id && /^\d+$/.test(id)) {
           var articleUrl = "https://visibangsa.id/detail.html?id=" + encodeURIComponent(id);
           var canonical = document.getElementById("canonical");
           if (canonical) canonical.setAttribute("href", articleUrl);
@@ -1271,10 +1271,23 @@ input,select,textarea,button{max-width:100%;font:inherit}
 
     function showError(message) {
 
+      // Untuk URL artikel dengan ID numerik, jangan mengubah halaman menjadi
+      // noindex hanya karena data Supabase gagal dimuat sementara.
+      // URL artikel tetap menjadi canonical agar Google dapat mencoba kembali.
       const robotsMeta = document.querySelector('meta[name="robots"]');
-      if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow, noarchive");
       const canonical = document.getElementById("canonical");
-      if (canonical) canonical.setAttribute("href", "https://visibangsa.id/");
+      const validArticleId = /^\d+$/.test(String(articleId || "").trim());
+
+      if (validArticleId) {
+        if (robotsMeta) robotsMeta.setAttribute("content", "index, follow, max-image-preview:large");
+        if (canonical) canonical.setAttribute(
+          "href",
+          "https://visibangsa.id/detail.html?id=" + encodeURIComponent(String(articleId).trim())
+        );
+      } else {
+        if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow, noarchive");
+        if (canonical) canonical.setAttribute("href", "https://visibangsa.id/");
+      }
 
       loadingElement.style.display =
         "none";
