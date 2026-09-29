@@ -13,7 +13,7 @@
     content="Berita terbaru dan informasi terkini dari VISI Bangsa."
   >
 
-  <meta
+  <meta id="robotsMeta"
     name="robots"
     content="index, follow, max-image-preview:large"
   >
@@ -39,9 +39,14 @@
       try {
         var params = new URLSearchParams(window.location.search);
         var id = params.get("id");
-        if (id && /^\d+$/.test(id)) {
+        if (id && /^\\d+$/.test(id)) {
+          var articleUrl = "https://visibangsa.id/detail.html?id=" + encodeURIComponent(id);
           var canonical = document.getElementById("canonical");
-          if (canonical) canonical.setAttribute("href", "https://visibangsa.id/detail.html?id=" + encodeURIComponent(id));
+          if (canonical) canonical.setAttribute("href", articleUrl);
+          var robotsMeta = document.getElementById("robotsMeta");
+          if (robotsMeta) robotsMeta.setAttribute("content", "index, follow, max-image-preview:large");
+          var ogUrl = document.getElementById("ogUrl");
+          if (ogUrl) ogUrl.setAttribute("content", articleUrl);
         }
       } catch (e) {}
     })();
