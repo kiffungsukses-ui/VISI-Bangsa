@@ -5,8 +5,14 @@
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url><loc>https://visibangsa.id/detail.html?id=10</loc><priority>0.8</priority></url>
-  <url><loc>https://visibangsa.id/detail.html?id=22</loc><priority>0.8</priority></url>
-  <url><loc>https://visibangsa.id/detail.html?id=27</loc><priority>0.8</priority></url>
-  <url><loc>https://visibangsa.id/detail.html?id=35</loc><priority>0.8</priority></url>
+  <url><loc>https://visibangsa.id/detail.html?id=35</loc><lastmod>2026-09-29T03:31:02.509Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=34</loc><lastmod>2026-09-27T02:58:25.767Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=33</loc><lastmod>2026-09-26T11:26:03.521Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=32</loc><lastmod>2026-09-25T01:15:32.470Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=31</loc><lastmod>2026-09-24T09:11:48.083Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=27</loc><lastmod>2026-09-23T02:18:57.480Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=26</loc><lastmod>2026-09-22T07:58:16.407Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=24</loc><lastmod>2026-09-22T05:45:53.987Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=23</loc><lastmod>2026-09-22T04:16:34.907Z</lastmod></url>
+  <url><loc>https://visibangsa.id/detail.html?id=22</loc><lastmod>2026-09-22T04:05:59.890Z</lastmod></url>
 </urlset>
