@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const response = await fetch(
       SUPABASE_URL +
         "/rest/v1/berita" +
-        "?select=id,tanggal,updated_at" +
+        "?select=id,judul,tanggal,updated_at" +
         "&status=eq.terbit" +
         "&order=tanggal.desc",
       {
@@ -42,6 +42,15 @@ export default async function handler(req, res) {
           ? `http://${host}`
           : "https://visibangsa.id";
 
+    const slugify = (value) =>
+      String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 110);
+
     const urls = [];
 
     urls.push(`
@@ -56,11 +65,14 @@ export default async function handler(req, res) {
       const lastmod = item.updated_at || item.tanggal;
       if (!lastmod) continue;
 
+      const slug = slugify(item.judul);
+      const articleUrl = slug
+        ? `${origin}/${encodeURI(slug)}`
+        : `${origin}/detail.html?id=${encodeURIComponent(item.id)}`;
+
       urls.push(`
         <url>
-          <loc>${origin}/detail.html?id=${encodeURIComponent(
-            item.id
-          )}</loc>
+          <loc>${articleUrl}</loc>
           <lastmod>${new Date(lastmod).toISOString()}</lastmod>
           <changefreq>weekly</changefreq>
           <priority>0.8</priority>
@@ -78,7 +90,10 @@ ${urls.join("")}
       "application/xml; charset=utf-8"
     );
 
-    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=600"
+    );
 
     res.status(200).send(xml);
   } catch (error) {
